@@ -51,5 +51,5 @@ else
   rm /var/www/nconf/output/*
 
   sync
-  if [[ $1 == "halt" ]] then; echo "Halting..."; exit; fi;
+  if [[ $1 == "halt" ]]; then; echo "Halting..."; exit; fi;
 fi
