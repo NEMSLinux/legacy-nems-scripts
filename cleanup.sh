@@ -4,7 +4,6 @@
 
 if [[ $EUID -ne 0 ]]; then
   echo "ERROR: This script must be run as root" 2>&1
-  echo "Recommendation: Add script to crontab with @reboot" 2>&1
   exit 1
 else
 
