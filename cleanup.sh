@@ -6,7 +6,9 @@ if [[ $EUID -ne 0 ]]; then
   echo "ERROR: This script must be run as root" 2>&1
   exit 1
 else
-
+  
+  echo "Pass the halt option to halt after execution."
+  
   sync
 
   touch /tmp/nems.freeze
@@ -49,5 +51,5 @@ else
   rm /var/www/nconf/output/*
 
   sync
-  halt
+  if [[ $1 == "halt" ]] then; echo "Halting..."; exit; fi;
 fi
