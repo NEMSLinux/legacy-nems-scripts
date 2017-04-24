@@ -14,6 +14,9 @@ else
   # Update nems-migrator
   cd /root/nems/nems-migrator && git pull
 
+  # Update self
+  cd /home/pi/nems-scripts && git pull
+
   # Copy the version data to the public inc folder (in case it accidentally gets deleted)
   test -d "/var/www/html/inc" || mkdir -p "/var/www/html/inc" && cp /root/nems/ver.txt "/var/www/html/inc"
 fi
