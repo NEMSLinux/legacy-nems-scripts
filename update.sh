@@ -11,6 +11,9 @@ else
   timestamp=$( /bin/date --date="today 00:00:01 UTC -5 hours" +%s )
   /usr/bin/wget -q -O /var/www/html/inc/ver-available.txt http://cdn.zecheriah.com/baldnerd/nems/ver-current.txt#$timestamp
 
+  # Update RPi-Monitor Package Status
+  /etc/init.d/rpimonitor update
+  
   # Update nems-migrator
   cd /root/nems/nems-migrator && git pull
 
