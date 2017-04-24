@@ -1,15 +1,22 @@
 #!/bin/bash
-# NEMS Server Info Script
+# NEMS Server Info Script (primarily used for MOTD)
 
 export COMMAND=$1
 me=`basename "$0"`
-USAGE="Usage: ./$me COMMAND"
+
+# Output local IP address
 if [[ $COMMAND == "ip" ]]; then
   /sbin/ip -f inet addr show eth0 | grep -Po 'inet \K[\d.]+'
+
+# Output current running NEMS version
 elif [[ $COMMAND == "nemsver" ]]; then
   /bin/cat /var/www/html/inc/ver.txt
+  
+# Output the current available NEMS version
 elif [[ $COMMAND == "nemsveravail" ]]; then
   /bin/cat /var/www/html/inc/ver-available.txt
+  
+# Output the number of users connected to server
 elif [[ $COMMAND == "users" ]]; then
   export USERCOUNT=`/usr/bin/users | /usr/bin/wc -w`
   if [ $USERCOUNT -eq 1 -o $USERCOUNT -eq -1 ]
@@ -18,6 +25,9 @@ elif [[ $COMMAND == "users" ]]; then
 		else
 			echo $USERCOUNT users
 	fi
+
+# Output usage info as no valid command line argument was provided
 else
-  echo $USAGE
+  echo "Usage: ./$me command"
+  echo "Available commands: ip nemsver nemsveravail users"
 fi
