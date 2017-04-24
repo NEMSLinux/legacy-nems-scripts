@@ -12,7 +12,7 @@ if [[ $COMMAND == "ip" ]]; then
 elif [[ $COMMAND == "nemsver" ]]; then
   /bin/cat /var/www/html/inc/ver.txt
   
-# Output the current available NEMS version
+# Output the current available NEMS version (update.sh generates this every day at midnight and at reboot)
 elif [[ $COMMAND == "nemsveravail" ]]; then
   /bin/cat /var/www/html/inc/ver-available.txt
   
