@@ -7,7 +7,7 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 else
   
-  echo "Pass the halt option to halt after execution."
+  if [[ $1 != "halt" ]]; then echo "Pass the halt option to halt after execution."; echo ""; fi;
   
   sync
 
@@ -51,5 +51,7 @@ else
   rm /var/www/nconf/output/*
 
   sync
-  if [[ $1 == "halt" ]]; then echo "Halting..."; exit; fi;
+  
+  if [[ $1 == "halt" ]]; then echo "Halting..."; halt; exit; fi;
+  
 fi
