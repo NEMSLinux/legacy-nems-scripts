@@ -32,7 +32,14 @@ else
   # Clear system mail
   find /var/mail/ -type f -exec cp /dev/null {} \;
 
-
+  # Remove Webmin logs and sessions
+  systemctl stop webmin
+  rm /var/webmin/webmin.log
+  rm /var/webmin/miniserv.log
+  rm /var/webmin/miniserv.error
+  rm /var/webmin/sessiondb.pag
+  systemctl start webmin
+  
   cd /root
   rm .nano_history
   rm .bash_history
