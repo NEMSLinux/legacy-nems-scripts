@@ -26,7 +26,7 @@ else
   # Empty old logs
   find /var/log/ -type f -exec cp /dev/null {} \;
   find /var/log/ -iname "*.gz" -type f -delete
-  find /var/log/ -iname "*.1" -type f -delete
+  find /var/log/ -iname "*.log.*" -type f -delete
   rm /var/log/nagios3/archives/*.log
 
   # Clear system mail
