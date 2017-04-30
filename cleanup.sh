@@ -61,6 +61,9 @@ else
   # remove config backup from NEMS-Migrator
   rm /var/www/html/backup/backup.nems
 
+  # Remove DNS Resolver config (will be auto-generated on first boot)
+  rm  /etc/resolv.conf
+
   # remove output from nconf
   rm /var/www/nconf/output/*
 
@@ -69,6 +72,7 @@ else
   if [[ $1 == "halt" ]]; then echo "Halting..."; halt; exit; fi;
 
   # System still running: Restart services
+  service networking restart
   systemctl start webmin
   systemctl start rpimonitor
   systemctl start apache2
