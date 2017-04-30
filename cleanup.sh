@@ -7,7 +7,7 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 else
   
-  if [[ $1 != "halt" ]]; then echo "Pass the halt option to halt after execution."; echo ""; fi;
+  if [[ $1 != "halt" ]]; then echo "Pass the halt option to halt after execution or the reboot option to reboot."; echo ""; fi;
   
   sync
   
@@ -70,6 +70,8 @@ else
   sync
   
   if [[ $1 == "halt" ]]; then echo "Halting..."; halt; exit; fi;
+
+  if [[ $1 == "reboot" ]]; then echo "Rebooting..."; reboot; exit; fi;
 
   # System still running: Restart services
   service networking restart
