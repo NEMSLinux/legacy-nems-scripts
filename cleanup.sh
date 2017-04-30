@@ -10,7 +10,13 @@ else
   if [[ $1 != "halt" ]]; then echo "Pass the halt option to halt after execution."; echo ""; fi;
   
   sync
-
+  
+  # Stop services which may be using these files
+  systemctl stop webmin
+  systemctl stop rpimonitor
+  systemctl stop apache2
+  systemctl stop nagios3
+  
   touch /tmp/nems.freeze
 
   sudo apt-get clean
@@ -33,12 +39,13 @@ else
   find /var/mail/ -type f -exec cp /dev/null {} \;
 
   # Remove Webmin logs and sessions
-  systemctl stop webmin
   rm /var/webmin/webmin.log
   rm /var/webmin/miniserv.log
   rm /var/webmin/miniserv.error
   rm /var/webmin/sessiondb.pag
-  systemctl start webmin
+  
+  # Clear RPi-Monitor history and stats
+  rm /usr/share/rpimonitor/web/stat/*.rrd
   
   cd /root
   rm .nano_history
@@ -60,5 +67,11 @@ else
   sync
   
   if [[ $1 == "halt" ]]; then echo "Halting..."; halt; exit; fi;
+
+  # System still running: Restart services
+  systemctl start webmin
+  systemctl start rpimonitor
+  systemctl start apache2
+  systemctl start nagios3
   
 fi
