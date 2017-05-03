@@ -50,6 +50,7 @@ else
   
   # Clear Monitorix history and stats
   rm /var/lib/monitorix/*.rrd
+  :>/var/log/monitorix-httpd
   
   cd /root
   rm .nano_history
