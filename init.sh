@@ -11,6 +11,10 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 else
 
+  echo "First, let's change the password of the pi Linux user..."
+  passwd pi
+
+  echo ""
   read -p "What username would you like to use when logging in to the NEMS web interfaces? " username
 
   while true; do
