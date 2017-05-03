@@ -14,6 +14,7 @@ else
   # Stop services which may be using these files
   systemctl stop webmin
   systemctl stop rpimonitor
+  systemctl stop monitorix
   systemctl stop apache2
   systemctl stop nagios3
   
@@ -47,6 +48,9 @@ else
   # Clear RPi-Monitor history and stats
   rm /usr/share/rpimonitor/web/stat/*.rrd
   
+  # Clear Monitorix history and stats
+  rm /var/lib/monitorix/*.rrd
+  
   cd /root
   rm .nano_history
   rm .bash_history
@@ -77,6 +81,7 @@ else
   service networking restart
   systemctl start webmin
   systemctl start rpimonitor
+  systemctl start monitorix
   systemctl start apache2
   systemctl start nagios3
   
