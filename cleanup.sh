@@ -1,6 +1,8 @@
 #!/bin/bash
 # Just a simple cleanup script so we don't leave
 # a bunch of history behind at build-time
+# THIS IS NOT AN END-USER SCRIPT
+# Running this will DESTROY all your NEMS configuration and reset to factory defaults
 
 if [[ $EUID -ne 0 ]]; then
   echo "ERROR: This script must be run as root" 2>&1
@@ -74,6 +76,9 @@ else
   # remove output from nconf
   rm /var/www/nconf/output/*
 
+  # Remove NEMS init password file
+  rm /var/www/htpasswd
+  
   sync
   
   if [[ $1 == "halt" ]]; then echo "Halting..."; halt; exit; fi;
