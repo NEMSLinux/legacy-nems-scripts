@@ -29,6 +29,8 @@ else
 
   echo $password | /usr/bin/htpasswd -c -i /var/www/htpasswd $username
 
+echo Initializing new Nagios user
+systemctl stop nagios3
 # Reininitialize Nagios3 user account
   echo "define contactgroup {
                 contactgroup_name                     admins
@@ -51,6 +53,7 @@ else
 
 # Import to NConf database
 /var/www/nconf/bin/add_items_from_nagios.pl -c contact -f /etc/nagios3/global/contacts.cfg -x 1
+systemctl start nagios3
 
   echo ""
 
