@@ -48,6 +48,9 @@ else
 }
 " > /etc/nagios3/global/contacts.cfg
 
+# Import to NConf database
+/var/www/nconf/bin/add_items_from_nagios.pl -c contact -f /etc/nagios3/global/contacts.cfg -x 1
+
   echo ""
 
   echo "Now we will resize your root partition to give you access to all the space"
