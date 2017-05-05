@@ -15,7 +15,8 @@ else
   passwd pi
 
   echo ""
-  read -p "What username would you like to use when logging in to the NEMS web interfaces? " username
+  echo "What username would you like to use when"
+  read -p "logging in to the NEMS web interfaces? " username
 
   while true; do
     read -s -p "Password: " password
