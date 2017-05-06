@@ -79,6 +79,10 @@ else
   # Remove NEMS init password file
   rm /var/www/htpasswd
   
+  # Sync the current running version as the current available version
+  # Will be overwritten on first boot
+  cp /root/nems/ver.txt /var/www/html/inc/ver-available.txt
+
   sync
   
   if [[ $1 == "halt" ]]; then echo "Halting..."; halt; exit; fi;
@@ -92,5 +96,6 @@ else
   systemctl start monitorix
   systemctl start apache2
   systemctl start nagios3
+  rm /tmp/nems.freeze
   
 fi
