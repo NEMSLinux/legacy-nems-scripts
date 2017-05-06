@@ -55,6 +55,8 @@ systemctl stop nagios3
 /var/www/nconf/bin/add_items_from_nagios.pl -c contact -f /etc/nagios3/global/contacts.cfg -x 1
 systemctl start nagios3
 
+dpkg-reconfigure tzdata
+
   echo ""
 
   echo "Now we will resize your root partition to give you access to all the space"
