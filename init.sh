@@ -12,8 +12,12 @@ if [[ $EUID -ne 0 ]]; then
 else
 
   echo "First, let's change the password of the pi Linux user..."
+  echo "REMEMBER: This will be the password you'll use for SSH/Local Login and Webmin."
+  ecoh "If you do not want to change it, simply enter the existing password."
   passwd pi
 
+  echo "Your new password has been set for the Linux pi user."
+  echo "Use that password to access NEMS over SSH or when logging in to Webmin."
   echo ""
   echo "What username would you like to use when"
   read -p "logging in to the NEMS web interfaces? " username
