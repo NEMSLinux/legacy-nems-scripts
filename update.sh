@@ -5,7 +5,14 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 else
   # Ping Google to see if Internet is up. Don't begin until we have Internet.
+  count=1
   while ! ping -c 1 -W 1 google.com; do
+    if [ $count -eq 60 ]
+      then
+         echo "Google not responding. Resuming, but if Internet is down, updates will fail."
+         break;
+    fi     
+    ((count++))
     sleep 1
   done
 
