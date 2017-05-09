@@ -4,8 +4,10 @@ if [[ $EUID -ne 0 ]]; then
   echo "ERROR: This script must be run as root" 2>&1
   exit 1
 else
-  # Wait 30 seconds to prevent issues at boot with a missing version file during transit
-  sleep 30
+  # Ping Google to see if Internet is up. Don't begin until we have Internet.
+  while ! ping -c 1 -W 1 google.com; do
+    sleep 1
+  done
 
   # Tell the web cache to serve up the file from midnight
   timestamp=$( /bin/date --date="today 00:00:01 UTC -5 hours" +%s )
