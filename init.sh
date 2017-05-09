@@ -13,7 +13,7 @@ else
 
   echo "First, let's change the password of the pi Linux user..."
   echo "REMEMBER: This will be the password you'll use for SSH/Local Login and Webmin."
-  ecoh "If you do not want to change it, simply enter the existing password."
+  echo "If you do not want to change it, simply enter the existing password."
   passwd pi
 
   echo "Your new password has been set for the Linux pi user."
