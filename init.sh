@@ -56,14 +56,12 @@ systemctl stop nagios3
 }
 " > /etc/nagios3/global/contacts.cfg
 
-if [[ -d "/tmp/nems_migrator_restore/etc/nagios3" ]]; then
-           service mysql stop
-           # Clear the MySQL Database (replace with our blank DB from NEMS-Migrator)
-           rm -rf /var/lib/mysql
-           cp -Rp /root/nems/nems-migrator/data/mysql /var/lib/
-					 chown -R mysql:mysql /var/lib/mysql
-					 service mysql start
-fi;
+service mysql stop
+# Clear the MySQL Database (replace with our blank DB from NEMS-Migrator)
+rm -rf /var/lib/mysql
+cp -Rp /root/nems/nems-migrator/data/mysql /var/lib/
+			 chown -R mysql:mysql /var/lib/mysql
+			 service mysql start
 
 # Import our new user to NConf database
 echo "Importing: contact" && /var/www/nconf/bin/add_items_from_nagios.pl -c contact -f /etc/nagios3/global/contacts.cfg -x 1 2>&1 | grep -E "ERROR"
