@@ -66,8 +66,8 @@ if [[ -d "/tmp/nems_migrator_restore/etc/nagios3" ]]; then
 fi;
 
 # Import our new user to NConf database
-/var/www/nconf/bin/add_items_from_nagios.pl -c contact -f /etc/nagios3/global/contacts.cfg -x 1
-/var/www/nconf/bin/add_items_from_nagios.pl -c contactgroup -f /etc/nagios3/global/contactgroups.cfg -x 1
+echo "Importing: contact" && /var/www/nconf/bin/add_items_from_nagios.pl -c contact -f /etc/nagios3/global/contacts.cfg -x 1 2>&1 | grep -E "ERROR"
+echo "Importing: contactgroup" && /var/www/nconf/bin/add_items_from_nagios.pl -c contactgroup -f /etc/nagios3/global/contactgroups.cfg -x 1 2>&1 | grep -E "ERROR"
 systemctl start nagios3
 
 dpkg-reconfigure tzdata
