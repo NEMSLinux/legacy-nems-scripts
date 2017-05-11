@@ -56,16 +56,9 @@ systemctl stop nagios3
 }
 " > /etc/nagios3/global/contacts.cfg
 
-service mysql stop
-# Clear the MySQL Database (replace with our blank DB from NEMS-Migrator)
-rm -rf /var/lib/mysql
-cp -Rp /root/nems/nems-migrator/data/mysql /var/lib/
-chown -R mysql:mysql /var/lib/mysql
-service mysql start
+# Clear MySQL database and import new configuration into NConf
+/root/nems/nems-migrator/data/nconf-import.sh
 
-# Import our new user to NConf database
-echo "Importing: contact" && /var/www/nconf/bin/add_items_from_nagios.pl -c contact -f /etc/nagios3/global/contacts.cfg -x 1 2>&1 | grep -E "ERROR"
-echo "Importing: contactgroup" && /var/www/nconf/bin/add_items_from_nagios.pl -c contactgroup -f /etc/nagios3/global/contactgroups.cfg -x 1 2>&1 | grep -E "ERROR"
 systemctl start nagios3
 
 dpkg-reconfigure tzdata
