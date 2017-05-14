@@ -78,6 +78,26 @@ else
 
   # Remove NEMS init password file
   rm /var/www/htpasswd
+
+  # Reininitialize Nagios3 user account
+  echo "define contactgroup {
+                  contactgroup_name                     admins
+                  alias                                 Nagios Administrators
+                  members                               nagiosadmin
+  }
+  " > /etc/nagios3/global/contactgroups.cfg
+  echo "define contact {
+                  contact_name                          nagiosadmin
+                  alias                                 Nagios Admin
+                  host_notification_options             d,u,r,f,s
+                  service_notification_options          w,u,c,r,f,s
+                  email                                 nagios@localhost
+                  host_notification_period              24x7
+                  service_notification_period           24x7
+                  host_notification_commands            notify-host-by-email
+                  service_notification_commands         notify-service-by-email
+  }
+  " > /etc/nagios3/global/contacts.cfg
   
   # Sync the current running version as the current available version
   # Will be overwritten on first boot
