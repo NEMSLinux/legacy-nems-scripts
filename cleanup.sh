@@ -99,6 +99,12 @@ else
   }
   " > /etc/nagios3/global/contacts.cfg
   
+  # Replace the database with Sample database
+  rm -rf /var/lib/mysql/
+  cp -R /root/nems/nems-migrator/data/mysql/NEMS-Sample /var/lib
+  chown -R mysql:mysql /var/lib/NEMS-Sample
+  mv /var/lib/NEMS-Sample /var/lib/mysql
+  
   # Sync the current running version as the current available version
   # Will be overwritten on first boot
   cp /root/nems/ver.txt /var/www/html/inc/ver-available.txt
