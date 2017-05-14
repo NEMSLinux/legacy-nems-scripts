@@ -56,6 +56,14 @@ systemctl stop nagios3
 }
 " > /etc/nagios3/global/contacts.cfg
 
+# Replace the database with Sample database
+service mysql stop
+rm -rf /var/lib/mysql/
+cp -R /root/nems/nems-migrator/data/mysql/NEMS-Sample /var/lib
+chown -R mysql:mysql /var/lib/NEMS-Sample
+mv /var/lib/NEMS-Sample /var/lib/mysql
+service mysql start
+
 # Import new configuration into NConf
 echo "  Importing: contact" && /var/www/nconf/bin/add_items_from_nagios.pl -c contact -f /etc/nagios3/global/contacts.cfg 2>&1 | grep -E "ERROR"
 echo "  Importing: contactgroup" && /var/www/nconf/bin/add_items_from_nagios.pl -c contactgroup -f /etc/nagios3/global/contactgroups.cfg 2>&1 | grep -E "ERROR"
