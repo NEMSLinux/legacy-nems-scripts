@@ -31,7 +31,8 @@ else
     echo "Please try again (didn't match)"
   done
 
-  echo $password | /usr/bin/htpasswd -c -i /var/www/htpasswd $username
+  # In case this is a re-initialization, clear the init file (remove old login), then add this user
+  :>/var/www/htpasswd && echo $password | /usr/bin/htpasswd -c -i /var/www/htpasswd $username
 
 echo Initializing new Nagios user
 systemctl stop nagios3
