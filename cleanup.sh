@@ -13,6 +13,9 @@ else
   
   sync
   
+  echo "Did you cp the database? This script will restore from Migrator. CTRL-C to abort."
+  sleep 5
+  
   # Stop services which may be using these files
   systemctl stop webmin
   systemctl stop rpimonitor
@@ -97,10 +100,12 @@ else
   " > /etc/nagios3/global/contacts.cfg
   
   # Replace the database with Sample database
+  systemctl stop mysql
   rm -rf /var/lib/mysql/
   cp -R /root/nems/nems-migrator/data/mysql/NEMS-Sample /var/lib
   chown -R mysql:mysql /var/lib/NEMS-Sample
   mv /var/lib/NEMS-Sample /var/lib/mysql
+  systemctl start mysql
   
   # Remove nconf history, should it exist
   mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"
