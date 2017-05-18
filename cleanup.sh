@@ -29,9 +29,6 @@ else
   echo "Don't forget to remove the old kernels:"
   dpkg --get-selections | grep linux-image
 
-  # Remove nconf history
-  mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"
-
   # Empty old logs
   find /var/log/ -type f -exec cp /dev/null {} \;
   find /var/log/ -iname "*.gz" -type f -delete
@@ -105,6 +102,9 @@ else
   chown -R mysql:mysql /var/lib/NEMS-Sample
   mv /var/lib/NEMS-Sample /var/lib/mysql
   
+  # Remove nconf history, should it exist
+  mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"
+
   # Sync the current running version as the current available version
   # Will be overwritten on first boot
   cp /root/nems/ver.txt /var/www/html/inc/ver-available.txt
