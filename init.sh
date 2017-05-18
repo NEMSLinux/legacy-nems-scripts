@@ -65,6 +65,9 @@ chown -R mysql:mysql /var/lib/NEMS-Sample
 mv /var/lib/NEMS-Sample /var/lib/mysql
 service mysql start
 
+# Remove nconf history, should it exist
+mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"
+
 # Import new configuration into NConf
 echo "  Importing: contact" && /var/www/nconf/bin/add_items_from_nagios.pl -c contact -f /etc/nagios3/global/contacts.cfg 2>&1 | grep -E "ERROR"
 echo "  Importing: contactgroup" && /var/www/nconf/bin/add_items_from_nagios.pl -c contactgroup -f /etc/nagios3/global/contactgroups.cfg 2>&1 | grep -E "ERROR"
