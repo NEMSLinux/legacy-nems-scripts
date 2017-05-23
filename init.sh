@@ -3,6 +3,9 @@
 # Run this script with: sudo nems-init
 # It's already in the path via a symlink
 
+# Perform any fixes that have been released since NEMS was built
+/home/pi/nems-scripts/fixes.sh
+
 echo ""
 echo Welcome to NEMS initialization script.
 echo ""

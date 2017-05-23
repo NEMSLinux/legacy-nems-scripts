@@ -16,6 +16,9 @@ else
     sleep 1
   done
 
+  # Perform any fixes that have been released since NEMS was built
+  /home/pi/nems-scripts/fixes.sh
+
   # Tell the web cache to serve up the file from midnight
   timestamp=$( /bin/date --date="today 00:00:01 UTC -5 hours" +%s )
   /usr/bin/wget -q -O /var/www/html/inc/ver-available.txt http://cdn.zecheriah.com/baldnerd/nems/ver-current.txt#$timestamp
