@@ -16,9 +16,6 @@ else
     sleep 1
   done
 
-  # Perform any fixes that have been released since NEMS was built
-  /home/pi/nems-scripts/fixes.sh
-
   # Tell the web cache to serve up the file from midnight
   timestamp=$( /bin/date --date="today 00:00:01 UTC -5 hours" +%s )
   /usr/bin/wget -q -O /var/www/html/inc/ver-available.txt http://cdn.zecheriah.com/baldnerd/nems/ver-current.txt#$timestamp
@@ -28,6 +25,9 @@ else
 
   # Update self
   cd /home/pi/nems-scripts && git pull
+
+  # Perform any fixes that have been released since NEMS was built
+  /home/pi/nems-scripts/fixes.sh
 
   # Copy the version data to the public inc folder (in case it accidentally gets deleted)
   test -d "/var/www/html/inc" || mkdir -p "/var/www/html/inc" && cp /root/nems/ver.txt "/var/www/html/inc"
