@@ -7,6 +7,7 @@ me=`basename "$0"`
 # Output local IP address
 if [[ $COMMAND == "ip" ]]; then
   if /sbin/ip -f inet addr show eth0 | grep -Po 'inet \K[\d.]+'; then
+    do=nothingreally
   else
     /sbin/ip -f inet addr show wlan0 | grep -Po 'inet \K[\d.]+'
   fi
