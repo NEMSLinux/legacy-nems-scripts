@@ -6,7 +6,10 @@ me=`basename "$0"`
 
 # Output local IP address
 if [[ $COMMAND == "ip" ]]; then
-  /sbin/ip -f inet addr show eth0 | grep -Po 'inet \K[\d.]+'
+  if /sbin/ip -f inet addr show eth0 | grep -Po 'inet \K[\d.]+'; then
+  else
+    /sbin/ip -f inet addr show wlan0 | grep -Po 'inet \K[\d.]+'
+  fi
 
 # Output current running NEMS version
 elif [[ $COMMAND == "nemsver" ]]; then
