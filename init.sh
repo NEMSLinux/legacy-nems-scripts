@@ -30,6 +30,8 @@ else
     echo
     read -s -p "Password (again): " password2
     echo
+    [ "$password" = "raspberry" ] && password="" && echo "You are not allowed to use that password."
+    [ "$password" = "" ] && password="-" && echo "You can't leave the password blank."
     [ "$password" = "$password2" ] && break
     echo "Please try again (didn't match)"
   done
