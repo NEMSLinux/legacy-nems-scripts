@@ -21,15 +21,22 @@ else
   /usr/bin/wget -q -O /var/www/html/inc/ver-available.txt http://cdn.zecheriah.com/baldnerd/nems/ver-current.txt#$timestamp
   
   # Update nems-migrator
+  printf "Updating nems-migrator... "
   cd /root/nems/nems-migrator && git pull
-
+  echo "Done."
+  
   # Update nems-www
+  printf "Updating nems-www... "
   cd /var/www/html && git pull
-
+  echo "Done."
+  
   # Update self
+  printf "Updating nems-scripts... "
   cd /home/pi/nems-scripts && git pull
-
+  echo "Done."
+  
   # Perform any fixes that have been released since NEMS was built
+  printf "Running updates and fixes... "
   /home/pi/nems-scripts/fixes.sh
 
   # Copy the version data to the public inc folder (in case it accidentally gets deleted)
