@@ -50,7 +50,8 @@ else
   # Clear RPi-Monitor history and stats
   rm /usr/share/rpimonitor/web/stat/*.rrd
   
-  # Clear Monitorix history and stats
+  # Clear Monitorix history, stats and config
+  echo "" > /etc/monitorix/conf.d/nems.conf
   rm /var/lib/monitorix/*.rrd
   rm /var/log/monitorix*
   rm /var/lib/monitorix/www/imgs/*.png

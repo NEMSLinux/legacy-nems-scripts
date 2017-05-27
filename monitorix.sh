@@ -4,6 +4,10 @@
 
 /bin/sleep 15
 
+# Sometimes Monitorix (the daemon) stops responding even though it is running.
+# Restart it here just in case, before loading the data.
+/bin/systemctl restart monitorix
+
 # Detect the default network interface and use it for net graphs
 adapter=`/sbin/route | /bin/grep '^default' | /bin/grep -o '[^ ]*$'`
 /bin/cat <<EOF > /tmp/monitorix.nems
