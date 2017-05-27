@@ -23,6 +23,9 @@ else
   # Update nems-migrator
   cd /root/nems/nems-migrator && git pull
 
+  # Update nems-www
+  cd /var/www/html && git pull
+
   # Update self
   cd /home/pi/nems-scripts && git pull
 
