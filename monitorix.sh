@@ -2,22 +2,11 @@
 # This script generates all the images for Monitorix via cronjob rather than on-demand, giving the perception of much faster processing and reducing load on page refresh
 # It also ensures certain graphs (ie. Yearly) are not updated every time since the data won't be affected
 
-
-  # Ping Google to see if Internet is up. Don't begin until we have Internet.
-  count=1
-  while ! ping -c 1 -W 1 google.com; do
-    if [ $count -eq 60 ]
-      then
-         echo "Google not responding. Resuming, but if Internet is down, updates will fail."
-         break;
-    fi     
-    ((count++))
-    sleep 1
-  done
-  
 # Sometimes Monitorix (the daemon) stops responding even though it is running.
 # Restart it here just in case, before loading the data.
 /bin/systemctl restart monitorix
+
+/bin/sleep 15
 
 # Detect the default network interface and use it for net graphs
 adapter=`/sbin/route | /bin/grep '^default' | /bin/grep -o '[^ ]*$'`
@@ -39,6 +28,8 @@ fi
       /bin/systemctl restart monitorix
   fi;
 rm /tmp/monitorix.nems
+
+/bin/sleep 5
 
 # Generate the graphs
 if [[ $1 = "all" ]] || [[ $1 = "day" ]]; then /usr/bin/nice -n19 /usr/bin/w3m -dump "http://localhost:8080/monitorix-cgi/monitorix.cgi?mode=localhost&graph=all&when=1day&color=black" > /dev/null 2>&1; fi;
