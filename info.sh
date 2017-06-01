@@ -30,6 +30,10 @@ elif [[ $COMMAND == "users" ]]; then
 			echo $USERCOUNT users
 	fi
 
+# Output disk usage in percent
+elif [[ $COMMAND == "diskusage" ]]; then
+  df -hl | awk '/^\/dev\/root/ { sum+=$5 } END { print sum }'
+
 # Output usage info as no valid command line argument was provided
 else
   echo "Usage: ./$me command"
