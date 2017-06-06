@@ -70,6 +70,10 @@ chown -R mysql:mysql /var/lib/NEMS-Sample
 mv /var/lib/NEMS-Sample /var/lib/mysql
 service mysql start
 
+# Replace the cgi.cfg file with the sample
+cp -f /root/nems/nems-migrator/data/nagios/cgi.cfg /etc/nagios3/
+/bin/sed -i -- 's/nagiosadmin/'"$username"'/g' /etc/nagios3/cgi.cfg
+
 # Remove nconf history, should it exist
 mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"
 
