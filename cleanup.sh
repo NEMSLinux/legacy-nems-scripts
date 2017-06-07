@@ -80,6 +80,12 @@ else
   # Remove NEMS init password file
   rm /var/www/htpasswd
 
+  # Reset Nagios Core User
+  cp -f /root/nems/nems-migrator/data/nagios/cgi.cfg /etc/nagios3/
+  
+  # Reset Check_MK User
+  cp -f /root/nems/nems-migrator/data/check_mk/users.mk /etc/check_mk/multisite.d/wato/users.mk
+
   # Reininitialize Nagios3 user account
   echo "define contactgroup {
                   contactgroup_name                     admins
