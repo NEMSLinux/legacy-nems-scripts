@@ -22,3 +22,7 @@ if [ -f /var/www/htpasswd ]; then
   fi
 fi
 
+# Install nems-upgrade command if not already
+if [ ! -f /usr/bin/nems-upgrade ]; then
+  ln -s /home/pi/nems-scripts/upgrade.sh /usr/bin/nems-upgrade
+fi
