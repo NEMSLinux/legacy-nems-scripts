@@ -23,6 +23,11 @@ else
    ln -s /home/pi/nems-scripts/update.sh /usr/bin/nems-update
    echo "Done."
 
+   # Copy the fixed MOTD.
+   echo "Patching MOTD..."
+   cp -f /home/pi/nems-scripts/upgrades/1.2.2/motd.tcl /etc/
+   echo "Done."
+
    # Update packages
    echo "Updating OS..."
    apt-get update && apt-get -y upgrade && apt-get -y dist-upgrade
