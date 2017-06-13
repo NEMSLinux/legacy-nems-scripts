@@ -23,12 +23,8 @@ else
    echo "nems-www is installed."
 
    # Setup the version info with nems-www
-     # Tell the web cache to serve up the file from midnight
-     timestamp=$( /bin/date --date="today 00:00:01 UTC -5 hours" +%s )
-     /usr/bin/wget -q -O /var/www/html/inc/ver-available.txt http://cdn.zecheriah.com/baldnerd/nems/ver-current.txt#$timestamp
-
-     # Copy the version data to the public inc folder
-     printf "Checking for new NEMS version... "
+     printf "Configurating NEMS version information... "
+     cp -f /root/nems/nems-migrator/data/nems/ver-current.txt /var/www/html/inc/ver-available.txt
      test -d "/var/www/html/inc" || mkdir -p "/var/www/html/inc" && cp /root/nems/ver.txt "/var/www/html/inc"
      echo "Done."
    
