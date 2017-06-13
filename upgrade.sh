@@ -5,13 +5,13 @@ if [[ $EUID -ne 0 ]]; then
 else
   upgraded=0
   ver=$(cat "/var/www/html/inc/ver.txt") 
+  echo "Running NEMS 1.2.1"
 
   # ----------------------------------
   
 # Upgrade from NEMS 1.2.1 to NEMS 1.2.2
   if [[ $ver = "1.2.1" ]]; then
-   echo "Running NEMS 1.2.1"
-   echo "Upgrading to NEMS 1.2.2"
+   echo "Upgrading to NEMS $ver to NEMS 1.2.2"
 
    # Add nems-www in place of the old page
    echo "Adding nems-www..."
@@ -61,8 +61,7 @@ else
   if [[ $ver = "1.2.2" ]]; then
   echo "You're up to date."
   exit
-   echo "Running NEMS 1.2.2"
-   echo "Upgrading to NEMS 1.2.3"
+   echo "Upgrading to NEMS $ver to NEMS 1.2.3"
 
    # Create symlinks added in this release
    echo "Creating symbolic links..."
