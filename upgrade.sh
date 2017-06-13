@@ -84,7 +84,7 @@ else
   fi
   
   # ----------------------------------
-  if [[ $upgraded = "0" ]]; then
+  if [[ $upgraded -ne 1 ]]; then
     echo "There are no rolling upgrades available for NEMS $ver"
     echo ""
   fi
