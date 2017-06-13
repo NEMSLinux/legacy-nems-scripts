@@ -15,16 +15,15 @@ else
     ((count++))
     sleep 1
   done
-
-  # Tell the web cache to serve up the file from midnight
-  timestamp=$( /bin/date --date="today 00:00:01 UTC -5 hours" +%s )
-  /usr/bin/wget -q -O /var/www/html/inc/ver-available.txt http://cdn.zecheriah.com/baldnerd/nems/ver-current.txt#$timestamp
   
   # Update nems-migrator
   printf "Updating nems-migrator... "
   cd /root/nems/nems-migrator && git pull
   echo "Done."
-  
+
+  # Get the latest version data from nems-migrator
+  cp -f /root/nems/nems-migrator/data/nems/ver-current.txt /var/www/html/inc/ver-available.txt
+
   # Update nems-www
   printf "Updating nems-www... "
   cd /var/www/html && git pull
