@@ -59,6 +59,7 @@ else
   
 # Upgrade from NEMS 1.2.2 to NEMS 1.2.3
   if [[ $ver = "1.2.2" ]]; then
+  echo "You're up to date."
   exit
    echo "Running NEMS 1.2.2"
    echo "Upgrading to NEMS 1.2.3"
