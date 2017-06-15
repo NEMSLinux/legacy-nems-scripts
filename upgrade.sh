@@ -59,6 +59,16 @@ else
   exit
    echo "Upgrading to NEMS $ver to NEMS 1.2.3"
 
+   # Reduce swap partition usage and instead use the cache / buffer space allocated to tmpfs
+   echo "Reducing swappiness..."
+  echo "
+###################################################################
+# Reduce the amount of Swappiness so NEMS will instead free up cache
+vm.swappiness = 10
+###################################################################
+" >> /etc/sysctl.conf
+   echo "Done."
+
    # Create symlinks added in this release
    echo "Creating symbolic links..."
 
