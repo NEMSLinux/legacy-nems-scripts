@@ -34,6 +34,10 @@ elif [[ $COMMAND == "users" ]]; then
 elif [[ $COMMAND == "diskusage" ]]; then
   df -hl | awk '/^\/dev\/root/ { sum+=$5 } END { print sum }'
 
+# Output memory usage breakdown
+elif [[ $COMMAND == "memusage" ]]; then
+  for file in /proc/*/status ; do awk '/VmSwap|Name/{printf $2 " " $3}END{ print ""}' $file; done | sort -k 2 -n -r
+
 # Output usage info as no valid command line argument was provided
 else
   echo "Usage: ./$me command"
