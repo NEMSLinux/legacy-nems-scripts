@@ -68,7 +68,7 @@ vm.swappiness = 10
 ###################################################################
 " >> /etc/sysctl.conf
    echo "Done."
-
+   
    # Create symlinks added in this release
    echo "Creating symbolic links..."
 
@@ -77,6 +77,11 @@ vm.swappiness = 10
    # Update packages
    echo "Updating OS..."
    apt-get update && apt-get -y upgrade && apt-get -y dist-upgrade
+   echo "Done."
+
+   echo "Installing additional packages..."
+   # Add hdparm (used by benchmark tool)
+   apt-get update && apt-get -y install hdparm
    echo "Done."
 
    # Update NEMS to know the new version
