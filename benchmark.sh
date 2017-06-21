@@ -14,14 +14,14 @@ echo "---------------------------------" >> /tmp/nems-benchmark.log
 echo "SD Card READ:" >> /tmp/nems-benchmark.log
 /sbin/hdparm -t /dev/mmcblk0p2 >> /tmp/nems-benchmark.log
 echo "SD Card WRITE:" >> /tmp/nems-benchmark.log
-/bin/dd count=100 bs=1M if=/dev/zero of=/root/nems-benchmark.img >> /tmp/nems-benchmark.log
+/bin/dd count=100 bs=1M if=/dev/zero of=/root/nems-benchmark.img 2>> /tmp/nems-benchmark.log
 rm /root/nems-benchmark.img
 
 echo "---------------------------------" >> /tmp/nems-benchmark.log
 
 #echo "Memory READ:" >> /tmp/nems-benchmark.log
 echo "Memory WRITE:" >> /tmp/nems-benchmark.log
-/bin/dd count=100 bs=1M if=/dev/zero of=/tmp/nems-benchmark.img >> /tmp/nems-benchmark.log
+/bin/dd count=100 bs=1M if=/dev/zero of=/tmp/nems-benchmark.img 2>> /tmp/nems-benchmark.log
 rm /tmp/nems-benchmark.img
 
 echo "---------------------------------" >> /tmp/nems-benchmark.log
@@ -40,4 +40,4 @@ echo "Internet Speed:" >> /tmp/nems-benchmark.log
 /home/pi/nems-scripts/speedtest --simple >> /tmp/nems-benchmark.log
 
 cat /tmp/nems-benchmark.log
-rm  /tmp/nems-benchmark.log
+#rm  /tmp/nems-benchmark.log
