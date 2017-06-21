@@ -1,4 +1,5 @@
 #!/bin/bash
+
 echo "NEMS System Benchmark... Please Wait (may take a while)."
 
 echo "NEMS System Benchmark" > /tmp/nems-benchmark.log
