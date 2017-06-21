@@ -18,16 +18,16 @@ else
   echo "REMEMBER: This will be the password you'll use for SSH/Local Login and Webmin."
   echo "If you do not want to change it, simply enter the existing password."
   while true; do
-    read -s -p "New pi User Password: " pipassword
+    read -s -p "New Password for pi user: " pipassword
     echo
-    read -s -p "New pi User Password (again): " pipassword2
+    read -s -p "New Password for pi user (again): " pipassword2
     echo
     [ "$pipassword" = "raspberry" ] && pipassword="-" && echo "You are not allowed to use that password."
     [ "$pipassword" = "" ] && pipassword="-" && echo "You can't leave the password blank."
     [ "$pipassword" = "$pipassword2" ] && break
     echo "Please try again"
   done
-  echo -e "$pipassword\n$pipassword" | passwd pi | grep passwd >/tmp/init 2>&1
+  echo -e "$pipassword\n$pipassword" | passwd pi >/tmp/init 2>&1
 
   echo "Your new password has been set for the Linux pi user."
   echo "Use that password to access NEMS over SSH or when logging in to Webmin."
