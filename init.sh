@@ -17,7 +17,17 @@ else
   echo "First, let's change the password of the pi Linux user..."
   echo "REMEMBER: This will be the password you'll use for SSH/Local Login and Webmin."
   echo "If you do not want to change it, simply enter the existing password."
-  passwd pi
+  while true; do
+    read -s -p "New pi User Password: " pipassword
+    echo
+    read -s -p "New pi User Password (again): " pipassword2
+    echo
+    [ "$pipassword" = "raspberry" ] && pipassword="-" && echo "You are not allowed to use that password."
+    [ "$pipassword" = "" ] && pipassword="-" && echo "You can't leave the password blank."
+    [ "$pipassword" = "$pipassword2" ] && break
+    echo "Please try again"
+  done
+  echo -e "$pipassword\n$pipassword" | passwd pi | grep passwd >/tmp/init 2>&1
 
   echo "Your new password has been set for the Linux pi user."
   echo "Use that password to access NEMS over SSH or when logging in to Webmin."
@@ -30,10 +40,10 @@ else
     echo
     read -s -p "Password (again): " password2
     echo
-    [ "$password" = "raspberry" ] && password="" && echo "You are not allowed to use that password."
+    [ "$password" = "raspberry" ] && password="-" && echo "You are not allowed to use that password."
     [ "$password" = "" ] && password="-" && echo "You can't leave the password blank."
     [ "$password" = "$password2" ] && break
-    echo "Please try again (didn't match)"
+    echo "Please try again"
   done
 
   # In case this is a re-initialization, clear the init file (remove old login), then add this user
