@@ -36,7 +36,7 @@ echo "Memory:" >> /tmp/nems-benchmark.log
 echo "---------------------------------" >> /tmp/nems-benchmark.log
 
 echo "Internet Speed:" >> /tmp/nems-benchmark.log
-/home/pi/nems-scripts/speedtest >> /tmp/nems-benchmark.log
+/home/pi/nems-scripts/speedtest --simple >> /tmp/nems-benchmark.log
 
 cat /tmp/nems-benchmark.log
 rm  /tmp/nems-benchmark.log
