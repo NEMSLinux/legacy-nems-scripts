@@ -26,3 +26,6 @@ fi
 if [ ! -f /usr/bin/nems-upgrade ]; then
   ln -s /home/pi/nems-scripts/upgrade.sh /usr/bin/nems-upgrade
 fi
+
+# Disable Swap
+  /sbin/dphys-swapfile swapoff
