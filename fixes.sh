@@ -29,3 +29,13 @@ fi
 
 # Disable Swap
   /sbin/dphys-swapfile swapoff
+
+# Install hdparm required by nems-benchmark
+if [ ! -f /sbin/hdparm ]; then
+  apt-get update && apt-get -y install hdparm
+fi
+
+# Add nems-benchmark command
+if [ ! -f /usr/bin/nems-benchmark ]; then
+  ln -s /home/pi/nems-scripts/benchmark.sh /usr/bin/nems-benchmark
+fi
