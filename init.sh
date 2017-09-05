@@ -47,7 +47,7 @@ else
   done
 
   # In case this is a re-initialization, clear the init file (remove old login), then add this user
-  echo "">/var/www/htpasswd && echo $password | /usr/bin/htpasswd -c -i /var/www/htpasswd $username
+  echo "">/var/www/htpasswd && echo $password | /usr/bin/htpasswd -B -c -i /var/www/htpasswd $username
 
 echo Initializing new Nagios user
 systemctl stop nagios3
@@ -98,7 +98,14 @@ echo "  Importing: contactgroup" && /var/www/nconf/bin/add_items_from_nagios.pl 
   
 systemctl start nagios3
 
+# Configure timezone
 dpkg-reconfigure tzdata
+
+# Forcibly restart cron to prevent tasks running at wrong times after timezone update
+service cron stop && service cron start
+
+# Configure the keyboard locale
+dpkg-reconfigure keyboard-configuration && service keyboard-setup restart
 
   echo ""
 
