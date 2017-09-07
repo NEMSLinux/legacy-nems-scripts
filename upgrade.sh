@@ -5,7 +5,7 @@ if [[ $EUID -ne 0 ]]; then
 else
   upgraded=0
   ver=$(cat "/var/www/html/inc/ver.txt") 
-  echo "Running NEMS 1.2.1"
+  echo "Running NEMS $ver"
 
   # ----------------------------------
   
