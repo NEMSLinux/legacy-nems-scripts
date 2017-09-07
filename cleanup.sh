@@ -120,6 +120,11 @@ else
   # Sync the current running version as the current available version
   # Will be overwritten on first boot
   cp /root/nems/ver.txt /var/www/html/inc/ver-available.txt
+  
+  # Replace installed certs with defaults
+  rm -rf /var/www/certs/
+  cp -R /root/nems/nems-migrator/data/certs /var/www
+  chown -R root:root /var/www/certs
 
   sync
   
