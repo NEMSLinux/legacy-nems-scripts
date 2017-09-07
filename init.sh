@@ -186,7 +186,9 @@ if [[ $ver = "1.3" ]]; then
   
   /usr/bin/openssl verify /tmp/certs/ca.pem
   echo ""
+  rm -rf /var/www/certs/
   mv /tmp/certs /var/www/
+  chown -R root:root /var/www/certs
 
 fi
 
