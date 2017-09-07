@@ -122,7 +122,7 @@ if [[ $ver = "1.3" ]]; then
   echo "Now, let's generate your SSL Certificates..."
   echo ""
   echo "Fill in the following:"
-  country=CA
+  country=$(/home/pi/nems-scripts/country.sh)
 
   read -p "Country Code: " -i "$country" -e country
   read -p "Province/State: " province
