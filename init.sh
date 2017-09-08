@@ -5,9 +5,6 @@
 
 ver=$(cat "/var/www/html/inc/ver.txt") 
 
-# Perform any fixes that have been released since NEMS was built
-/home/pi/nems-scripts/fixes.sh
-
 echo ""
 echo Welcome to NEMS initialization script.
 echo ""
@@ -15,6 +12,9 @@ if [[ $EUID -ne 0 ]]; then
   echo "ERROR: This script must be run as root" 2>&1
   exit 1
 else
+
+  # Perform any fixes that have been released since NEMS was built
+  /home/pi/nems-scripts/fixes.sh
 
   echo "First, let's change the password of the pi Linux user..."
   echo "REMEMBER: This will be the password you'll use for SSH/Local Login and Webmin."
