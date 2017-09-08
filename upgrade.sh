@@ -46,6 +46,7 @@ else
    # Update NEMS to know this is version 1.2.2
    echo "Changing version to 1.2.2..."
    echo "1.2.2" > /root/nems/ver.txt
+   cp /root/nems/ver.txt /var/www/html/inc
    ver="1.2.2"
    echo "Done."
 
@@ -128,6 +129,7 @@ vm.swappiness = 10
    # Update NEMS to know the new version
    echo "Changing version to 1.2.3..."
    echo "1.2.3" > /root/nems/ver.txt
+   cp /root/nems/ver.txt /var/www/html/inc
    ver="1.2.3"
    echo "Done."
 
