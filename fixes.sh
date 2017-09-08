@@ -22,6 +22,12 @@ if [ -f /var/www/htpasswd ]; then
   fi
 fi
 
+# Hide the help buttons in Nagios Core that lead to 404 error pages.
+# The context specific help pages, if they exist, are just dumb placeholders anyways
+# (guess nobody ever got to them in the Nagios3 development)
+# ... so what's the point in showing them?
+sed -i -e 's/show_context_help=1/show_context_help=0/g' /etc/nagios3/cgi.cfg
+
 # Install nems-upgrade command if not already
 if [ ! -f /usr/bin/nems-upgrade ]; then
   ln -s /home/pi/nems-scripts/upgrade.sh /usr/bin/nems-upgrade
