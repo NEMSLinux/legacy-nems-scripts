@@ -42,8 +42,12 @@ elif [[ $COMMAND == "memusage" ]]; then
 elif [[ $COMMAND == "country" ]]; then
   /home/pi/nems-scripts/country.sh
 
+# Output revision of Raspberry Pi board
+elif [[ $COMMAND == "piver" ]]; then
+ cat /proc/cpuinfo | grep 'Revision' | awk '{print $3}' | sed 's/^1000//'
+
 # Output usage info as no valid command line argument was provided
 else
   echo "Usage: ./$me command"
-  echo "Available commands: ip nemsver nemsveravail users diskusage memusage country"
+  echo "Available commands: ip nemsver nemsveravail users diskusage memusage country piver"
 fi
