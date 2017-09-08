@@ -183,7 +183,7 @@ if [[ $ver = "1.3" ]]; then
 
   rm /tmp/certs/config.txt
   
-  echo "Done:"
+  echo "Done."
   
   echo ""
   rm -rf /var/www/certs/
