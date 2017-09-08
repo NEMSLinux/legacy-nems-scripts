@@ -101,14 +101,18 @@ vm.swappiness = 10
     if [ ! -f /etc/apache2/mods-enabled/ssl.load ]; then
       echo "Enabling SSL Support..."
       a2enmod ssl
+      echo "Importing and activating self-signed certs..."
       mv /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf.bak
       if [ ! -f /var/www/certs/ca.pem ]; then
         # Load the default certs since none exist yet (which would be the case in NEMS 1.1 or 1.2)
         cp -R /root/nems/nems-migrator/data/certs /var/www/
       fi
       cp /home/pi/nems-scripts/upgrades/1.2.2/000-default.conf /etc/apache2/sites-available/
+      echo "Done."
+      echo "Restarting Apache..."
       systemctl restart apache2
       echo "Done."
+      echo "Done setting up SSL."
     fi
 
    # Update packages
