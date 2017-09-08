@@ -32,33 +32,3 @@ sed -i -e 's/show_context_help=1/show_context_help=0/g' /etc/nagios3/cgi.cfg
 if [ ! -f /usr/bin/nems-upgrade ]; then
   ln -s /home/pi/nems-scripts/upgrade.sh /usr/bin/nems-upgrade
 fi
-
-# Disable Swap
-  /sbin/dphys-swapfile swapoff
-
-# Install hdparm required by nems-benchmark
-if [ ! -f /sbin/hdparm ]; then
-  apt-get update && apt-get -y install hdparm
-fi
-
-# Add nems-benchmark command
-if [ ! -f /usr/bin/nems-benchmark ]; then
-  ln -s /home/pi/nems-scripts/benchmark.sh /usr/bin/nems-benchmark
-fi
-
-# Add nems-mailtest command
-if [ ! -f /usr/bin/nems-mailtest ]; then
-  ln -s /home/pi/nems-scripts/mailtest.sh /usr/bin/nems-mailtest
-fi
-
-# Enable SSL support and load default certs if none exist
-if [ ! -f /etc/apache2/mods-enabled/ssl.load ]; then
-  a2enmod ssl
-  mv /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf.bak
-  if [ ! -f /var/www/certs/ca.pem ]; then
-    # Load the default certs since none exist yet (which would be the case in NEMS 1.1 or 1.2)
-    cp -R /root/nems/nems-migrator/data/certs /var/www/
-  fi
-  cp /home/pi/nems-scripts/upgrades/1.2.2/000-default.conf /etc/apache2/sites-available/
-  systemctl restart apache2
-fi
