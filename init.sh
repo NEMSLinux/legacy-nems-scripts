@@ -120,6 +120,7 @@ if [[ $ver = "1.3" ]]; then
 
   echo ""
   echo "Now, let's generate your SSL Certificates..."
+  echo "DO NOT LEAVE ANYTHING BLANK - If you do, the certs will fail."
   echo ""
   echo "Fill in the following:"
   country=$(/home/pi/nems-scripts/country.sh)
