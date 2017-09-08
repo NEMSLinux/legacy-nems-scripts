@@ -45,3 +45,9 @@ fi
 if [ ! -f /usr/bin/nems-benchmark ]; then
   ln -s /home/pi/nems-scripts/benchmark.sh /usr/bin/nems-benchmark
 fi
+
+# Add nems-mailtest command
+if [ ! -f /usr/bin/nems-mailtest ]; then
+  ln -s /home/pi/nems-scripts/mailtest.sh /usr/bin/nems-mailtest
+fi
+
