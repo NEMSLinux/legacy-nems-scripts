@@ -54,4 +54,5 @@ fi
 # Enable SSL support in Apache (preparation for NEMS 1.3)
 if [ ! -f /etc/apache2/mods-enabled/ssl.load ]; then
   a2enmod ssl
+  systemctl restart apache2
 fi
