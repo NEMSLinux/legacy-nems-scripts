@@ -51,3 +51,7 @@ if [ ! -f /usr/bin/nems-mailtest ]; then
   ln -s /home/pi/nems-scripts/mailtest.sh /usr/bin/nems-mailtest
 fi
 
+# Enable SSL support in Apache (preparation for NEMS 1.3)
+if [ ! -f /etc/apache2/mods-enabled/ssl.load ]; then
+  a2enmod ssl
+fi
