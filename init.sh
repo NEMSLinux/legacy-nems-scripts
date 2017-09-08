@@ -114,7 +114,7 @@ systemctl start nagios3
 # /Localization
 
 # Setup SSL Certificates
-if [[ $ver = "1.3" ]]; then
+if [[ $ver = "1.2.3" ]]; then
   mkdir /tmp/certs
   cd /tmp/certs
 
