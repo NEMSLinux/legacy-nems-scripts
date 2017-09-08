@@ -11,7 +11,7 @@ else
   
 # Upgrade from NEMS 1.2.1 to NEMS 1.2.2
   if [[ $ver = "1.2.1" ]]; then
-   echo "Upgrading to NEMS $ver to NEMS 1.2.2"
+   echo "Upgrading from NEMS $ver to NEMS 1.2.2"
 
    # Add nems-www in place of the old page
    echo "Adding nems-www..."
@@ -55,9 +55,8 @@ else
   
 # Upgrade from NEMS 1.2.2 to NEMS 1.2.3
   if [[ $ver = "1.2.2" ]]; then
-  echo "You're up to date."
-  exit
-   echo "Upgrading to NEMS $ver to NEMS 1.2.3"
+
+   echo "Upgrading from NEMS $ver to NEMS 1.2.3"
 
    # Reduce swap partition usage and instead use the cache / buffer space allocated to tmpfs
    echo "Reducing swappiness..."
@@ -68,11 +67,49 @@ vm.swappiness = 10
 ###################################################################
 " >> /etc/sysctl.conf
    echo "Done."
+
+   echo "Disabling swap altogether..."
+    # Disable Swap
+      /sbin/dphys-swapfile swapoff
+   echo "Done."
    
    # Create symlinks added in this release
    echo "Creating symbolic links..."
+    # Add nems-benchmark command
+    if [ ! -f /usr/bin/nems-benchmark ]; then
+      ln -s /home/pi/nems-scripts/benchmark.sh /usr/bin/nems-benchmark
+      echo "Added nems-benchmark command."
+    fi
 
+    # Add nems-mailtest command
+    if [ ! -f /usr/bin/nems-mailtest ]; then
+      ln -s /home/pi/nems-scripts/mailtest.sh /usr/bin/nems-mailtest
+      echo "Added nems-mailtest command."
+    fi
    echo "Done."
+
+
+    # Install hdparm required by nems-benchmark
+    if [ ! -f /sbin/hdparm ]; then
+      echo "Installing hdparm..."
+      apt-get update && apt-get -y install hdparm
+      echo "Done."
+    fi
+
+
+    # Enable SSL support and load default certs if none exist
+    if [ ! -f /etc/apache2/mods-enabled/ssl.load ]; then
+      echo "Enabling SSL Support..."
+      a2enmod ssl
+      mv /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf.bak
+      if [ ! -f /var/www/certs/ca.pem ]; then
+        # Load the default certs since none exist yet (which would be the case in NEMS 1.1 or 1.2)
+        cp -R /root/nems/nems-migrator/data/certs /var/www/
+      fi
+      cp /home/pi/nems-scripts/upgrades/1.2.2/000-default.conf /etc/apache2/sites-available/
+      systemctl restart apache2
+      echo "Done."
+    fi
 
    # Update packages
    echo "Updating OS..."
