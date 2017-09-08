@@ -185,7 +185,6 @@ if [[ $ver = "1.3" ]]; then
   
   echo "Done:"
   
-  /usr/bin/openssl verify /tmp/certs/ca.pem
   echo ""
   rm -rf /var/www/certs/
   mv /tmp/certs /var/www/
