@@ -80,6 +80,10 @@ else
   # Remove NEMS init password file
   rm /var/www/htpasswd
 
+  # Reset pi Linux User password to "raspberry"
+  pipassword="raspberry"
+  echo -e "$pipassword\n$pipassword" | passwd pi >/tmp/init 2>&1
+  
   # Reset Nagios Core User
   cp -f /root/nems/nems-migrator/data/nagios/cgi.cfg /etc/nagios3/
   
