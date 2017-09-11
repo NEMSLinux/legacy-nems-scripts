@@ -182,7 +182,10 @@ if [[ $ver = "1.2.3" ]]; then
           -CA ca.pem -CAkey ca-key.pem -set_serial 01 -out client-cert.pem
 
   rm /tmp/certs/config.txt
-  
+
+  # Create combined PEM for webmin miniserver
+  cat server-cert.pem server-key.pem > combined.pem
+
   echo "Done."
   
   echo ""
