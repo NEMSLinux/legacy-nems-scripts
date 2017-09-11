@@ -46,7 +46,7 @@ echo "---------------------------------" >> /tmp/nems-benchmark.log
 
 end=`date +%s`
 runtime=$((end-start))
-echo "Benchmark of this benchmark: "'$runtime'" seconds" >> /tmp/nems-benchmark.log
+echo "Benchmark of this benchmark: "$runtime" seconds" >> /tmp/nems-benchmark.log
 
 cat /tmp/nems-benchmark.log
 #rm  /tmp/nems-benchmark.log
