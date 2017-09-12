@@ -46,6 +46,10 @@ elif [[ $COMMAND == "country" ]]; then
 elif [[ $COMMAND == "piver" ]]; then
  cat /proc/cpuinfo | grep 'Revision' | awk '{print $3}' | sed 's/^1000//'
 
+# Output an MD5 of the Pi board serial number - we'll call this the NEMS Pi ID
+elif [[ $COMMAND == "piid" ]]; then
+ cat /proc/cpuinfo | grep Serial | cut -d ' ' -f 2 | md5sum | cut -d"-" -f1 -
+
 # Output usage info as no valid command line argument was provided
 else
   echo "Usage: ./$me command"
