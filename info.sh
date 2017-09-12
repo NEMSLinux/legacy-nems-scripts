@@ -48,7 +48,7 @@ elif [[ $COMMAND == "piver" ]]; then
 
 # Output an MD5 of the Pi board serial number - we'll call this the NEMS Pi ID
 elif [[ $COMMAND == "piid" ]]; then
- cat /proc/cpuinfo | grep Serial | cut -d ' ' -f 2 | md5sum | cut -d"-" -f1 -
+ cat /proc/cpuinfo | grep Serial |  printf '%s' $(cut -n -d ' ' -f 2) | md5sum | cut -d"-" -f1 -
 
 # Output usage info as no valid command line argument was provided
 else
