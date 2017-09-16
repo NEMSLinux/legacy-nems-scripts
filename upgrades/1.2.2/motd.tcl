@@ -13,8 +13,6 @@ if {![string match -nocase "/home*" $var(path)] && ![string match -nocase "/usr/
 }
 
 # * Find NEMS Version
-#set nemsver [exec -- /bin/cat /var/www/html/inc/ver.txt]
-#set nemsveravail [exec -- /bin/cat /var/www/html/inc/ver-available.txt]
 # NEMS 1.2
 set nemsver [exec -- /home/pi/nems-scripts/info.sh nemsver]
 set nemsveravail [exec -- /home/pi/nems-scripts/info.sh nemsveravail]

@@ -131,7 +131,7 @@ else
 
   # Sync the current running version as the current available version
   # Will be overwritten on first boot
-  cp /root/nems/ver.txt /var/www/html/inc/ver-available.txt
+  /home/pi/nems-scripts/info.sh nemsver > /var/www/html/inc/ver-available.txt
   
   # Replace installed certs with defaults
   rm -rf /var/www/certs/
