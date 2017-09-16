@@ -24,8 +24,7 @@ else
 
    # Setup the version info with nems-www
      printf "Configurating NEMS version information... "
-     cp -f /root/nems/nems-migrator/data/nems/ver-current.txt /var/www/html/inc/ver-available.txt
-     test -d "/var/www/html/inc" || mkdir -p "/var/www/html/inc" && cp /root/nems/ver.txt "/var/www/html/inc"
+     test -d "/var/www/html/inc" || mkdir -p "/var/www/html/inc" && cp -f /root/nems/nems-migrator/data/nems/ver-current.txt /var/www/html/inc/ver-available.txt
      echo "Done."
    
    # Create symlinks added in this release
@@ -45,9 +44,9 @@ else
 
    # Update NEMS to know this is version 1.2.2
    echo "Changing version to 1.2.2..."
-   echo "1.2.2" > /root/nems/ver.txt
-   cp /root/nems/ver.txt /var/www/html/inc
+   oldver=$ver
    ver="1.2.2"
+   sed -i -e "s/$oldver/$ver/g" /home/pi/nems.conf
    echo "Done."
 
    echo ""
@@ -128,9 +127,9 @@ vm.swappiness = 10
 
    # Update NEMS to know the new version
    echo "Changing version to 1.2.3..."
-   echo "1.2.3" > /root/nems/ver.txt
-   cp /root/nems/ver.txt /var/www/html/inc
+   oldver=$ver
    ver="1.2.3"
+   sed -i -e "s/$oldver/$ver/g" /home/pi/nems.conf
    echo "Done."
 
    echo ""
