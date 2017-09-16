@@ -39,10 +39,5 @@ else
   /home/pi/nems-scripts/fixes.sh
   echo "Done."
   
-  # Copy the version data to the public inc folder (in case it accidentally gets deleted)
-  printf "Checking for new NEMS version... "
-  test -d "/var/www/html/inc" || mkdir -p "/var/www/html/inc" && cp /root/nems/ver.txt "/var/www/html/inc"
-  echo "Done."
-  
 fi
 echo ""

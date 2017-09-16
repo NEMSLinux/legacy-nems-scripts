@@ -32,3 +32,14 @@ sed -i -e 's/show_context_help=1/show_context_help=0/g' /etc/nagios3/cgi.cfg
 if [ ! -f /usr/bin/nems-upgrade ]; then
   ln -s /home/pi/nems-scripts/upgrade.sh /usr/bin/nems-upgrade
 fi
+
+# Move NEMS version data into nems.conf
+if [ -f /root/nems/ver.txt ]; then
+  ver=$(cat /root/nems/ver.txt)
+  echo platform=pi > /home/pi/nems.conf
+  echo version=$ver >> /home/pi/nems.conf
+  rm /root/nems/ver.txt
+  if [ -f /var/www/html/inc/ver.txt ]; then
+    rm /var/www/html/inc/ver.txt
+  fi
+fi

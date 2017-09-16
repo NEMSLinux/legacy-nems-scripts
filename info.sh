@@ -14,12 +14,12 @@ if [[ $COMMAND == "ip" ]]; then
 
 # Output current running NEMS version
 elif [[ $COMMAND == "nemsver" ]]; then
-  /bin/cat /var/www/html/inc/ver.txt
-  
+  cat /home/pi/nems.conf | grep version |  printf '%s' $(cut -n -d '=' -f 2)
+
 # Output the current available NEMS version (update.sh generates this every day at midnight and at reboot)
 elif [[ $COMMAND == "nemsveravail" ]]; then
   /bin/cat /var/www/html/inc/ver-available.txt
-  
+
 # Output the number of users connected to server
 elif [[ $COMMAND == "users" ]]; then
   export USERCOUNT=`/usr/bin/users | /usr/bin/wc -w`
@@ -43,12 +43,18 @@ elif [[ $COMMAND == "country" ]]; then
   /home/pi/nems-scripts/country.sh
 
 # Output revision of Raspberry Pi board
-elif [[ $COMMAND == "piver" ]]; then
+elif [[ $COMMAND == "hwver" ]]; then
+# if is pi
  cat /proc/cpuinfo | grep 'Revision' | awk '{print $3}' | sed 's/^1000//'
 
 # Output an MD5 of the Pi board serial number - we'll call this the NEMS Pi ID
-elif [[ $COMMAND == "piid" ]]; then
+elif [[ $COMMAND == "hwid" ]]; then
+# if is pi
  cat /proc/cpuinfo | grep Serial |  printf '%s' $(cut -n -d ' ' -f 2) | md5sum | cut -d"-" -f1 -
+
+elif [[ $COMMAND == "platform" ]]; then
+# show if is pi or if is xu4
+  echo "will go here"
 
 # Output usage info as no valid command line argument was provided
 else
