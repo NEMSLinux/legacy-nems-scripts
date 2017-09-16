@@ -53,8 +53,8 @@ elif [[ $COMMAND == "hwid" ]]; then
  cat /proc/cpuinfo | grep Serial |  printf '%s' $(cut -n -d ' ' -f 2) | md5sum | cut -d"-" -f1 -
 
 elif [[ $COMMAND == "platform" ]]; then
-# show if is pi or if is xu4
-  echo "will go here"
+# show if is pi or if is xu4, etc.
+  cat /home/pi/nems.conf | grep platform |  printf '%s' $(cut -n -d '=' -f 2)
 
 # Output usage info as no valid command line argument was provided
 else
