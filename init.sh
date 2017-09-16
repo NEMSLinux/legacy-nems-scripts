@@ -3,7 +3,7 @@
 # Run this script with: sudo nems-init
 # It's already in the path via a symlink
 
-ver=$(cat "/var/www/html/inc/ver.txt") 
+ver=$(/home/pi/nems-scripts/info.sh nemsver) 
 
 echo ""
 echo Welcome to NEMS initialization script.
@@ -114,7 +114,7 @@ systemctl start nagios3
 # /Localization
 
 # Setup SSL Certificates
-if [[ $ver = "1.2.3" ]]; then
+if [[ $ver = "1.3" ]]; then
   mkdir /tmp/certs
   cd /tmp/certs
 
@@ -129,7 +129,7 @@ if [[ $ver = "1.2.3" ]]; then
   read -p "Province/State: " province
   read -p "Your City: " city
   read -p "Company Name or Your Name: " company
-  read -p "Unique Name For NEMS Server: " cn
+  #read -p "Unique Name For NEMS Server: " cn
   read -p "Your email address: " email
 
   echo "[req]
@@ -142,17 +142,14 @@ if [[ $ver = "1.2.3" ]]; then
   ST = $province
   L = $city
   O = $company
-  CN = $cn
+  #CN = $cn
+  CN = *.nems.local
   emailAddress = $email
 
   [v3_req]
   basicConstraints = CA:FALSE
   keyUsage = nonRepudiation, digitalSignature, keyEncipherment
-  subjectAltName = @alt_names
-
-  [alt_names]
-  DNS.1 = nems.local
-  DNS.2 = nems" > /tmp/certs/config.txt
+  " > /tmp/certs/config.txt
 
   # Create CA private key
   /usr/bin/openssl genrsa 2048 > ca-key.pem
