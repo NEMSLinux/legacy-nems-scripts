@@ -36,7 +36,7 @@ if [ ! -f /usr/bin/nems-upgrade ]; then
 fi
 
 # Install nems-update command if not already
-if [ ! -f /usr/bin/nems-date ]; then
+if [ ! -f /usr/bin/nems-update ]; then
   ln -s /home/pi/nems-scripts/update.sh /usr/bin/nems-update
 fi
 
