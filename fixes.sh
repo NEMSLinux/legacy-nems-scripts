@@ -50,3 +50,31 @@ if [ -f /root/nems/ver.txt ]; then
     rm /var/www/html/inc/ver.txt
   fi
 fi
+
+# Add new cron entries
+
+  # Dump current crontab to tmp file
+    crontab -l > /tmp/cron.tmp
+
+  # Benchmark log
+  if ! grep -q "NEMS0001" /tmp/cron.tmp; then
+    printf "\n# Run a weekly system benchmark of the NEMS server to assist with troubleshooting NEMS0001\n0 3 * * 0 /home/pi/nems-scripts/benchmark.sh > /var/log/nems/benchmark.log\n" >> /tmp/cron.tmp
+    cronupdate=1
+  fi
+
+  # NEMS Anonymous Stats
+  if ! grep -q "NEMS0002" /tmp/cron.tmp; then
+    printf "\n# NEMS Anonymous Stats NEMS0002\n0 0 * * * /home/pi/nems-scripts/stats.sh\n" >> /tmp/cron.tmp
+    cronupdate=1
+  fi
+
+  # Import revised crontab
+  if [[ "$cronupdate" == "1" ]]
+  then
+    crontab /tmp/cron.tmp
+  fi
+
+  # Remove temp file
+  rm /tmp/cron.tmp
+
+# /Add new cron entries
