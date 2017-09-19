@@ -49,12 +49,25 @@
     'diskfree'=>$diskfree,
   );
 
+  // Load existing NEMS Stats API Key, if it exists
+  $settings = file('/home/pi/nems.conf');
+  if (is_array($settings)) {
+    foreach ($settings as $line) {
+      if (substr($line,0,6) == 'apikey') {
+        $data['apikey'] = substr($line,7);
+      }
+    }
+  }
 
   $ch = curl_init('https://nems.baldnerd.com/api/stats/');
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
   $response = curl_exec($ch);
   curl_close($ch);
-//   var_dump($response);
+  $newkey = filter_var($response,FILTER_SANITIZE_STRING);
+  if (!isset($data['apikey'])) {
+    $data['apikey'] = $newkey; // no API Key in settings, use the new one
+    file_put_contents('/home/pi/nems.conf','apikey=' . $newkey . PHP_EOL, FILE_APPEND);
+  }
 
 ?>
