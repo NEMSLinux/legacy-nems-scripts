@@ -51,6 +51,7 @@
     'disksize'=>$disksize,
     'diskfree'=>$diskfree,
     'loadaverage'=>$load[2], // just the 15 minute average
+    'timezone'=>date('T'),
   );
 
   // Load existing NEMS Stats API Key, if it exists
