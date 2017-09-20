@@ -34,6 +34,9 @@
   $hours = $num % 24;      $num = intdiv($num, 24);
   $days  = $num;
 
+  // Get the current load average
+  $load = sys_getloadavg();
+
   // Put it together to send to the server
   $data = array(
     'hwid'=>trim(shell_exec('/home/pi/nems-scripts/info.sh hwid')),
@@ -47,6 +50,7 @@
     'services'=>$services,
     'disksize'=>$disksize,
     'diskfree'=>$diskfree,
+    'loadaverage'=>$load[2], // just the 15 minute average
   );
 
   // Load existing NEMS Stats API Key, if it exists
