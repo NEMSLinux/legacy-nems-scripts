@@ -7,7 +7,7 @@
   if (file_exists('/var/log/nems/load-average.ser')) {
     $loads = unserialize(trim(file_get_contents('/var/log/nems/load-average.ser')));
   }
-  if (is_array($loads) && count($loads) > ((60*24*7)/15) ) { // how many times 15 minutes goes into a week
+  if (isset($loads) && is_array($loads) && count($loads) > ((60*24*7)/15) ) { // how many times 15 minutes goes into a week
     unset($loads[0]);
   }
 

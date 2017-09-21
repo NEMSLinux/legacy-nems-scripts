@@ -63,8 +63,12 @@ elif [[ $COMMAND == "drives" ]]; then
 
 elif [[ $COMMAND == "loadaverage" ]]; then
 # See 1 week load average
+if [ -f /var/log/nems/load-average.log ]; then
   cat /var/log/nems/load-average.log
-
+  echo ""
+else
+  echo 0
+fi
 
 # Output usage info as no valid command line argument was provided
 else

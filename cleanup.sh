@@ -80,8 +80,8 @@ else
   # Remove NEMS init password file
   rm /var/www/htpasswd
 
-  # Remove benchmark file
-  rm /var/log/nems-benchmark.log
+  # Remove NEMS Log Files
+  rm /var/log/nems/*
 
   # Reset pi Linux User password to "raspberry"
   pipassword="raspberry"
