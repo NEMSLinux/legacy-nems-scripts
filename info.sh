@@ -56,6 +56,12 @@ elif [[ $COMMAND == "platform" ]]; then
 # show if is pi or if is xu4, etc.
   cat /home/pi/nems.conf | grep platform |  printf '%s' $(cut -n -d '=' -f 2)
 
+elif [[ $COMMAND == "drives" ]]; then
+# Generate a list of drives
+# Used by NEMS to configure external storage
+  lsblk --output NAME,MOUNTPOINT,FSTYPE,UUID,SIZE,TYPE
+
+
 # Output usage info as no valid command line argument was provided
 else
   echo "Usage: ./$me command"
