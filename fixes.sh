@@ -68,6 +68,13 @@ fi
     cronupdate=1
   fi
 
+  if ! grep -q "NEMS0003" /tmp/cron.tmp; then
+    printf "\n# Load Average Over One Week Logger NEMS0003\n*/15 * * * * /home/pi/nems-scripts/loadlogger.sh\n" >> /tmp/cron.tmp
+    cronupdate=1
+  fi
+
+
+
   # Import revised crontab
   if [[ "$cronupdate" == "1" ]]
   then

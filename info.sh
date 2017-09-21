@@ -59,7 +59,11 @@ elif [[ $COMMAND == "platform" ]]; then
 elif [[ $COMMAND == "drives" ]]; then
 # Generate a list of drives
 # Used by NEMS to configure external storage
-  lsblk --output NAME,MOUNTPOINT,FSTYPE,UUID,SIZE,TYPE
+  lsblk -J --output NAME,MOUNTPOINT,FSTYPE,UUID,SIZE,TYPE
+
+elif [[ $COMMAND == "loadaverage" ]]; then
+# See 1 week load average
+  cat /var/log/nems/load-average.log
 
 
 # Output usage info as no valid command line argument was provided
