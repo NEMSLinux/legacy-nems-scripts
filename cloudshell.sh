@@ -26,7 +26,7 @@
 	#Exit path for non-root logins.
 	if (( $UID != 0 )); then
 
-		/DietPi/dietpi/func/dietpi-notify 1 'Error: Root privileges required. Please run the command with "sudo"\n'
+		echo 'Error: Root privileges required.\n'
 		exit
 
 	fi
@@ -45,9 +45,9 @@
 	DIETPI_CLOUDSHELL_VERSION=$(/home/pi/nems-scripts/info.sh nemsver)
 
 	#/tmp/.* files used throughout this script.
-	FP_TEMP="/tmp/dietpi-cloudshell"
+	FP_TEMP="/tmp/nems-cloudshell"
 
-	PROGRAM_NAME="DietPi-Cloudshell"
+	PROGRAM_NAME="NEMS-Cloudshell"
 
 	BLANK_SCREEN_ACTIVE=0
 	BLANK_SCREEN_AT_SPECIFIC_TIME_ENABLED=0
@@ -555,7 +555,7 @@
 		DIETPI_VERSION_CURRENT="${aCOLOUR[2]}$(cat /DietPi/dietpi/.version)$C_RESET"
 
 		#Current HW
-		DIETPI_HW_DESCRIPTION=$(sed -n 2p /DietPi/dietpi/.hw_model)
+		DIETPI_HW_DESCRIPTION=$(sed -n 2p /var/log/nems/hw_model)
 
 		#DietPi-Update available?
 		DIETPI_UPDATE_AVAILABLE="N/A"
