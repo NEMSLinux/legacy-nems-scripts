@@ -73,6 +73,10 @@ fi
     cronupdate=1
   fi
 
+  if ! grep -q "NEMS0004" /tmp/cron.tmp; then
+    printf "\n# Detect Hardware Model NEMS0004\n@reboot /home/pi/nems-scripts/hw_model.sh\n" >> /tmp/cron.tmp
+    cronupdate=1
+  fi
 
 
   # Import revised crontab
