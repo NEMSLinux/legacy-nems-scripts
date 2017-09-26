@@ -8,10 +8,10 @@ date >> /tmp/nems-benchmark.log
 printf "NEMS Version: " >> /tmp/nems-benchmark.log
 /home/pi/nems-scripts/info.sh nemsver >> /tmp/nems-benchmark.log
 
-printf "Raspberry Pi Board Revision: " >> /tmp/nems-benchmark.log
-/home/pi/nems-scripts/info.sh piver >> /tmp/nems-benchmark.log
+printf "\nRaspberry Pi Board Revision: " >> /tmp/nems-benchmark.log
+/home/pi/nems-scripts/info.sh hwver >> /tmp/nems-benchmark.log
 printf "Raspberry Pi Board NEMS ID: " >> /tmp/nems-benchmark.log
-/home/pi/nems-scripts/info.sh piid >> /tmp/nems-benchmark.log
+/home/pi/nems-scripts/info.sh hwid >> /tmp/nems-benchmark.log
 
 printf "LAN IP: " >> /tmp/nems-benchmark.log
 /home/pi/nems-scripts/info.sh ip >> /tmp/nems-benchmark.log
