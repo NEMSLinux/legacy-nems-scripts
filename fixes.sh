@@ -78,6 +78,10 @@ fi
     cronupdate=1
   fi
 
+  if ! grep -q "NEMS0005" /tmp/cron.tmp; then
+    printf "\n# Log Package Version Info NEMS0005\n0 5 * * 0 /home/pi/nems-scripts/versions.sh > /var/log/nems/package-versions.log\n" >> /tmp/cron.tmp
+    cronupdate=1
+  fi
 
   # Import revised crontab
   if [[ "$cronupdate" == "1" ]]
