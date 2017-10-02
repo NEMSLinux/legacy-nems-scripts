@@ -61,7 +61,7 @@
     }
   }
 
-  $ch = curl_init('https://nems.baldnerd.com/api/stats/');
+  $ch = curl_init('https://nemslinux.com/api/stats/');
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
   $response = curl_exec($ch);
