@@ -40,6 +40,11 @@ if [ ! -f /usr/bin/nems-update ]; then
   ln -s /home/pi/nems-scripts/update.sh /usr/bin/nems-update
 fi
 
+# Install nems-info command if not already
+if [ ! -f /usr/bin/nems-info ]; then
+  ln -s /home/pi/nems-scripts/info.sh /usr/bin/nems-info
+fi
+
 # Move NEMS version data into nems.conf
 if [ -f /root/nems/ver.txt ]; then
   ver=$(cat /root/nems/ver.txt)

@@ -14,8 +14,8 @@ if {![string match -nocase "/home*" $var(path)] && ![string match -nocase "/usr/
 
 # * Find NEMS Version
 # NEMS 1.2
-set nemsver [exec -- /home/pi/nems-scripts/info.sh nemsver]
-set nemsveravail [exec -- /home/pi/nems-scripts/info.sh nemsveravail]
+set nemsver [exec -- /usr/bin/nems-info nemsver]
+set nemsveravail [exec -- /usr/bin/nems-info nemsveravail]
 
 # * Calculate last login
 set lastlog [exec -- lastlog -u $var(user)]
@@ -27,7 +27,7 @@ set ll(5)  [lindex $lastlog 6]
 
 # * Determine local IP address of NEMS Server
 #set nemsip [exec -- /bin/cat /tmp/ip.nems]
-set nemsip [exec -- /home/pi/nems-scripts/info.sh ip]
+set nemsip [exec -- /usr/bin/nems-info ip]
 
 # * Calculate current system uptime
 set uptime    [exec -- /usr/bin/cut -d. -f1 /proc/uptime]
@@ -37,13 +37,13 @@ set up(mins)  [expr {$uptime/60%60}]
 set up(secs)  [expr {$uptime%60}]
 
 # Disk Usage percentage...
-set usage [lindex [exec -- /home/pi/nems-scripts/info.sh diskusage] 0]
+set usage [lindex [exec -- /usr/bin/nems-info diskusage] 0]
 
 # * Calculate SSH logins:
 # set logins     [exec -- w -s]
 # set log(c)  [lindex $logins 5]
 # NEMS 1.2
-set log(c) [exec -- /home/pi/nems-scripts/info.sh users]
+set log(c) [exec -- /usr/bin/nems-info users]
 
 # * Calculate processes
 set psa [expr {[lindex [exec -- ps -A h | wc -l] 0]-000}]

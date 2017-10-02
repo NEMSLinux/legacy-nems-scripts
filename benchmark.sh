@@ -6,15 +6,15 @@ echo "NEMS System Benchmark... Please Wait (may take a while)."
 echo "NEMS System Benchmark" > /tmp/nems-benchmark.log
 date >> /tmp/nems-benchmark.log
 printf "NEMS Version: " >> /tmp/nems-benchmark.log
-/home/pi/nems-scripts/info.sh nemsver >> /tmp/nems-benchmark.log
+/usr/bin/nems-info nemsver >> /tmp/nems-benchmark.log
 
 printf "\nRaspberry Pi Board Revision: " >> /tmp/nems-benchmark.log
-/home/pi/nems-scripts/info.sh hwver >> /tmp/nems-benchmark.log
+/usr/bin/nems-info hwver >> /tmp/nems-benchmark.log
 printf "Raspberry Pi Board NEMS ID: " >> /tmp/nems-benchmark.log
-/home/pi/nems-scripts/info.sh hwid >> /tmp/nems-benchmark.log
+/usr/bin/nems-info hwid >> /tmp/nems-benchmark.log
 
 printf "LAN IP: " >> /tmp/nems-benchmark.log
-/home/pi/nems-scripts/info.sh ip >> /tmp/nems-benchmark.log
+/usr/bin/nems-info ip >> /tmp/nems-benchmark.log
 
 echo "---------------------------------" >> /tmp/nems-benchmark.log
 

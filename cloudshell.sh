@@ -42,7 +42,7 @@
 	CPU_CORES=$(nproc --all)
 
 	#Version
-	DIETPI_CLOUDSHELL_VERSION=$(/home/pi/nems-scripts/info.sh nemsver)
+	DIETPI_CLOUDSHELL_VERSION=$(/usr/bin/nems-info nemsver)
 
 	#/tmp/.* files used throughout this script.
 	FP_TEMP="/tmp/nems-cloudshell"

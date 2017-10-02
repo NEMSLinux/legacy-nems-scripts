@@ -4,7 +4,7 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 else
   upgraded=0
-  ver=$(/home/pi/nems-scripts/info.sh nemsver) 
+  ver=$(/usr/bin/nems-info nemsver) 
   echo "Running NEMS $ver"
 
   # ----------------------------------

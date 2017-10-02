@@ -6,7 +6,7 @@
 // # Again, it's completely anonymous, and nothing private is revealed.
 
   // Get the platform of your NEMS server
-  $platform = trim(shell_exec('/home/pi/nems-scripts/info.sh platform'));
+  $platform = trim(shell_exec('/usr/bin/nems-info platform'));
 
   // Get the number of configured hosts
   $hostdata = file('/etc/nagios3/Default_collector/hosts.cfg');
@@ -36,18 +36,18 @@
 
   // Put it together to send to the server
   $data = array(
-    'hwid'=>trim(shell_exec('/home/pi/nems-scripts/info.sh hwid')),
+    'hwid'=>trim(shell_exec('/usr/bin/nems-info hwid')),
     'platform'=>$platform,
     'uptime_days'=>$days,
     'uptime_hours'=>$hours,
     'uptime_mins'=>$mins,
     'uptime_secs'=>$secs,
-    'nemsver'=>trim(shell_exec('/home/pi/nems-scripts/info.sh nemsver')),
+    'nemsver'=>trim(shell_exec('/usr/bin/nems-info nemsver')),
     'hosts'=>$hosts,
     'services'=>$services,
     'disksize'=>$disksize,
     'diskfree'=>$diskfree,
-    'loadaverage'=>trim(shell_exec('/home/pi/nems-scripts/info.sh loadaverage')),
+    'loadaverage'=>trim(shell_exec('/usr/bin/nems-info loadaverage')),
     'timezone'=>date('T'),
   );
 
