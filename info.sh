@@ -73,5 +73,5 @@ fi
 # Output usage info as no valid command line argument was provided
 else
   echo "Usage: ./$me command"
-  echo "Available commands: ip nemsver nemsveravail users diskusage memusage country piver"
+  echo "For help, visit wiki.nemslinux.com/commands/nems-info"
 fi
