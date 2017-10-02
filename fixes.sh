@@ -74,9 +74,17 @@ fi
   fi
 
   if ! grep -q "NEMS0003" /tmp/cron.tmp; then
-    printf "\n# Load Average Over One Week Logger NEMS0003\n*/15 * * * * /home/pi/nems-scripts/loadlogger.sh\n" >> /tmp/cron.tmp
+    printf "\n# Load Average Over One Week Logger NEMS0003\n*/15 * * * * /home/pi/nems-scripts/loadlogger.sh cron\n" >> /tmp/cron.tmp
     cronupdate=1
   fi
+
+  # Fix first-gen NEMS0003
+  if ! grep -q "loadlogger.sh cron" /tmp/cron.tmp; then
+    /bin/sed -i -- 's/loadlogger.sh/loadlogger.sh cron/g' /tmp/cron.tmp
+    cronupdate=1
+  fi
+
+
 
   if ! grep -q "NEMS0004" /tmp/cron.tmp; then
     printf "\n# Detect Hardware Model NEMS0004\n@reboot /home/pi/nems-scripts/hw_model.sh\n" >> /tmp/cron.tmp

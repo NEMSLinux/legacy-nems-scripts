@@ -3,6 +3,10 @@
   // This script logs the 15 minute load average over the course of 1 week every 15 minutes self-maintaining.
   // Then, nems-info loadaverage will tell you our load average in a much more accurate overview than just a 15 minute load average (ie., you can see an average based on the entire week, not just the moment you're running it, which may be after a reboot).
 
+  // This script should ONLY be called by cron, otherwise the results will be wrong!
+  // If you're hoping to see the results, please use: nems-info loadaverage
+  if (@$argv[1] != 'cron') exit('Do not run this script manually.' . PHP_EOL);
+
   // Get the existing log
   if (file_exists('/var/log/nems/load-average.ser')) {
     $loads = unserialize(trim(file_get_contents('/var/log/nems/load-average.ser')));
