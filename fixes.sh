@@ -106,3 +106,8 @@ fi
   rm /tmp/cron.tmp
 
 # /Add new cron entries
+
+# Prepare legacy NEMS for 1.3+ compatibility
+if [ ! -d /var/www/html/backup/snapshot ]; then
+  mkdir -p /var/www/html/backup/snapshot
+fi

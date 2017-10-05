@@ -70,6 +70,15 @@ else
   echo 0
 fi
 
+elif [[ $COMMAND == "loadaverageround" ]]; then
+# See 1 week load average
+if [ -f /var/log/nems/load-average.log ]; then
+  la=$(cat /var/log/nems/load-average.log)
+  printf '%.*f\n' 2 $la
+else
+  echo 0
+fi
+
 # Output usage info as no valid command line argument was provided
 else
   echo "Usage: ./$me command"
