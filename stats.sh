@@ -48,6 +48,7 @@
     'disksize'=>$disksize,
     'diskfree'=>$diskfree,
     'loadaverage'=>trim(shell_exec('/usr/bin/nems-info loadaverage')),
+    'temperature'=>trim(shell_exec('/usr/bin/nems-info temperature')),
     'timezone'=>date('T'),
   );
 

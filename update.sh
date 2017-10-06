@@ -33,11 +33,11 @@ else
   printf "Updating nems-scripts... "
   cd /home/pi/nems-scripts && git pull
   echo "Done."
-  
+
   # Perform any fixes that have been released since NEMS was built
   printf "Running updates and fixes... "
   /home/pi/nems-scripts/fixes.sh
   echo "Done."
-  
+
 fi
 echo ""

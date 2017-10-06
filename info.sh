@@ -79,6 +79,9 @@ else
   echo 0
 fi
 
+elif [[ $COMMAND == "temperature" ]]; then
+  /home/pi/nems-scripts/info2.sh 1
+
 # Output usage info as no valid command line argument was provided
 else
   echo "Usage: ./$me command"

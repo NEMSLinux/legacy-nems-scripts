@@ -111,3 +111,8 @@ fi
 if [ ! -d /var/www/html/backup/snapshot ]; then
   mkdir -p /var/www/html/backup/snapshot
 fi
+
+# Install PHP-RRD (used by nems-info to read Monitorix data)...
+if [ $(dpkg-query -W -f='${Status}' php-rrd 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+  apt-get update && apt-get -y install php-rrd
+fi
