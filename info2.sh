@@ -14,11 +14,17 @@ switch($argv[1]) {
       $tmp = 0;
       $count = 0;
       foreach ($monitorix['data']['rpi_temp0'] as $date=>$temperature) {
-        $tmp = ($tmp + $temperature);
-        $count++;
+        if (floatval($temperature) > 0) { // Failsafe in case thermals aren't working
+          $tmp = ($tmp + floatval($temperature));
+          $count++;
+        }
       }
-      $average_temperature = ($tmp/$count);
-      echo $average_temperature . PHP_EOL;
+      if ($tmp > 0) {
+        $average_temperature = ($tmp/$count);
+        echo $average_temperature . PHP_EOL;
+      } else {
+        echo 0 . PHP_EOL; // 0 means "unknown"
+      }
     }
   break;
 }
