@@ -27,6 +27,11 @@ switch($argv[1]) {
       }
     }
   break;
+
+  case 2: // NEMS Version Branch (exclude microversion)
+    $ver = floatval(shell_exec('/usr/bin/nems-info nemsver'));
+    echo $ver . PHP_EOL;
+  break;
 }
 
 

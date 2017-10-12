@@ -3,12 +3,24 @@ if [[ $EUID -ne 0 ]]; then
   echo "ERROR: This script must be run as root" 2>&1
   exit 1
 else
+  export COMMAND=$1
+
   upgraded=0
   ver=$(/usr/bin/nems-info nemsver) 
   echo "Running NEMS $ver"
 
+  if [[ $COMMAND = "reset" ]]; then
+   ver=$(/usr/bin/nems-info nemsbranch)
+   echo "Forced reset to NEMS $ver"
+  fi
+
   # ----------------------------------
   
+# Jump irrelevant version 1.2 (did not have rolling updates, but is still the top level of the 1.2.x branch)
+  if [[ $ver = "1.2" ]]; then
+   ver="1.2.1"
+  fi
+
 # Upgrade from NEMS 1.2.1 to NEMS 1.2.2
   if [[ $ver = "1.2.1" ]]; then
    echo "Upgrading from NEMS $ver to NEMS 1.2.2"
