@@ -32,6 +32,12 @@ switch($argv[1]) {
     $ver = floatval(shell_exec('/usr/bin/nems-info nemsver'));
     echo $ver . PHP_EOL;
   break;
+
+  case 3: // Find the board platform ID number
+    $tmp = file('/var/log/nems/hw_model');
+    echo $tmp[0];
+  break;
+
 }
 
 

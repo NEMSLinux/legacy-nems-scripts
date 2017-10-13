@@ -54,7 +54,7 @@ elif [[ $COMMAND == "hwid" ]]; then
 
 elif [[ $COMMAND == "platform" ]]; then
 # show if is pi or if is xu4, etc.
-  cat /home/pi/nems.conf | grep platform |  printf '%s' $(cut -n -d '=' -f 2)
+  /home/pi/nems-scripts/info2.sh 3
 
 elif [[ $COMMAND == "drives" ]]; then
 # Generate a list of drives
