@@ -2,6 +2,7 @@
 <?php
 echo 'NEMS Linux Server Package Version Information' . PHP_EOL;
 echo date('F j, Y') . PHP_EOL;
+echo 'Running ' . exec('uname -a') . PHP_EOL;
 
 exec('apt-show-versions',$packages);
 
