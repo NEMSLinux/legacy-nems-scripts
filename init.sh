@@ -51,6 +51,10 @@ else
   # In case this is a re-initialization, clear the init file (remove old login), then add this user
   echo "">/var/www/htpasswd && echo $password | /usr/bin/htpasswd -B -c -i /var/www/htpasswd $username
 
+  # Create Samba User
+  echo -e "$password\n$password" | smbpasswd -s -a pi
+  systemctl restart smbd
+
 echo Initializing new Nagios user
 systemctl stop nagios3
 
