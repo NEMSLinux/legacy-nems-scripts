@@ -112,7 +112,17 @@ if [ ! -d /var/www/html/backup/snapshot ]; then
   mkdir -p /var/www/html/backup/snapshot
 fi
 
+# Update apt Lists
+apt update
+
 # Install PHP-RRD (used by nems-info to read Monitorix data)...
 if [ $(dpkg-query -W -f='${Status}' php-rrd 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-  apt-get update && apt-get -y install php-rrd
+  apt-get -y install php-rrd
+fi
+
+# Patch Against KRACK WPA2 Exploit
+if [ ! -f /var/log/nems/wpasupplicant ]; then
+  apt install wpasupplicant
+  # Simple prevention of doing this every time fixes.sh runs
+  echo "Patched" > /var/log/nems/wpasupplicant
 fi
