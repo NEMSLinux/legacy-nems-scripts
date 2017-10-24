@@ -63,7 +63,7 @@ if (is_array($resource)) {
     }
   }
 }
-$HOSTADDRESS = shell_exec('/usr/bin/nems-info ip');
+$HOSTADDRESS = shell_exec('/usr/local/bin/nems-info ip');
 $HOSTNAME = shell_exec('hostname');
 $LONGDATETIME = date('r');
 if ($USER5 == $CONTACTEMAIL) exit('You need to send to a different email address: same as sender.' . PHP_EOL);
