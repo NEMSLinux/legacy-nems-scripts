@@ -30,25 +30,29 @@ fi
 # ... so what's the point in showing them?
 sed -i -e 's/show_context_help=1/show_context_help=0/g' /etc/nagios3/cgi.cfg
 
+# Move already created symlinks from /usr/bin to /usr/local/bin
+if [ -f /usr/bin/nems-* ]; then
+  mv /usr/bin/nems-* /usr/local/bin/
+fi
+
 # Install nems-upgrade command if not already
-if [ ! -f /usr/bin/nems-upgrade ]; then
-  ln -s /home/pi/nems-scripts/upgrade.sh /usr/bin/nems-upgrade
+if [ ! -f /usr/local/bin/nems-upgrade ]; then
+  ln -s /home/pi/nems-scripts/upgrade.sh /usr/local/bin/nems-upgrade
 fi
 
 # Install nems-update command if not already
-if [ ! -f /usr/bin/nems-update ]; then
-  ln -s /home/pi/nems-scripts/update.sh /usr/bin/nems-update
+if [ ! -f /usr/local/bin/nems-update ]; then
+  ln -s /home/pi/nems-scripts/update.sh /usr/local/bin/nems-update
 fi
 
 # Install nems-info command if not already
-if [ ! -f /usr/bin/nems-info ]; then
-  ln -s /home/pi/nems-scripts/info.sh /usr/bin/nems-info
+if [ ! -f /usr/local/bin/nems-info ]; then
+  ln -s /home/pi/nems-scripts/info.sh /usr/local/bin/nems-info
 fi
 
 # Move NEMS version data into nems.conf
 if [ -f /root/nems/ver.txt ]; then
   ver=$(cat /root/nems/ver.txt)
-  echo platform=pi > /home/pi/nems.conf
   echo version=$ver >> /home/pi/nems.conf
   rm /root/nems/ver.txt
   if [ -f /var/www/html/inc/ver.txt ]; then
@@ -126,3 +130,4 @@ if [ ! -f /var/log/nems/wpasupplicant ]; then
   # Simple prevention of doing this every time fixes.sh runs
   echo "Patched" > /var/log/nems/wpasupplicant
 fi
+
