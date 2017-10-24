@@ -1,0 +1,333 @@
+#!/bin/bash
+# From https://github.com/dword1511/shell-scripts
+
+jedec_vendor () {
+  case $1 in
+    0x0000ad)
+      echo "SK Hynix"
+      ;;
+    0x0000ce)
+      echo "Samsung Electronics"
+      ;;
+    0x000045)
+      echo "SanDisk-Toshiba Corporation"
+      ;;
+    0x0000fe)
+      echo "Micron-Numonyx Technology, Inc."
+      ;;
+    *)
+      echo "*Unknown*"
+      ;;
+  esac
+}
+
+sda_manufacturer () {
+  case $1 in
+    "0x000000")
+      echo "INVALID"
+      ;;
+    "0x000001")
+      echo "Panasonic"
+      ;;
+    "0x000002")
+      echo "TOSHIBA"
+      ;;
+    "0x000003")
+      echo "SanDisk"
+      ;;
+    "0x000009")
+      echo "Apacer?"
+      ;;
+    "0x000013")
+      echo "KingMax"
+      ;;
+    "0x000018")
+      echo "IN??"
+      ;;
+    "0x00001a")
+      echo "PQI?"
+      ;;
+    "0x00001b")
+      echo "Samsung"
+      ;;
+    "0x00001c")
+      echo "Transcend"
+      ;;
+    "0x00001d")
+      echo "ADATA"
+      ;;
+    "0x00001e")
+      echo "AB??"
+      ;;
+    "0x000027")
+      echo "PHISON"
+      ;;
+    "0x000028")
+      echo "Lexar"
+      ;;
+    "0x00003e")
+      echo "H-??"
+      ;;
+    "0x000041")
+      echo "Kingston?"
+      ;;
+    "0x000060")
+      echo "HS??"
+      ;;
+    "0x00006f")
+      echo "Silicon Motion SD Controller"
+      ;;
+    "0x000073")
+      echo "Fujifilm?"
+      ;;
+    "0x000074")
+      echo "Transcend"
+      ;;
+    "0x000082")
+      echo "JT??"
+      ;;
+    "0x000089")
+      echo "0x0303??"
+      ;;
+    *)
+      echo "Unknown"
+      ;;
+  esac
+}
+
+show_details_sd () {
+  if [ -n $1 ] && [ -e $1 ]
+  then
+    sd_card_name=`cat $1/name`
+    sd_card_size=`cat $1/block/*/size`
+    sd_card_size_mib=$((sd_card_size/2048))
+    sd_card_sn=`cat $1/serial`
+    sd_card_block=`basename $1/block/*`
+
+    sd_card_manhex=`cat $1/manfid`
+    sd_card_manstr=`sda_manufacturer $sd_card_manhex`
+    sd_card_oemhex=`cat $1/oemid`
+    # This is where bash is required
+    sd_card_oem_lo=$((sd_card_oemhex&0xff))
+    sd_card_oem_lo=`printf "%02x" $sd_card_oem_lo`
+    sd_card_oem_hi=$((sd_card_oemhex>>8))
+    sd_card_oem_hi=`printf "%02x" $sd_card_oem_hi`
+    sd_card_oemstr=`printf "\x$sd_card_oem_hi\x$sd_card_oem_lo"`
+
+    sd_card_date=`cat $1/date`
+    sd_card_hwv=`cat $1/hwrev`
+    sd_card_fwv=`cat $1/fwrev`
+    if [ -e $1/prv ]
+    then
+      sd_card_prv=`cat $mmc_card/prv`
+    else
+      sd_card_prv="N/A"
+    fi
+
+    sd_card_cid=`cat $1/cid`
+    sd_card_csd=`cat $1/csd`
+    sd_card_scr=`cat $1/scr`
+
+    sd_card_esp=`cat $1/preferred_erase_size`
+    sd_card_esp_kib=$((sd_card_esp/1024))
+    sd_card_egs=`cat $1/erase_size`
+    if [ $sd_card_egs = "512" ]
+    then
+      sd_card_mode="Block-Addressed"
+    else
+      sd_card_mode="Non-Block-Addressed"
+    fi
+
+#    echo "    Card Name             : $sd_card_name"
+#    echo "    Card Size             : $sd_card_size_mib MiB"
+#    echo "    Card Serial           : $sd_card_sn"
+#    echo "    Block Device          : $sd_card_block"
+
+#    echo "    OEM ID                : $sd_card_oemhex ($sd_card_oemstr)"
+    echo "    Manufacturer ID       : $sd_card_manhex ($sd_card_manstr)"
+
+    echo "    Manufacture Date      : $sd_card_date"
+    echo "    Hardware Revision     : $sd_card_hwv"
+    echo "    Firmware Revision     : $sd_card_fwv"
+    echo "    Product Revision      : $sd_card_prv"
+
+    echo "    Prefered Erase Size   : $sd_card_esp_kib KiB"
+    echo "    Mode                  : $sd_card_mode"
+
+    echo "    CID Register          : $sd_card_cid"
+    echo "    CSD Register          : $sd_card_csd"
+    echo "    SCR Register          : $sd_card_scr"
+  fi
+}
+
+show_details_mmc () {
+  if [ -n $1 ] && [ -e $1 ]
+  then
+    mmc_card_name=`cat $1/name`
+    mmc_card_size=`cat $1/block/*/size`
+    mmc_card_size_mib=$((mmc_card_size/2048))
+    mmc_card_sn=`cat $1/serial`
+    mmc_card_block=`basename $1/block/*`
+
+    mmc_card_manhex=`cat $1/manfid`
+    mmc_card_manstr=`jedec_vendor $mmc_card_manhex`
+    mmc_card_oem=`cat $1/oemid`
+    mmc_card_date=`cat $1/date`
+    mmc_card_hwv=`cat $1/hwrev`
+    mmc_card_fwv=`cat $1/fwrev`
+
+    mmc_card_cid=`cat $mmc_card/cid`
+    mmc_card_csd=`cat $mmc_card/csd`
+
+    mmc_card_esp=`cat $mmc_card/preferred_erase_size`
+    mmc_card_esp_kib=$((mmc_card_esp/1024))
+    mmc_card_es=`cat $mmc_card/erase_size`
+    if [ $mmc_card_es = "512" ]
+    then
+      mmc_card_es_kib="0.5"
+    else
+      mmc_card_es_kib=$((mmc_card_es/1024))
+    fi
+
+    if [ -e $1/raw_rpmb_size_mult ]
+    then
+      mmc_card_rpmbx=`cat $1/raw_rpmb_size_mult`
+      mmc_card_rpmbkb=$((mmc_card_rpmbx*128))
+      mmc_card_rpmb="$mmc_card_rpmbkb KiB"
+    else
+      mmc_card_rpmb="N/A"
+    fi
+
+    if [ -e $1/prv ]
+    then
+      mmc_card_prv=`cat $mmc_card/prv`
+    else
+      mmc_card_prv="N/A"
+    fi
+
+    if [ -e $mmc_card/enhanced_area_offset ] && [ -e $mmc_card/enhanced_area_size ]
+    then
+      mmc_card_ea_offset=`cat $mmc_card/enhanced_area_offset`
+      mmc_card_ea_size=`cat $mmc_card/enhanced_area_size`
+      mmc_card_ea_size_mib=$((mmc_card_ea_size/1048576))
+      mmc_card_ea_size="$mmc_card_ea_size_mib MiB"
+    else
+      mmc_card_ea_offset="N/A"
+      mmc_card_ea_size="N/A"
+    fi
+
+    if [ -e $mmc_card/raw_rpmb_size_mult ]
+    then
+      mmc_card_rpmbx=`cat $mmc_card/raw_rpmb_size_mult`
+      mmc_card_rpmbkb=$((mmc_card_rpmbx*128))
+      mmc_card_rpmb="$mmc_card_rpmbkb KiB"
+    else
+      mmc_card_rpmb="N/A"
+    fi
+
+    if [ -e $mmc_card/rel_sectors ]
+    then
+      mmc_card_rws=`cat $mmc_card/rel_sectors`
+      mmc_card_rws=`printf "%d" $mmc_card_rws`
+    else
+      mmc_card_rws="N/A"
+    fi
+
+    echo "    Card Name             : $mmc_card_name"
+    echo "    Card Size             : $mmc_card_size_mib MiB"
+    echo "    Card Serial           : $mmc_card_sn"
+    echo "    Block Device          : $mmc_card_block"
+
+    echo "    OEM ID                : $mmc_card_oem"
+    echo "    Manufacturer ID       : $mmc_card_manhex ($mmc_card_manstr)"
+
+    echo "    Manufacture Date      : $mmc_card_date"
+    echo "    Hardware Revision     : $mmc_card_hwv"
+    echo "    Firmware Revision     : $mmc_card_fwv"
+    echo "    Product Revision      : $mmc_card_prv"
+
+    echo "    Prefered Erase Size   : $mmc_card_esp_kib KiB"
+    echo "    Erase Group Size      : $mmc_card_es_kib KiB"
+
+    echo "    Enhanced Area Offset  : $mmc_card_ea_offset"
+    echo "    Enhanced Area Size    : $mmc_card_ea_size"
+    echo "    RPMB Partition Size   : $mmc_card_rpmb"
+    echo "    Reliable Write Sectors: $mmc_card_rws"
+
+    echo "    CID Register          : $mmc_card_cid"
+    echo "    CSD Register          : $mmc_card_csd"
+  fi
+}
+
+show_details_sdio () {
+  if [ -n $1 ] && [ -e $1 ]
+  then
+    for card_func in $1/mmc*\:*\:*
+    do
+      sdio_func_num=`basename $card_func|cut -d \: -f 3`
+      sdio_func_class=`cat $card_func/class`
+      sdio_func_alias=`cat $card_func/modalias`
+      sdio_func_vendor=`cat $card_func/vendor`
+      sdio_func_device=`cat $card_func/device`
+      sdio_func_drv_link=`readlink $card_func/driver`
+      sdio_func_driver=`basename $sdio_func_drv_link`
+      echo "    Function $sdio_func_num:"
+      echo "      Class               : $sdio_func_class"
+      echo "      Alias               : $sdio_func_alias"
+      echo "      Vendor              : $sdio_func_vendor"
+      echo "      Device              : $sdio_func_device"
+      echo "      Driver              : $sdio_func_driver"
+    done
+  fi
+}
+
+# Main procedure
+for mmc_ctrl in /sys/class/mmc_host/*
+do
+  mmc_ctrl_name=`basename $mmc_ctrl`
+  mmc_ctrl_drv_link=`readlink $mmc_ctrl/device/driver`
+  mmc_ctrl_drv=`basename $mmc_ctrl_drv_link`
+  if [ -e $mmc_ctrl/device/modalias ]
+  then
+    mmc_ctrl_alias=`cat $mmc_ctrl/device/modalias`
+  else
+    # Some platforms are just nuts.
+    mmc_ctrl_alias="(Please upgrade your kernel.)"
+  fi
+
+  echo "MMC Host Controller \"$mmc_ctrl_name\":"
+  echo "  Driver: $mmc_ctrl_drv"
+  echo "  Alias : $mmc_ctrl_alias"
+
+  if [ -e $mmc_ctrl/$mmc_ctrl_name\:* ]
+  then
+    for mmc_card in $mmc_ctrl/$mmc_ctrl_name\:*
+    do
+      echo "  ========================================="
+      mmc_card_addr="0x`basename $mmc_card|cut -d \: -f 2`"
+      mmc_card_type=`cat $mmc_card/type`
+      echo "  Card @ $mmc_card_addr:"
+      echo "    Card Type             : $mmc_card_type"
+
+      case $mmc_card_type in
+        "SDIO")
+          show_details_sdio $mmc_card
+          ;;
+        "SD")
+          show_details_sd $mmc_card
+          ;;
+        "MMC")
+          show_details_mmc $mmc_card
+          ;;
+        *)
+          echo "    Card Type Not Supported."
+          ;;
+      esac
+    done
+  else
+    echo "  *** No card found on this controllor. ***"
+  fi
+
+  echo "  ========================================="
+  echo ""
+done
