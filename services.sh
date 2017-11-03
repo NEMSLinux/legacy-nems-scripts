@@ -5,17 +5,26 @@
 
 conf='/usr/local/share/nems/nems.conf'
 
- # RPi-Monitor
- if grep -q "service.rpi-monitor=0" "$conf"; then
-   /etc/init.d/rpimonitor stop
- else
-   /etc/init.d/rpimonitor start
+platform=$(/usr/local/bin/nems-info platform) 
+
+ # Raspberry Pi Only
+ if [[ $platform == 0 ]] || [[ $platform == 1 ]] || [[ $platform == 2 ]] || [[ $platform == 3 ]]; then
+
+   # RPi-Monitor
+   if grep -q "service.rpi-monitor=0" "$conf"; then
+     /etc/init.d/rpimonitor stop
+   else
+     /etc/init.d/rpimonitor start
+   fi
+
  fi
 
- # nagios-api
- if grep -q "service.nagios-api=0" "$conf"; then
-   sleep 1
- else
-   sleep 15 # Need to wait a bit so Nagios has time to load first
-   /root/nems/nagios-api/nagios-api -p 8090 -c /var/lib/nagios3/rw/live.sock -s /var/cache/nagios3/status.dat -l /var/log/nagios3/nagios.log >> /var/log/nagios-api.log 2>&1 &
- fi
+ # All Platforms
+
+   # nagios-api
+   if grep -q "service.nagios-api=0" "$conf"; then
+     sleep 1
+   else
+     sleep 15 # Need to wait a bit so Nagios has time to load first
+     /root/nems/nagios-api/nagios-api -p 8090 -c /var/lib/nagios3/rw/live.sock -s /var/cache/nagios3/status.dat -l /var/log/nagios3/nagios.log >> /var/log/nagios-api.log 2>&1 &
+   fi
