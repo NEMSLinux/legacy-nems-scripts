@@ -52,7 +52,7 @@ else
   echo "">/var/www/htpasswd && echo $password | /usr/bin/htpasswd -B -c -i /var/www/htpasswd $username
 
   # Create Samba User
-  echo -e "$password\n$password" | smbpasswd -s -a pi
+  echo -e "$pipassword\n$pipassword" | smbpasswd -s -a pi
   systemctl restart smbd
 
 echo Initializing new Nagios user
