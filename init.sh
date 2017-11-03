@@ -16,23 +16,47 @@ else
   # Perform any fixes that have been released since NEMS was built
   /home/pi/nems-scripts/fixes.sh
 
-  echo "First, let's change the password of the pi Linux user..."
-  echo "REMEMBER: This will be the password you'll use for SSH/Local Login and Webmin."
-  echo "If you do not want to change it, simply enter the existing password."
-  while true; do
-    read -s -p "New Password for pi user: " pipassword
-    echo
-    read -s -p "New Password for pi user (again): " pipassword2
-    echo
-    [ "$pipassword" = "raspberry" ] && pipassword="-" && echo "You are not allowed to use that password."
-    [ "$pipassword" = "" ] && pipassword="-" && echo "You can't leave the password blank."
-    [ "$pipassword" = "$pipassword2" ] && break
-    echo "Please try again"
-  done
-  echo -e "$pipassword\n$pipassword" | passwd pi >/tmp/init 2>&1
+  if [[ -d /home/pi ]]; then
+    echo "First, let's change the password of the pi Linux user..."
+    echo "REMEMBER: This will be the password you'll use for SSH/Local Login and Webmin."
+    echo "If you do not want to change it, simply enter the existing password."
+    while true; do
+      read -s -p "New Password for pi user: " pipassword
+      echo
+      read -s -p "New Password for pi user (again): " pipassword2
+      echo
+      [ "$pipassword" = "raspberry" ] && pipassword="-" && echo "You are not allowed to use that password."
+      [ "$pipassword" = "" ] && pipassword="-" && echo "You can't leave the password blank."
+      [ "$pipassword" = "$pipassword2" ] && break
+      echo "Please try again"
+    done
+    echo -e "$pipassword\n$pipassword" | passwd pi >/tmp/init 2>&1
 
-  echo "Your new password has been set for the Linux pi user."
-  echo "Use that password to access NEMS over SSH or when logging in to Webmin."
+    echo "Your new password has been set for the Linux pi user."
+    echo "Use that password to access NEMS over SSH or when logging in to Webmin."
+  fi
+
+  if [[ -d /home/nemsadmin ]]; then
+    echo "First, let's change the password of the nemsadmin Linux user..."
+    echo "REMEMBER: This will be the password you'll use for SSH/Local Login and Webmin."
+    echo "If you do not want to change it, simply enter the existing password."
+    while true; do
+      read -s -p "New Password for nemsadmin user: " napassword
+      echo
+      read -s -p "New Password for nemsadmin user (again): " napassword2
+      echo
+      [ "$napassword" = "raspberry" ] && napassword="-" && echo "You are not allowed to use that password."
+      [ "$napassword" = "nemsadmin" ] && napassword="-" && echo "You are not allowed to use that password."
+      [ "$napassword" = "" ] && napassword="-" && echo "You can't leave the password blank."
+      [ "$napassword" = "$napassword2" ] && break
+      echo "Please try again"
+    done
+    echo -e "$napassword\n$napassword" | passwd nemsadmin >/tmp/init 2>&1
+
+    echo "Your new password has been set for the Linux nemsadmin user."
+    echo "Use that password to access NEMS over SSH or when logging in to Webmin."
+  fi
+
   echo ""
   echo "What username would you like to use when"
   read -p "logging in to the NEMS web interfaces? " username
@@ -56,7 +80,8 @@ else
   echo -e "$password\n$password" | passwd $username >/tmp/init 2>&1
 
   # Create Samba User
-  echo -e "$pipassword\n$pipassword" | smbpasswd -s -a pi
+  echo -e "$napassword\n$napassword" | smbpasswd -s -a nemsadmin
+  echo -e "$password\n$password" | smbpasswd -s -a $username
   systemctl restart smbd
 
 echo Initializing new Nagios user
