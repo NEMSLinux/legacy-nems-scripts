@@ -113,6 +113,11 @@ systemctl start nagios3
   service cron stop && service cron start
 
   # Configure the keyboard locale
+  echo ""
+  echo "Let's configure your keyboard."
+  echo "Please MAKE SURE a keyboard is connected to your NEMS Server."
+  echo ""
+  read -n 1 -s -p "Press any key to continue"
   dpkg-reconfigure keyboard-configuration && service keyboard-setup restart
 
 # /Localization
@@ -193,6 +198,7 @@ if [[ $ver = "1.3" ]]; then
   rm -rf /var/www/certs/
   mv /tmp/certs /var/www/
   chown -R root:root /var/www/certs
+  chmod -R 700 /var/www/certs
 
 fi
 

@@ -6,11 +6,11 @@ else
   export COMMAND=$1
 
   upgraded=0
-  ver=$(/usr/bin/nems-info nemsver) 
+  ver=$(/usr/local/bin/nems-info nemsver) 
   echo "Running NEMS $ver"
 
   if [[ $COMMAND = "reset" ]]; then
-   ver=$(/usr/bin/nems-info nemsbranch)
+   ver=$(/usr/local/bin/nems-info nemsbranch)
    echo "Forced reset to NEMS $ver"
   fi
 
@@ -41,7 +41,7 @@ else
    
    # Create symlinks added in this release
    echo "Creating symbolic links..."
-   ln -s /home/pi/nems-scripts/update.sh /usr/bin/nems-update
+   ln -s /home/pi/nems-scripts/update.sh /usr/local/bin/nems-update
    echo "Done."
 
    # Copy the fixed MOTD.
@@ -88,14 +88,14 @@ vm.swappiness = 10
    # Create symlinks added in this release
    echo "Creating symbolic links..."
     # Add nems-benchmark command
-    if [ ! -f /usr/bin/nems-benchmark ]; then
-      ln -s /home/pi/nems-scripts/benchmark.sh /usr/bin/nems-benchmark
+    if [ ! -f /usr/local/bin/nems-benchmark ]; then
+      ln -s /home/pi/nems-scripts/benchmark.sh /usr/local/bin/nems-benchmark
       echo "Added nems-benchmark command."
     fi
 
     # Add nems-mailtest command
-    if [ ! -f /usr/bin/nems-mailtest ]; then
-      ln -s /home/pi/nems-scripts/mailtest.sh /usr/bin/nems-mailtest
+    if [ ! -f /usr/local/bin/nems-mailtest ]; then
+      ln -s /home/pi/nems-scripts/mailtest.sh /usr/local/bin/nems-mailtest
       echo "Added nems-mailtest command."
     fi
    echo "Done."
