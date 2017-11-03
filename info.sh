@@ -14,7 +14,7 @@ if [[ $COMMAND == "ip" ]]; then
 
 # Output current running NEMS version
 elif [[ $COMMAND == "nemsver" ]]; then
-  cat /home/pi/nems.conf | grep version |  printf '%s' $(cut -n -d '=' -f 2)
+  cat /usr/local/share/nems/nems.conf | grep version |  printf '%s' $(cut -n -d '=' -f 2)
 
 # Output the current available NEMS version (update.sh generates this every day at midnight and at reboot)
 elif [[ $COMMAND == "nemsveravail" ]]; then

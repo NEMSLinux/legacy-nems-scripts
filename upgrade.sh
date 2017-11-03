@@ -58,7 +58,7 @@ else
    echo "Changing version to 1.2.2..."
    oldver=$ver
    ver="1.2.2"
-   sed -i -e "s/$oldver/$ver/g" /home/pi/nems.conf
+   sed -i -e "s/$oldver/$ver/g" /usr/local/share/nems/nems.conf
    echo "Done."
 
    echo ""
@@ -141,7 +141,7 @@ vm.swappiness = 10
    echo "Changing version to 1.2.3..."
    oldver=$ver
    ver="1.2.3"
-   sed -i -e "s/$oldver/$ver/g" /home/pi/nems.conf
+   sed -i -e "s/$oldver/$ver/g" /usr/local/share/nems/nems.conf
    echo "Done."
 
    echo ""

@@ -5,6 +5,12 @@
 # NEMS 1.2.1 was released with an incorrect permission on this file
 chown www-data:www-data /etc/nagios3/global/timeperiods.cfg
 
+# Prepare the 1.2.x->1.3.x transition to move away from /home/pi folder
+# Will create this folder now to avoid errors
+if [ ! -d /usr/local/share/nems ]; then
+  mkdir -p /usr/local/share/nems
+fi
+
 # Check that NEMS has been initialized
 if [ -f /var/www/htpasswd ]; then
   # Load the username from nems-init
@@ -54,7 +60,7 @@ fi
 # Move NEMS version data into nems.conf
 if [ -f /root/nems/ver.txt ]; then
   ver=$(cat /root/nems/ver.txt)
-  echo version=$ver >> /home/pi/nems.conf
+  echo version=$ver >> /usr/local/share/nems/nems.conf
   rm /root/nems/ver.txt
   if [ -f /var/www/html/inc/ver.txt ]; then
     rm /var/www/html/inc/ver.txt
@@ -132,3 +138,16 @@ if [ ! -f /var/log/nems/wpasupplicant ]; then
   echo "Patched" > /var/log/nems/wpasupplicant
 fi
 
+# Move nems.conf out of /home/pi (NEMS 1.2.x)
+if [ -f /home/pi/nems.conf ]; then
+  mv /home/pi/nems.conf /usr/local/share/nems/
+fi
+
+# Remove apikey if it is not set (eg., did not get a response from the server)
+apikey=$(cat /usr/local/share/nems/nems.conf | grep test | printf '%s' $(cut -n -d '=' -f 2))
+if [[ $apikey == '' ]]; then
+  sed -i~ '/apikey/d' /usr/local/share/nems/nems.conf
+fi
+
+# Remove the platform designation from conf file (this was moved to hw_model.sh)
+sed -i '/platform/d' /usr/local/share/nems/nems.conf
