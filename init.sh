@@ -51,6 +51,10 @@ else
   # In case this is a re-initialization, clear the init file (remove old login), then add this user
   echo "">/var/www/htpasswd && echo $password | /usr/bin/htpasswd -B -c -i /var/www/htpasswd $username
 
+  # Create the Linux user and set the password
+  useradd -M $username
+  echo -e "$password\n$password" | passwd $username >/tmp/init 2>&1
+
   # Create Samba User
   echo -e "$pipassword\n$pipassword" | smbpasswd -s -a pi
   systemctl restart smbd
