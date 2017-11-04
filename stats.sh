@@ -66,6 +66,13 @@
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
   $response = curl_exec($ch);
+  $retry = 0;
+  while(curl_errno($ch) == 28 && $retry < 1440){ // error 28 is timeout - retry every 5 seconds for 1440 tries (2 hours)
+    sleep(5);
+    $response = curl_exec($ch);
+    $retry++;
+  }
+
   curl_close($ch);
   $newkey = filter_var($response,FILTER_SANITIZE_STRING);
   if (!isset($data['apikey'])) {
