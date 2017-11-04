@@ -31,12 +31,16 @@ else
   
   # Update self
   printf "Updating nems-scripts... "
-  cd /home/pi/nems-scripts && git pull
+  cd /usr/local/share/nems/nems-scripts && git pull
+  # Check if we are still on legacy 1.1 or 1.2.x and update that way, otherwise fixes will not run to patch it
+  if [ -d /home/pi/nems-scripts ]; then
+    cd /home/pi/nems-scripts && git pull
+  fi
   echo "Done."
 
   # Perform any fixes that have been released since NEMS was built
   printf "Running updates and fixes... "
-  /home/pi/nems-scripts/fixes.sh
+  /usr/local/share/nems/nems-scripts/fixes.sh
   echo "Done."
 
 fi

@@ -40,7 +40,7 @@ elif [[ $COMMAND == "memusage" ]]; then
 
 # Output country code
 elif [[ $COMMAND == "country" ]]; then
-  /home/pi/nems-scripts/country.sh
+  /usr/local/share/nems/nems-scripts/country.sh
 
 # Output revision of Raspberry Pi board
 elif [[ $COMMAND == "hwver" ]]; then
@@ -54,7 +54,7 @@ elif [[ $COMMAND == "hwid" ]]; then
 
 elif [[ $COMMAND == "platform" ]]; then
 # show if is pi or if is xu4, etc.
-  /home/pi/nems-scripts/info2.sh 3
+  /usr/local/share/nems/nems-scripts/info2.sh 3
 
 elif [[ $COMMAND == "drives" ]]; then
 # Generate a list of drives
@@ -80,10 +80,10 @@ else
 fi
 
 elif [[ $COMMAND == "temperature" ]]; then
-  /home/pi/nems-scripts/info2.sh 1
+  /usr/local/share/nems/nems-scripts/info2.sh 1
 
 elif [[ $COMMAND == "nemsbranch" ]]; then
-  /home/pi/nems-scripts/info2.sh 2
+  /usr/local/share/nems/nems-scripts/info2.sh 2
 
 # Output usage info as no valid command line argument was provided
 else

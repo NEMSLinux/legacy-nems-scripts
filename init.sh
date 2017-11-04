@@ -3,7 +3,7 @@
 # Run this script with: sudo nems-init
 # It's already in the path via a symlink
 
-ver=$(/home/pi/nems-scripts/info.sh nemsver) 
+ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver) 
 
 echo ""
 echo Welcome to NEMS initialization script.
@@ -14,7 +14,7 @@ if [[ $EUID -ne 0 ]]; then
 else
 
   # Perform any fixes that have been released since NEMS was built
-  /home/pi/nems-scripts/fixes.sh
+  /usr/local/share/nems/nems-scripts/fixes.sh
 
   if [[ -d /home/pi ]]; then
     # Must continue to support NEMS 1.1 and 1.2.x
@@ -66,6 +66,9 @@ else
   # Create Samba User
   echo -e "$password\n$password" | smbpasswd -s -a $username
   systemctl restart smbd
+
+  # Configure RPi-Monitor to run as the new user
+  /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/rpimonitor/daemon.conf
 
   # Delete the initial admin account
   if [[ -d /home/$username ]] && [[ -d /home/nemsadmin ]]; then
@@ -150,7 +153,7 @@ if [[ $ver = "1.3" ]]; then
   echo "DO NOT LEAVE ANYTHING BLANK - If you do, the certs will fail."
   echo ""
   echo "Fill in the following:"
-  country=$(/home/pi/nems-scripts/country.sh)
+  country=$(/usr/local/share/nems/nems-scripts/country.sh)
 
   read -p "Country Code: " -i "$country" -e country
   read -p "Province/State: " province
@@ -223,13 +226,12 @@ fi
   echo ""
 
   echo "Now we will resize your root partition to give you access to all the space"
-  read -n 1 -s -p "Press any key to continue, or CTRL-C to abort"
-
-  echo ""
 
   /usr/bin/raspi-config --expand-rootfs > /dev/null 2>&1
   echo "Done."
 
+  echo ""
+  echo "NOTICE: When you reboot, you must login as $username"
   echo ""
   read -n 1 -s -p "Press any key to reboot (required)"
 

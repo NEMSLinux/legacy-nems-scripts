@@ -41,12 +41,12 @@ else
    
    # Create symlinks added in this release
    echo "Creating symbolic links..."
-   ln -s /home/pi/nems-scripts/update.sh /usr/local/bin/nems-update
+   ln -s /usr/local/share/nems/nems-scripts/update.sh /usr/local/bin/nems-update
    echo "Done."
 
    # Copy the fixed MOTD.
    echo "Patching MOTD..."
-   cp -f /home/pi/nems-scripts/upgrades/1.2.2/motd.tcl /etc/
+   cp -f /usr/local/share/nems/nems-scripts/upgrades/1.2.2/motd.tcl /etc/
    echo "Done."
 
    # Update packages
@@ -89,13 +89,13 @@ vm.swappiness = 10
    echo "Creating symbolic links..."
     # Add nems-benchmark command
     if [ ! -f /usr/local/bin/nems-benchmark ]; then
-      ln -s /home/pi/nems-scripts/benchmark.sh /usr/local/bin/nems-benchmark
+      ln -s /usr/local/share/nems/nems-scripts/benchmark.sh /usr/local/bin/nems-benchmark
       echo "Added nems-benchmark command."
     fi
 
     # Add nems-mailtest command
     if [ ! -f /usr/local/bin/nems-mailtest ]; then
-      ln -s /home/pi/nems-scripts/mailtest.sh /usr/local/bin/nems-mailtest
+      ln -s /usr/local/share/nems/nems-scripts/mailtest.sh /usr/local/bin/nems-mailtest
       echo "Added nems-mailtest command."
     fi
    echo "Done."
@@ -119,7 +119,7 @@ vm.swappiness = 10
         # Load the default certs since none exist yet (which would be the case in NEMS 1.1 or 1.2)
         cp -R /root/nems/nems-migrator/data/certs /var/www/
       fi
-      cp /home/pi/nems-scripts/upgrades/1.2.2/000-default.conf /etc/apache2/sites-available/
+      cp /usr/local/share/nems/nems-scripts/upgrades/1.2.2/000-default.conf /etc/apache2/sites-available/
       echo "Done."
       echo "Restarting Apache..."
       systemctl restart apache2

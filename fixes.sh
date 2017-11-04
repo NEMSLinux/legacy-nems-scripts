@@ -9,6 +9,11 @@ chown www-data:www-data /etc/nagios3/global/timeperiods.cfg
 # Will create this folder now to avoid errors
 if [ ! -d /usr/local/share/nems ]; then
   mkdir -p /usr/local/share/nems
+  if [ -d /home/pi/nems-scripts ]; then
+    # Move and convert to a symlink (to make old NEMS 1.1 + 1.2.x compatible with 1.3 file locations)
+    mv /home/pi/nems-scripts /usr/local/share/nems/
+    ln -s /usr/local/share/nems/nems-scripts /home/pi/nems-scripts
+  fi
 fi
 
 # Check that NEMS has been initialized
@@ -44,17 +49,17 @@ fi
 
 # Install nems-upgrade command if not already
 if [ ! -f /usr/local/bin/nems-upgrade ]; then
-  ln -s /home/pi/nems-scripts/upgrade.sh /usr/local/bin/nems-upgrade
+  ln -s /usr/local/share/nems/nems-scripts/upgrade.sh /usr/local/bin/nems-upgrade
 fi
 
 # Install nems-update command if not already
 if [ ! -f /usr/local/bin/nems-update ]; then
-  ln -s /home/pi/nems-scripts/update.sh /usr/local/bin/nems-update
+  ln -s /usr/local/share/nems/nems-scripts/update.sh /usr/local/bin/nems-update
 fi
 
 # Install nems-info command if not already
 if [ ! -f /usr/local/bin/nems-info ]; then
-  ln -s /home/pi/nems-scripts/info.sh /usr/local/bin/nems-info
+  ln -s /usr/local/share/nems/nems-scripts/info.sh /usr/local/bin/nems-info
 fi
 
 # Move NEMS version data into nems.conf
@@ -74,18 +79,18 @@ fi
 
   # Benchmark log
   if ! grep -q "NEMS0001" /tmp/cron.tmp; then
-    printf "\n# Run a weekly system benchmark of the NEMS server to assist with troubleshooting NEMS0001\n0 3 * * 0 /home/pi/nems-scripts/benchmark.sh > /var/log/nems/benchmark.log\n" >> /tmp/cron.tmp
+    printf "\n# Run a weekly system benchmark of the NEMS server to assist with troubleshooting NEMS0001\n0 3 * * 0 /usr/local/share/nems/nems-scripts/benchmark.sh > /var/log/nems/benchmark.log\n" >> /tmp/cron.tmp
     cronupdate=1
   fi
 
   # NEMS Anonymous Stats
   if ! grep -q "NEMS0002" /tmp/cron.tmp; then
-    printf "\n# NEMS Anonymous Stats NEMS0002\n0 0 * * * /home/pi/nems-scripts/stats.sh\n" >> /tmp/cron.tmp
+    printf "\n# NEMS Anonymous Stats NEMS0002\n0 0 * * * /usr/local/share/nems/nems-scripts/stats.sh\n" >> /tmp/cron.tmp
     cronupdate=1
   fi
 
   if ! grep -q "NEMS0003" /tmp/cron.tmp; then
-    printf "\n# Load Average Over One Week Logger NEMS0003\n*/15 * * * * /home/pi/nems-scripts/loadlogger.sh cron\n" >> /tmp/cron.tmp
+    printf "\n# Load Average Over One Week Logger NEMS0003\n*/15 * * * * /usr/local/share/nems/nems-scripts/loadlogger.sh cron\n" >> /tmp/cron.tmp
     cronupdate=1
   fi
 
@@ -98,12 +103,12 @@ fi
 
 
   if ! grep -q "NEMS0004" /tmp/cron.tmp; then
-    printf "\n# Detect Hardware Model NEMS0004\n@reboot /home/pi/nems-scripts/hw_model.sh\n" >> /tmp/cron.tmp
+    printf "\n# Detect Hardware Model NEMS0004\n@reboot /usr/local/share/nems/nems-scripts/hw_model.sh\n" >> /tmp/cron.tmp
     cronupdate=1
   fi
 
   if ! grep -q "NEMS0005" /tmp/cron.tmp; then
-    printf "\n# Log Package Version Info NEMS0005\n0 5 * * 0 /home/pi/nems-scripts/versions.sh > /var/log/nems/package-versions.log\n" >> /tmp/cron.tmp
+    printf "\n# Log Package Version Info NEMS0005\n0 5 * * 0 /usr/local/share/nems/nems-scripts/versions.sh > /var/log/nems/package-versions.log\n" >> /tmp/cron.tmp
     cronupdate=1
   fi
 
