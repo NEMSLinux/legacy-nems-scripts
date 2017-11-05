@@ -143,8 +143,20 @@ systemctl start nagios3
 
 # /Localization
 
-# Setup SSL Certificates
-if [[ $ver = "1.3" ]]; then
+if [[ $ver >= "1.3" ]]; then
+
+  # Configure NagVis user
+  if [ -f /etc/nagvis/etc/auth.db ]; then
+    rm /etc/nagvis/etc/auth.db
+  fi
+  cp /root/nems/nems-migrator/data/nagvis/auth.db /etc/nagvis/etc/
+  chown www-data:www-data /etc/nagvis/etc/auth.db
+  # Note, this is being added as specifically userId 1 as this user is users2role 1, administrator
+  # NagVis hashes its SHA1 passwords with the long string, which is duplicated in the nagvis ini file.
+  sqlite3 /etc/nagvis/etc/auth.db "INSERT INTO users (userId,name,password) VALUES (1,'$username','$(echo -n '29d58ead6a65f5c00342ae03cdc6d26565e20954$password' | sha1sum | awk '{print $1}')');"
+
+
+  # Setup SSL Certificates
   mkdir /tmp/certs
   cd /tmp/certs
 
