@@ -67,14 +67,15 @@
   curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
   $response = curl_exec($ch);
   $retry = 0;
-  while(curl_errno($ch) == 28 && $retry < 1440){ // error 28 is timeout - retry every 5 seconds for 1440 tries (2 hours)
+  $newkey = '';
+  while((curl_errno($ch) == 28 || $newkey == '') && $retry < 1440){ // error 28 is timeout - retry every 5 seconds for 1440 tries (2 hours). Will also retry if an apikey is not sent by the server.
     sleep(5);
     $response = curl_exec($ch);
+    $newkey = filter_var($response,FILTER_SANITIZE_STRING);
     $retry++;
   }
 
   curl_close($ch);
-  $newkey = filter_var($response,FILTER_SANITIZE_STRING);
   if (!isset($data['apikey'])) {
     $data['apikey'] = $newkey; // no API Key in settings, use the new one
     file_put_contents('/usr/local/share/nems/nems.conf','apikey=' . $newkey . PHP_EOL, FILE_APPEND);
