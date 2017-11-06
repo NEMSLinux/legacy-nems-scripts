@@ -156,3 +156,8 @@ fi
 
 # Remove the platform designation from conf file (this was moved to hw_model.sh)
 sed -i '/platform/d' /usr/local/share/nems/nems.conf
+
+# Force hw_model - I never took into account some people might not reboot to trigger this.
+if [ ! -f /var/log/nems/hw_model.log ]; then
+  /usr/local/share/nems/nems-scripts/hw_model.sh
+fi
