@@ -143,7 +143,7 @@ systemctl start nagios3
 
 # /Localization
 
-if [[ $ver >= "1.3" ]]; then
+if [ $ver >= "1.3" ]; then
 
   # Configure NagVis user
   if [ -f /etc/nagvis/etc/auth.db ]; then
