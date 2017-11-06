@@ -68,7 +68,7 @@ else
   systemctl restart smbd
 
   # Configure RPi-Monitor to run as the new user
-  /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/rpimonitor/daemon.conf
+  /bin/sed -i -- 's/userunknown/'"$username"'/g' /etc/rpimonitor/daemon.conf
 
   # Delete the initial admin account
   if [[ -d /home/$username ]] && [[ -d /home/nemsadmin ]]; then
@@ -143,7 +143,7 @@ systemctl start nagios3
 
 # /Localization
 
-if [ $ver >= "1.3" ]; then
+if (( ! $(awk 'BEGIN {print ("'$ver'" >= "'1.3'")}') )); then
 
   # Configure NagVis user
   if [ -f /etc/nagvis/etc/auth.db ]; then
