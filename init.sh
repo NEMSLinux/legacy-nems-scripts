@@ -72,8 +72,14 @@ else
 
   # Delete the initial admin account
   if [[ -d /home/$username ]] && [[ -d /home/nemsadmin ]]; then
-    echo "Deleting nemsadmin user. Remember you must now login as $username"
-    userdel -r nemsadmin
+    # echo "Deleting nemsadmin user. Remember you must now login as $username"
+    # userdel -r nemsadmin
+
+    # nemsadmin user will be deleted automatically now that you're initialized, but this stuff is just to protect users in case for some reason the nemsuser user remains.
+    echo "Disabling nemsadmin access. Remember you must now login as $username"
+    deluser nemsadmin sudo # Remove super user access from nemsadmin account
+    rndpass=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-32} | head -n 1)
+    echo -e "$rndpass\n$rndpass" | smbpasswd -s -a nemsadmin # set a random password on the account so no longer can login
   fi
 
 echo Initializing new Nagios user
@@ -143,7 +149,7 @@ systemctl start nagios3
 
 # /Localization
 
-if (( ! $(awk 'BEGIN {print ("'$ver'" >= "'1.3'")}') )); then
+if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.3'")}') )); then
 
   # Configure NagVis user
   if [ -f /etc/nagvis/etc/auth.db ]; then
