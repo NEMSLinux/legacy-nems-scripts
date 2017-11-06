@@ -53,8 +53,8 @@
   );
 
   // Load existing NEMS Stats API Key, if it exists
-  $settings = file('/usr/local/share/nems/nems.conf');
-  if (is_array($settings)) {
+  $settings = @file('/usr/local/share/nems/nems.conf');
+  if (is_array($settings) && count($settings) > 0) {
     foreach ($settings as $line) {
       if (substr($line,0,6) == 'apikey') {
         $data['apikey'] = substr($line,7);
@@ -65,13 +65,14 @@
   $ch = curl_init('https://nemslinux.com/api/stats/');
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-  $response = curl_exec($ch);
+//  $response = curl_exec($ch);
   $retry = 0;
   $newkey = '';
   while((curl_errno($ch) == 28 || $newkey == '') && $retry < 1440){ // error 28 is timeout - retry every 5 seconds for 1440 tries (2 hours). Will also retry if an apikey is not sent by the server.
-    sleep(5);
     $response = curl_exec($ch);
+    sleep(5);
     $newkey = filter_var($response,FILTER_SANITIZE_STRING);
+    if (strlen($newkey) > 0) break;
     $retry++;
   }
 
