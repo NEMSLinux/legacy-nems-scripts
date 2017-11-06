@@ -42,7 +42,7 @@ fi
 sed -i -e 's/show_context_help=1/show_context_help=0/g' /etc/nagios3/cgi.cfg
 
 # Move already created symlinks from /usr/bin to /usr/local/bin
-if [ -f /usr/bin/nems-* ]; then
+if [ -f /usr/bin/nems-init ]; then
   mv /usr/bin/nems-* /usr/local/bin/
   sed -i -e 's/\/usr\/bin\/nems/\/usr\/local\/bin\/nems/g' /etc/motd.tcl
 fi
