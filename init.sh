@@ -58,6 +58,8 @@ else
 
   # Create the Linux user
   adduser --disabled-password --gecos "" $username
+  # Giving you files
+  cp /home/nemsadmin/* /home/$username/
   # Allow user to become super-user
   usermod -aG sudo $username
   # Set the user password
@@ -159,7 +161,7 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.3'")}') )); then
   chown www-data:www-data /etc/nagvis/etc/auth.db
   # Note, this is being added as specifically userId 1 as this user is users2role 1, administrator
   # NagVis hashes its SHA1 passwords with the long string, which is duplicated in the nagvis ini file - /etc/nagvis/etc/nagvis.ini.php
-  sqlite3 /etc/nagvis/etc/auth.db "INSERT INTO users (userId,name,password) VALUES (1,'$username','$(echo -n '29d58ead6a65f5c00342ae03cdc6d26565e20954$password' | sha1sum | awk '{print $1}')');"
+  sqlite3 /etc/nagvis/etc/auth.db "INSERT INTO users (userId,name,password) VALUES (1,'$username','$(echo -n '29d58ead6a65f5c00342ae03cdc6d26565e20954'$password | sha1sum | awk '{print $1}')');"
 
 
   # Setup SSL Certificates
