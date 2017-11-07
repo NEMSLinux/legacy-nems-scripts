@@ -9,15 +9,14 @@ chown www-data:www-data /etc/nagios3/global/timeperiods.cfg
 # Will create this folder now to avoid errors
 if [ ! -d /usr/local/share/nems ]; then
   mkdir -p /usr/local/share/nems
-  if [ -d /home/pi/nems-scripts ]; then
-    # Move and convert to a symlink (to make old NEMS 1.1 + 1.2.x compatible with 1.3 file locations)
-  #  mv /home/pi/nems-scripts /usr/local/share/nems/
-  #  ln -s /usr/local/share/nems/nems-scripts /home/pi/nems-scripts
-    # Use a symlink instead of trying to move it when a script within it is running.
-    if [ !-d "/usr/local/share/nems/nems-scripts" ]; then # don't proceed if this is already a directory
-      if [ -f "/usr/local/share/nems/nems-scripts" ]; then # only proceed if there's no file
-        ln -s /home/pi/nems-scripts /usr/local/share/nems/nems-scripts # Create the symlink to /home/pi/nems-scripts - it's the opposite of NEMS 1.3+ but effective and safer
-      fi
+fi
+
+if [ -d /home/pi/nems-scripts ]; then
+  # Make old NEMS 1.1 + 1.2.x compatible with 1.3 file locations
+  # Use a symlink instead of trying to move it when a script within it is running.
+  if [ !-d "/usr/local/share/nems/nems-scripts" ]; then # don't proceed if this is already a directory
+    if [ -f "/usr/local/share/nems/nems-scripts" ]; then # only proceed if there's no file
+      ln -s /home/pi/nems-scripts /usr/local/share/nems/nems-scripts # Create the symlink to /home/pi/nems-scripts - it's the opposite of NEMS 1.3+ but effective and safer
     fi
   fi
 fi
