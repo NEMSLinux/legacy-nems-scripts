@@ -15,7 +15,7 @@ chown www-data:www-data /etc/nagios3/global/timeperiods.cfg
     # Make old NEMS 1.1 + 1.2.x compatible with 1.3 file locations
     # Use a symlink instead of trying to move it when a script within it is running.
     if [ ! -d "/usr/local/share/nems/nems-scripts" ]; then # don't proceed if this is already a directory
-      if [ -f "/usr/local/share/nems/nems-scripts" ]; then # only proceed if there's no file
+      if [ ! -f "/usr/local/share/nems/nems-scripts" ]; then # only proceed if there's no file
         ln -s /home/pi/nems-scripts /usr/local/share/nems/nems-scripts # Create the symlink to /home/pi/nems-scripts - it's the opposite of NEMS 1.3+ but effective and safer
       fi
     fi
