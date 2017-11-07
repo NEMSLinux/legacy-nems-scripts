@@ -62,18 +62,25 @@ else
   cp /home/nemsadmin/* /home/$username/
   # Allow user to become super-user
   usermod -aG sudo $username
+  # Allow user to login to monit web interface
+  usermod -aG monit $username
   # Set the user password
   echo -e "$password\n$password" | passwd $username >/tmp/init 2>&1
-
-  # Create Samba User
-  echo -e "$password\n$password" | smbpasswd -s -a $username
-  systemctl restart smbd
 
   # Reset the RPi-Monitor user
   cp /root/nems/nems-migrator/data/rpimonitor/daemon.conf /etc/rpimonitor
 
   # Configure RPi-Monitor to run as the new user
   /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/rpimonitor/daemon.conf
+
+  # Samba config
+    # Create Samba User
+    echo -e "$password\n$password" | smbpasswd -s -a $username
+    # Reset Samba users
+    cp /root/nems/nems-migrator/data/samba/smb.conf /etc/samba
+    # Configure new samba user
+    /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/samba/smb.conf
+    systemctl restart smbd
 
   # Delete the initial admin account
   if [[ -d /home/$username ]] && [[ -d /home/nemsadmin ]]; then
