@@ -69,8 +69,11 @@ else
   echo -e "$password\n$password" | smbpasswd -s -a $username
   systemctl restart smbd
 
+  # Reset the RPi-Monitor user
+  cp /root/nems/nems-migrator/data/rpimonitor/daemon.conf /etc/rpimonitor
+
   # Configure RPi-Monitor to run as the new user
-  /bin/sed -i -- 's/userunknown/'"$username"'/g' /etc/rpimonitor/daemon.conf
+  /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/rpimonitor/daemon.conf
 
   # Delete the initial admin account
   if [[ -d /home/$username ]] && [[ -d /home/nemsadmin ]]; then
