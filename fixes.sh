@@ -11,8 +11,9 @@ if [ ! -d /usr/local/share/nems ]; then
   mkdir -p /usr/local/share/nems
   if [ -d /home/pi/nems-scripts ]; then
     # Move and convert to a symlink (to make old NEMS 1.1 + 1.2.x compatible with 1.3 file locations)
-    mv /home/pi/nems-scripts /usr/local/share/nems/
-    ln -s /usr/local/share/nems/nems-scripts /home/pi/nems-scripts
+  #  mv /home/pi/nems-scripts /usr/local/share/nems/
+  #  ln -s /usr/local/share/nems/nems-scripts /home/pi/nems-scripts
+    
   fi
 fi
 
