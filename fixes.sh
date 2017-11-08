@@ -166,3 +166,11 @@ sed -i '/platform/d' /usr/local/share/nems/nems.conf
 if [ ! -f /var/log/nems/hw_model.log ]; then
   /usr/local/share/nems/nems-scripts/hw_model.sh
 fi
+
+# Fix paths on rpimonitor
+if grep -q "/home/pi/nems-scripts/info.sh" /etc/rpimonitor/template/version.conf; then
+  systemctl stop rpimonitor
+  /bin/sed -i -- 's,/home/pi/nems-scripts/info.sh,/usr/local/bin/nems-info,g' /etc/rpimonitor/template/version.conf
+  systemctl stop rpimonitor
+fi
+
