@@ -85,8 +85,12 @@ elif [[ $COMMAND == "temperature" ]]; then
 elif [[ $COMMAND == "nemsbranch" ]]; then
   /usr/local/share/nems/nems-scripts/info2.sh 2
 
+elif [[ $COMMAND == "sslcert" ]]; then
+  /usr/bin/openssl s_client -connect localhost:443 < /dev/null 2>/dev/null | openssl x509 -text -in /dev/stdin
+
 # Output usage info as no valid command line argument was provided
 else
   echo "Usage: ./$me command"
   echo "For help, visit wiki.nemslinux.com/commands/nems-info"
 fi
+
