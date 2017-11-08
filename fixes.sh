@@ -174,3 +174,17 @@ if grep -q "/home/pi/nems-scripts/info.sh" /etc/rpimonitor/template/version.conf
   systemctl stop rpimonitor
 fi
 
+# Randomize nemsadmin password if NEMS is initialized
+# After nems-init you must first become root, then su nemsadmin to access nemsadmin
+  if [ -d /home/nemsadmin ]; then # nemsadmin is missing, so do not proceed
+    usercount=$(find /home/* -maxdepth 0 -type d | wc -l)
+    if (( $usercount > 1)); then # Only do this if there are other users on the system
+      rndpass=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-32} | head -n 1)
+      echo -e "$rndpass\n$rndpass" | passwd nemsadmin >/tmp/init 2>&1
+    fi
+  fi
+
+# Detect Platform if failed previously
+  if [ ! -f /var/log/nems/hw_model ]; then
+    /usr/local/share/nems/nems-scripts/hw_model.sh
+  fi
