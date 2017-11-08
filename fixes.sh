@@ -171,7 +171,7 @@ fi
 if grep -q "/home/pi/nems-scripts/info.sh" /etc/rpimonitor/template/version.conf; then
   systemctl stop rpimonitor
   /bin/sed -i -- 's,/home/pi/nems-scripts/info.sh,/usr/local/bin/nems-info,g' /etc/rpimonitor/template/version.conf
-  systemctl stop rpimonitor
+  systemctl start rpimonitor
 fi
 
 # Randomize nemsadmin password if NEMS is initialized
