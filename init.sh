@@ -91,7 +91,7 @@ else
     echo "Disabling nemsadmin access. Remember you must now login as $username"
     deluser nemsadmin sudo # Remove super user access from nemsadmin account
     rndpass=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-32} | head -n 1)
-    echo -e "$rndpass\n$rndpass" | smbpasswd -s -a nemsadmin # set a random password on the account so no longer can login
+    echo -e "$rndpass\n$rndpass" | passwd -s -a nemsadmin # set a random password on the account so no longer can login
   fi
 
 echo Initializing new Nagios user
