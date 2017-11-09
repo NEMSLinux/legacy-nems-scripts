@@ -154,7 +154,7 @@ if [ -f /home/pi/nems.conf ]; then
 fi
 
 # Remove apikey if it is not set (eg., did not get a response from the server)
-apikey=$(cat /usr/local/share/nems/nems.conf | grep test | printf '%s' $(cut -n -d '=' -f 2))
+apikey=$(cat /usr/local/share/nems/nems.conf | grep apikey | printf '%s' $(cut -n -d '=' -f 2))
 if [[ $apikey == '' ]]; then
   sed -i~ '/apikey/d' /usr/local/share/nems/nems.conf
 fi
