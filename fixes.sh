@@ -67,6 +67,10 @@ if [ ! -f /usr/local/bin/nems-info ]; then
   ln -s /usr/local/share/nems/nems-scripts/info.sh /usr/local/bin/nems-info
 fi
 
+if [ ! -f /usr/local/bin/nems-cert ]; then
+  ln -s /usr/local/share/nems/nems-scripts/gen-cert.sh /usr/local/bin/nems-cert
+fi
+
 # Move NEMS version data into nems.conf
 if [ -f /root/nems/ver.txt ]; then
   ver=$(cat /root/nems/ver.txt)
@@ -191,3 +195,4 @@ fi
 
 # Fix ownership of NEMS SST
   chown -R www-data:www-data /var/www/html/config
+
