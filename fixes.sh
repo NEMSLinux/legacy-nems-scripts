@@ -188,3 +188,6 @@ fi
   if [ ! -f /var/log/nems/hw_model ]; then
     /usr/local/share/nems/nems-scripts/hw_model.sh
   fi
+
+# Fix ownership of NEMS SST
+  chown -R www-data:www-data /var/www/html/config
