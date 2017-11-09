@@ -5,6 +5,8 @@
 // # Please do not deactivate this unless you absolutely have to.
 // # Again, it's completely anonymous, and nothing private is revealed.
 
+if (file_exists('/var/log/nems/hw_model')) { // Don't run this until system is ready to report true stats
+
   // Get the platform of your NEMS server
   $platform = trim(shell_exec('/usr/local/bin/nems-info platform'));
 
@@ -82,4 +84,5 @@
     file_put_contents('/usr/local/share/nems/nems.conf','apikey=' . $newkey . PHP_EOL, FILE_APPEND);
   }
 
+}
 ?>
