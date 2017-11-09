@@ -5,6 +5,11 @@
 // # Please do not deactivate this unless you absolutely have to.
 // # Again, it's completely anonymous, and nothing private is revealed.
 
+if (!file_exists('/var/log/nems/hw_model')) {
+  // Just in case this is the first boot and running at startup, let's hang tight for 30 seconds to let the data generate
+  sleep(30);
+}
+
 if (file_exists('/var/log/nems/hw_model')) { // Don't run this until system is ready to report true stats
 
   // Get the platform of your NEMS server
