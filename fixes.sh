@@ -67,8 +67,14 @@ if [ ! -f /usr/local/bin/nems-info ]; then
   ln -s /usr/local/share/nems/nems-scripts/info.sh /usr/local/bin/nems-info
 fi
 
+# Install nems-cert command
 if [ ! -f /usr/local/bin/nems-cert ]; then
   ln -s /usr/local/share/nems/nems-scripts/gen-cert.sh /usr/local/bin/nems-cert
+fi
+
+# Install nems-quickfix command
+if [ ! -f /usr/local/bin/nems-quickfix ]; then
+  ln -s /usr/local/share/nems/nems-scripts/quickfix.sh /usr/local/bin/nems-quickfix
 fi
 
 # Move NEMS version data into nems.conf
