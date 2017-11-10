@@ -1,5 +1,7 @@
 #!/bin/bash
 # Generate Self-Signed Certificates for NEMS Linux
+# By Robbie Ferguson
+# nemslinux.com | baldnerd.com | category5.tv
 
   # Setup SSL Certificates
   mkdir /tmp/certs
