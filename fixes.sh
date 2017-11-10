@@ -127,6 +127,14 @@ fi
     cronupdate=1
   fi
 
+# Change nems-update cronjob to nems-quickfix, cutting patch delivery time in half!
+  if grep -q "/update.sh" /tmp/cron.tmp; then
+    /bin/sed -i -- 's,/update.sh,/quickfix.sh > /dev/null 2\>\&1,g' /tmp/cron.tmp
+    cronupdate=1
+  fi
+
+
+
   # Import revised crontab
   if [[ "$cronupdate" == "1" ]]
   then
