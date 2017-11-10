@@ -30,4 +30,5 @@
     $average = ($total/count($loads));
     file_put_contents('/var/log/nems/load-average.log', $average); // this file has the current average
   }
+
 ?>

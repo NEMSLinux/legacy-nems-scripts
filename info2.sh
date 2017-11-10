@@ -8,7 +8,9 @@
 if (!isset($argv[1])) exit('Invalid usage. Please use the nems-info command.' . PHP_EOL);
 
 switch($argv[1]) {
+
   case 1: // temperature
+   /*
     $monitorix = monitorix('raspberrypi');
     if (is_array($monitorix['data']['rpi_temp0'])) {
       $tmp = 0;
@@ -26,6 +28,12 @@ switch($argv[1]) {
         echo 0 . PHP_EOL; // 0 means "unknown"
       }
     }
+   */
+   if (file_exists('/var/log/nems/thermal.log')) {
+     echo file_get_contents('/var/log/nems/thermal.log');
+   } else {
+     echo 0 . PHP_EOL;
+   }
   break;
 
   case 2: // NEMS Version Branch (exclude microversion)

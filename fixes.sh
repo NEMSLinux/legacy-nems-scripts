@@ -133,6 +133,11 @@ fi
     cronupdate=1
   fi
 
+  if ! grep -q "NEMS0006" /tmp/cron.tmp; then
+    printf "\n# Log CPU Temperature NEMS0006\n*/15 * * * * /usr/local/share/nems/nems-scripts/thermallogger.sh cron\n" >> /tmp/cron.tmp
+    cronupdate=1
+  fi
+
 
 
   # Import revised crontab
