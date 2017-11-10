@@ -7,16 +7,110 @@
 
   echo ""
   echo "Let's generate your SSL Certificates..."
-  echo "DO NOT LEAVE ANYTHING BLANK - If you do, the certs will fail."
-  echo ""
-  echo "Fill in the following:"
-  country=$(/usr/local/share/nems/nems-scripts/country.sh)
 
-  read -p "Country Code: " -i "$country" -e country
-  read -p "Province/State: " province
-  read -p "Your City: " city
-  read -p "Company Name or Your Name: " company
-  read -p "Your email address: " email
+HEIGHT=15
+WIDTH=40
+CHOICE_HEIGHT=4
+BACKTITLE="NEMS Linux"
+TITLE="Certificate Generator"
+MENU="Choose one of the following options:"
+
+OPTIONS=(1 "Use Generic Settings"
+         2 "Use Custom Settings")
+
+CHOICE=$(dialog --clear \
+                --backtitle "$BACKTITLE" \
+                --title "$TITLE" \
+                --menu "$MENU" \
+                $HEIGHT $WIDTH $CHOICE_HEIGHT \
+                "${OPTIONS[@]}" \
+                2>&1 >/dev/tty)
+
+if test $? -eq 0
+then 
+  clear
+else
+  clear
+  echo "Canceled"
+  cd /tmp
+  rm -rf /tmp/certs
+  exit
+fi
+
+case $CHOICE in
+        1)
+            echo "Using generic settings:"
+            country="CA"
+            province="Ontario"
+            city="Toronto"
+            company="NEMS Linux"
+            email="noreply@nemslinux.com"
+            ;;
+        2)
+
+            # open fd
+            exec 3>&1
+
+            # Declare Variables
+            country=$(/usr/local/share/nems/nems-scripts/country.sh)
+            province=""
+            city=""
+            company=""
+            email=""
+
+            VALUES=$(dialog --ok-label "Generate" \
+            --backtitle "NEMS Linux" \
+            --title "Custom Cert Settings" \
+            --form "Fill in the following:" \
+            15 50 0 \
+	"Country Code:" 1 1	"$country" 	1 15 2 0 \
+	"Province:"    2 1	"$province"  	2 15 14 0 \
+	"City:"    3 1	"$city"  	3 15 14 0 \
+	"Company:"     4 1	"$company" 	4 15 30 0 \
+	"Email:"     5 1	"$email" 	5 15 30 0 \
+          2>&1 1>&3)
+
+          if test $? -eq 0
+          then 
+            clear
+            echo "Using custom settings:"
+            echo ""
+          else
+            clear
+            echo "Canceled"
+            cd /tmp
+            rm -rf /tmp/certs
+            exit
+          fi
+
+          # close fd
+          exec 3>&-
+
+
+echo "$VALUES" > /tmp/certs/input.tmp
+IFS=$'\n' read -d '' -r -a data < /tmp/certs/input.tmp
+country="${data[0]}"
+province="${data[1]}"
+city="${data[2]}"
+company="${data[3]}"
+email="${data[4]}"
+
+            ;;
+esac
+
+  echo "Country: $country"
+  echo "Province: $province"
+  echo "City: $city"
+  echo "Company: $company"
+  echo "Email: $email"
+  echo ""
+
+  if [[ "$country" == "" ]] || [[ "$province" == "" ]] || [[ "$city" == "" ]] || [[ "$company" == "" ]] || [[ "$email" == "" ]]; then
+    echo "Error: You missed some required information."
+    echo "       ALL FIELDS ARE REQUIRED."
+    echo ""
+    exit
+  fi
 
   echo "[req]
   prompt = no
@@ -29,7 +123,7 @@
   ST = $province
   L = $city
   O = $company
-  CN = *.nems.local
+  CN = *.$(hostname).local
   emailAddress = $email
   [v3_req]
   basicConstraints = CA:FALSE
@@ -39,6 +133,7 @@
   DNS.1 = nems.local
   " > /tmp/certs/config.txt
 
+  echo "Generating certificates..."
   # Create CA private key
   /usr/bin/openssl genrsa 2048 > ca-key.pem
 

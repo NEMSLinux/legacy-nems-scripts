@@ -151,6 +151,11 @@ if [ $(dpkg-query -W -f='${Status}' php-rrd 2>/dev/null | grep -c "ok installed"
   apt-get -y install php-rrd
 fi
 
+# Install dialog (make nems command line prompts pretty)
+if [ $(dpkg-query -W -f='${Status}' dialog 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+  apt-get -y install dialog
+fi
+
 # Patch Against KRACK WPA2 Exploit
 if [ ! -f /var/log/nems/wpasupplicant ]; then
   apt install wpasupplicant
