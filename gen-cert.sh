@@ -125,7 +125,7 @@ esac
   ST = $province
   L = $city
   O = $company
-  CN = *.$(hostname).local
+#  CN = *.$(hostname).local
   emailAddress = $email
   [v3_req]
   basicConstraints = CA:FALSE
@@ -133,6 +133,7 @@ esac
   subjectAltName = @alt_names
   [alt_names]
   DNS.1 = nems.local
+  DNS.2 = *.nems.local
   " > /tmp/certs/config.txt
 
   echo "Generating certificates..."
