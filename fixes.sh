@@ -220,3 +220,11 @@ fi
 # Fix ownership of NEMS SST
   chown -R www-data:www-data /var/www/html/config
 
+# Password protect /phpmyadmin - found users putting their NEMS servers online with this conf enabled... Yikes!
+# This adds security to this software since only the NEMS user can now use it.
+if [[ -f /etc/apache2/conf-available/phpmyadmin.conf ]]; then
+  if ! grep -q "NEMS Protected Access" /etc/apache2/conf-available/phpmyadmin.conf; then
+    /bin/sed -i -- 's,DirectoryIndex index.php,DirectoryIndex index.php\n    AuthName "NEMS Protected Access"\n    AuthType Basic\n    AuthUserFile /var/www/htpasswd\n    <RequireAll>\n      Require all granted\n      Require valid-user\n    </RequireAll>,g' /etc/apache2/conf-available/phpmyadmin.conf
+    systemctl restart apache2
+  fi
+fi
