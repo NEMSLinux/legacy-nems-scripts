@@ -3,12 +3,25 @@
 # By Robbie Ferguson
 # nemslinux.com | baldnerd.com | category5.tv
 
+  echo ""
+  echo "Let's generate your SSL Certificates..."
+
+  # Using snakeoil for the time being since we had issues with nems-cert and Windows 10.
+
+  # Generating new Snakeoil cert
+  /usr/sbin/make-ssl-cert generate-default-snakeoil --force-overwrite
+
+  # Combine for Webmin
+  cat /etc/ssl/certs/ssl-cert-snakeoil.pem /etc/ssl/private/ssl-cert-snakeoil.key > /etc/ssl/certs/ssl-cert-snakeoil-combined.pem
+
+  echo Done.
+
+exit 1
+
   # Setup SSL Certificates
   mkdir /tmp/certs
   cd /tmp/certs
 
-  echo ""
-  echo "Let's generate your SSL Certificates..."
 
 HEIGHT=15
 WIDTH=40

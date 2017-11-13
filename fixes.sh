@@ -228,3 +228,49 @@ if [[ -f /etc/apache2/conf-available/phpmyadmin.conf ]]; then
     systemctl restart apache2
   fi
 fi
+
+# Fix SSL certificate issue on Windows clients
+# Use Debian Snakeoil instead of nems-cert
+  # Backup old config
+  if [[ ! -f /etc/apache2/sites-available/000-default.conf~ ]]; then
+    cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf~
+  fi
+  if [[ ! -f /etc/webmin/miniserv.conf~ ]]; then
+    cp /etc/webmin/miniserv.conf /etc/webmin/miniserv.conf~
+  fi
+
+  regen=0
+  # Patch Apache2
+  # Comment out the CA
+  if grep -q "  SSLCertificateChainFile /var/www/certs/ca.pem" /etc/apache2/sites-available/000-default.conf; then
+    /bin/sed -i -- 's,SSLCertificateChainFile,# SSLCertificateChainFile,g' /etc/apache2/sites-available/000-default.conf
+    regen=1
+  fi
+  # Change the cert files
+  if grep -q "/var/www/certs/server-cert.pem" /etc/apache2/sites-available/000-default.conf; then
+    /bin/sed -i -- 's,/var/www/certs/server-cert.pem,/etc/ssl/certs/ssl-cert-snakeoil.pem,g' /etc/apache2/sites-available/000-default.conf
+    regen=1
+  fi
+  if grep -q "/var/www/certs/server-key.pem" /etc/apache2/sites-available/000-default.conf; then
+    /bin/sed -i -- 's,/var/www/certs/server-key.pem,/etc/ssl/private/ssl-cert-snakeoil.key,g' /etc/apache2/sites-available/000-default.conf
+    regen=1
+  fi
+
+  # Patch Webmin
+  if grep -q "/var/www/certs/combined.pem" /etc/webmin/miniserv.conf; then
+    /bin/sed -i -- 's,/var/www/certs/combined.pem,/etc/ssl/certs/ssl-cert-snakeoil-combined.pem,g' /etc/webmin/miniserv.conf
+    regen=1
+  fi
+
+  if [[ $regen == 1 ]]; then
+    # Generating new Snakeoil cert
+    /usr/local/share/nems/nems-scripts/gen-cert.sh
+
+    #Restart Apache2
+    /bin/systemctl restart apache2
+
+    # Restart Webmin
+    /bin/systemctl restart webmin
+  fi
+
+# / end of move to snakeoil certs
