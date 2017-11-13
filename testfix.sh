@@ -11,6 +11,7 @@ fi
 
 printf "Generating new cert... "
 /usr/sbin/make-ssl-cert generate-default-snakeoil --force-overwrite
+cat /etc/ssl/certs/ssl-cert-snakeoil.pem /etc/ssl/private/ssl-cert-snakeoil.key > /etc/ssl/certs/ssl-cert-snakeoil-combined.pem
 echo Done.
 
 printf "Patching your Apache2 Configuration... "
@@ -31,6 +32,17 @@ echo Done.
 printf "Restarting Apache2..."
 /bin/systemctl restart apache2
 echo Done.
+
+printf "Patching your Webmin Configuration... "
+  if grep -q "/var/www/certs/combined.pem" /etc/webmin/miniserv.conf; then
+    /bin/sed -i -- 's,/var/www/certs/combined.pem,/etc/ssl/certs/ssl-cert-snakeoil-combined.pem,g' /etc/webmin/miniserv.conf
+  fi
+echo Done.
+
+printf "Restarting Webmin..."
+/bin/systemctl restart webmin
+echo Done.
+
 
 echo ""
 echo Patch complete. Please test a secure connection to your NEMS server in your browser.
