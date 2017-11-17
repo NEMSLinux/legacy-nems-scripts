@@ -28,7 +28,7 @@ if [ -f /var/www/htpasswd ]; then
 
   # Fix Nagios Core access to admin features for user created with nems-init
   if grep -q nagiosadmin /etc/nagios3/cgi.cfg; then
-    cp -f /root/nems/nems-migrator/data/nagios/cgi.cfg /etc/nagios3/
+    cp -f /root/nems/nems-migrator/data/nagios/conf/cgi.cfg /etc/nagios3/
     /bin/sed -i -- 's/nagiosadmin/'"$username"'/g' /etc/nagios3/cgi.cfg
   fi
 
