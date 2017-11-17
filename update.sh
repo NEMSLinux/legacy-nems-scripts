@@ -28,7 +28,17 @@ else
   printf "Updating nems-www... "
   cd /var/www/html && git pull
   echo "Done."
-  
+
+  # Update nems-admin
+  printf "Updating nems-admin... "
+  cd /root/nems/nems-admin && git pull
+  echo "Done."
+
+  # Update nems-nconf
+  printf "Updating nems-conf... "
+  cd /var/www/nconf && git pull
+  echo "Done."
+
   # Update self
   printf "Updating nems-scripts... "
   if [ -d /usr/local/share/nems/nems-scripts ]; then
