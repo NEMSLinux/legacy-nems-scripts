@@ -17,11 +17,11 @@ elif [[ $COMMAND == "nic" ]]; then
   echo $interface
 
 elif [[ $COMMAND == "checkport" ]]; then
-  response=`nc -v -z -w2 127.0.0.1 $VARIABLE 2>&1`
-  if echo "$response" | grep -q 'open'; then
-    echo 1
-  else
+  response=`/bin/nc -v -z -w2 127.0.0.1 $VARIABLE 2>&1`
+  if echo "$response" | grep -q 'failed'; then
     echo 0
+  else
+    echo 1
   fi
 
 # Output current running NEMS version

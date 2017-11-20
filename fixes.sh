@@ -169,6 +169,12 @@ if [ $(dpkg-query -W -f='${Status}' dialog 2>/dev/null | grep -c "ok installed")
   apt-get -y install dialog
 fi
 
+# Install netcat (used by nems-info checkport)
+if [ $(dpkg-query -W -f='${Status}' netcat 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+  apt -y install netcat
+fi
+
+
 # Patch Against KRACK WPA2 Exploit
 if [ ! -f /var/log/nems/wpasupplicant ]; then
   apt install wpasupplicant
