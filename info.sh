@@ -18,7 +18,7 @@ elif [[ $COMMAND == "nic" ]]; then
 
 elif [[ $COMMAND == "checkport" ]]; then
   response=`/bin/nc -v -z -w2 127.0.0.1 $VARIABLE 2>&1`
-  if echo "$response" | grep -q 'failed'; then
+  if echo "$response" | grep -q 'refused'; then
     echo 0
   else
     echo 1
