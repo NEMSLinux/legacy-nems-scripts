@@ -19,7 +19,7 @@
 /bin/systemctl restart monitorix
 
 # Detect the default network interface and use it for net graphs
-adapter=`/sbin/route | /bin/grep '^default' | /bin/grep -o '[^ ]*$'`
+adapter=`/usr/local/share/nems/nems-scripts/info.sh nic`
 /bin/cat <<EOF > /tmp/monitorix.nems
 <net>
         list = $adapter
@@ -38,6 +38,13 @@ fi
       /bin/systemctl restart monitorix
   fi;
 rm /tmp/monitorix.nems
+
+# Only proceed if Monitorix is running
+running=`/usr/local/share/nems/nems-scripts/info.sh checkport 8080`
+if [[ $running == 0 ]]; then
+  echo "Monitorix is not running. Aborting."
+  exit 1
+fi
 
 # Generate the graphs
 

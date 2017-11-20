@@ -2,12 +2,27 @@
 # NEMS Server Info Script (primarily used for MOTD)
 
 export COMMAND=$1
+export VARIABLE=$2
+
 me=`basename "$0"`
 
 # Output local IP address
 if [[ $COMMAND == "ip" ]]; then
   # Work with any NIC
-  /sbin/ip -f inet addr show $(/sbin/route | grep '^default' | grep -o '[^ ]*$') | grep -Po 'inet \K[\d.]+'
+  /sbin/ip -f inet addr show $($0 nic) | grep -Po 'inet \K[\d.]+'
+
+elif [[ $COMMAND == "nic" ]]; then
+  # Show the active NIC
+  interface=`/sbin/route | /bin/grep '^default' | /bin/grep -o '[^ ]*$'`
+  echo $interface
+
+elif [[ $COMMAND == "checkport" ]]; then
+  response=`nc -v -z -w2 127.0.0.1 $VARIABLE 2>&1`
+  if echo "$response" | grep -q 'open'; then
+    echo 1
+  else
+    echo 0
+  fi
 
 # Output current running NEMS version
 elif [[ $COMMAND == "nemsver" ]]; then
