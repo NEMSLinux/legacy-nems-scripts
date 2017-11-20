@@ -7,7 +7,7 @@ me=`basename "$0"`
 # Output local IP address
 if [[ $COMMAND == "ip" ]]; then
   # Work with any NIC
-  /sbin/ip -f inet addr show $(route | grep '^default' | grep -o '[^ ]*$') | grep -Po 'inet \K[\d.]+'
+  /sbin/ip -f inet addr show $(/sbin/route | grep '^default' | grep -o '[^ ]*$') | grep -Po 'inet \K[\d.]+'
 
 # Output current running NEMS version
 elif [[ $COMMAND == "nemsver" ]]; then
