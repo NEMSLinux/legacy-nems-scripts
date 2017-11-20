@@ -38,8 +38,25 @@ else
   fi
 
   echo ""
-  echo "What username would you like to use when"
-  read -p "logging in to NEMS? " username
+
+  isValidUsername() {
+    local re='^[[:lower:]_][[:lower:][:digit:]_-]{2,15}$'
+    (( ${#1} > 16 )) && return 1
+    [[ $1 =~ $re ]]
+  }
+  while true; do
+  read -p "What would you like your NEMS Username to be? " username
+    if [[ ${username,,} == $username ]]; then
+      if isValidUsername "$username"; then
+        echo Username accepted.
+        break
+      else
+        echo Username is invalid. Please try again.
+      fi
+    else 
+      echo Username must be all lowercase. Please try again.
+    fi
+  done
 
   while true; do
     read -s -p "Password: " password
