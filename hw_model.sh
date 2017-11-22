@@ -107,7 +107,7 @@
 
 	HW_MODEL=0
 	HW_MODEL_DESCRIPTION='Unknown Device'
-	FP_HW_MODEL_INDENTIFIER='/etc/.dietpi_hw_model_identifier'
+	FP_HW_MODEL_INDENTIFIER='/etc/.nems_hw_model_identifier'
 	DISTRO=0
 	HW_UUID=0
 	HW_ARCH=0
@@ -578,6 +578,28 @@
 
 				HW_MODEL_DESCRIPTION='oDroid XU3/4'
 				IMAGE_ADDITIONAL_CREDITS='Meveric'
+
+			# Logic Supply CL100
+			elif (( $HW_MODEL >= 98010 && $HW_MODEL <= 98019 )); then
+
+				MEMTOTAL=$(free | awk '/^Mem:/{print $2}')
+				if (( $MEMTOTAL > 7000000 )); then
+
+					HW_MODEL_DESCRIPTION='Logic Supply CL100 (8GB RAM)'
+					HW_MODEL=98010
+
+				elif (( $MEMTOTAL > 3000000 )); then
+
+					HW_MODEL_DESCRIPTION='Logic Supply CL100 (4GB RAM)'
+					HW_MODEL=98011
+
+				else
+
+					HW_MODEL_DESCRIPTION='Logic Supply CL100 (2GB RAM)'
+					HW_MODEL=98012
+
+				fi
+
 
 			fi
 
