@@ -51,6 +51,15 @@ switch($argv[1]) {
     echo $tmp[0];
   break;
 
+  case 4: // Load the platform data from the API
+    $platform['id'] = shell_exec('/usr/local/share/nems/nems-scripts/info.sh platform');
+    $platform['data'] = @json_decode(@file_get_contents('https://nemslinux.com/api/platform/' . $platform['id']));
+    if (isset($platform['data'])) {
+      echo $platform['data']->name;
+    } else {
+      echo '[API Did Not Respond]';
+    }
+  break;
 }
 
 

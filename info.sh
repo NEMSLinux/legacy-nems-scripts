@@ -65,8 +65,12 @@ elif [[ $COMMAND == "hwid" ]]; then
  cat /proc/cpuinfo | grep Serial |  printf '%s' $(cut -n -d ' ' -f 2) | md5sum | cut -d"-" -f1 -
 
 elif [[ $COMMAND == "platform" ]]; then
-# show if is pi or if is xu4, etc.
+# show if is pi or if is xu4, etc. by numerical value
   /usr/local/share/nems/nems-scripts/info2.sh 3
+
+elif [[ $COMMAND == "platform-name" ]]; then
+# show if is pi or if is xu4, etc. by name
+  /usr/local/share/nems/nems-scripts/info2.sh 4
 
 elif [[ $COMMAND == "drives" ]]; then
 # Generate a list of drives
