@@ -103,6 +103,6 @@ elif [[ $COMMAND == "sslcert" ]]; then
 # Output usage info as no valid command line argument was provided
 else
   echo "Usage: ./$me command"
-  echo "For help, visit wiki.nemslinux.com/commands/nems-info"
+  echo "For help, visit docs.nemslinux.com/commands/nems-info"
 fi
 

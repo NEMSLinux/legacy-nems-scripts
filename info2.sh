@@ -44,6 +44,7 @@ switch($argv[1]) {
   case 3: // Find the board platform ID number
     if (file_exists('/var/log/nems/hw_model')) { // was reporting 0 (pi 1) when file didn't exist
       $tmp = file('/var/log/nems/hw_model');
+      if ( $tmp[0] == 0 && strtolower(substr($tmp[1],0,14)) == strtolower('Unknown Device') ) $tmp[0] = 98000; // Unknown
     } else {
       $tmp[0] = 98000; // NEMS' "unknown" ID
     }
