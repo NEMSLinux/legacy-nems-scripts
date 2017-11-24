@@ -44,7 +44,7 @@ elif [[ $COMMAND == "users" ]]; then
 
 # Output disk usage in percent
 elif [[ $COMMAND == "diskusage" ]]; then
-  df -hl | awk '/^\/dev\/root/ { sum+=$5 } END { print sum }'
+  df -hl /home | awk '/^\/dev\// { sum+=$5 } END { print sum }'
 
 # Output memory usage breakdown
 elif [[ $COMMAND == "memusage" ]]; then

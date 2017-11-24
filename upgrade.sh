@@ -147,6 +147,32 @@ vm.swappiness = 10
    echo ""
    upgraded=1
   fi
+
+# Upgrade from NEMS 1.3 to NEMS 1.3.1
+  if [[ $ver = "1.3" ]]; then
+echo "NEMS 1.3.1 is coming soon. Please check again later."
+exit 1;
+   echo "Upgrading from NEMS $ver to NEMS 1.3.1"
+
+   # Copy the fixed MOTD.
+   echo "Patching MOTD..."
+   cp -f /usr/local/share/nems/nems-scripts/upgrades/1.3.1/motd.tcl /etc/
+   echo "Done."
+
+   # Update NEMS to know the new version
+   echo "Changing version to 1.3.1..."
+   oldver=$ver
+   ver="1.3.1"
+   sed -i -e "s/$oldver/$ver/g" /usr/local/share/nems/nems.conf
+   echo "Done."
+
+   echo ""
+   upgraded=1
+
+
+  fi
+
+
   
   # ----------------------------------
   if [[ $upgraded -ne 1 ]]; then
