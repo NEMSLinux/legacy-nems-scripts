@@ -288,6 +288,7 @@ fi
 # Make NEMS 1.1-1.3 compatible with NEMS 1.4+ configuration locations
   if [[ ! -d /etc/nems ]]; then
     mkdir -p /etc/nems/conf
+    ln -s /etc/nagios3/import /etc/nems/conf/import
     ln -s /etc/nagios3/global /etc/nems/conf/global
     ln -s /etc/nagios3/Default_collector /etc/nems/conf/Default_collector
   fi
