@@ -34,12 +34,18 @@ if [ -f /var/www/htpasswd ]; then
     /bin/sed -i -- 's/nagiosadmin/'"$username"'/g' /etc/nagios3/cgi.cfg
   fi
 
+  # Fix cgi.cfg username (I had pushed out a version where it was set to "robbie")
+  if ! grep -q "robbie" /etc/cgi.cfg; then
+    /bin/sed -i -- 's/robbie/'"$username"'/g' /etc/nagios3/cgi.cfg
+  fi
+
   # Fix Check_MK access to admin features for user created with nems-init
   if grep -q nagiosadmin /etc/check_mk/multisite.d/wato/users.mk; then
     cp -f /root/nems/nems-migrator/data/check_mk/users.mk /etc/check_mk/multisite.d/wato/users.mk
     /bin/sed -i -- 's/nagiosadmin/'"$username"'/g' /etc/check_mk/multisite.d/wato/users.mk
     chown www-data:www-data /etc/check_mk/multisite.d/wato/users.mk
   fi
+
 fi
 
 # Hide the help buttons in Nagios Core that lead to 404 error pages.
