@@ -146,6 +146,11 @@ fi
     cronupdate=1
   fi
 
+  if ! grep -q "NEMS0007" /tmp/cron.tmp; then
+    printf "\n# Run NEMS Migrator Offsite Backup NEMS0007\n0 4 * * * /root/nems/nems-migrator/offsite-backup.sh > /dev/null 2>&1\n" >> /tmp/cron.tmp
+    cronupdate=1
+  fi
+
 
 
   # Import revised crontab
