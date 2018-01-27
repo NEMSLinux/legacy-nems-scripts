@@ -19,6 +19,6 @@ if [[ -f /tmp/osb.backup.nems ]]; then
 fi
 # Load Account Data (output options are json, serial or blank = :: separated, one item per line
   data=$(curl -s -F "hwid=$hwid" -F "osbkey=$osbkey" -F "output=json" https://nemslinux.com/api-backend/offsite-backup-checkin.php)
-  echo "$data" > /var/log/nems/nems-osb-stats.log
+  echo "$data" > /var/log/nems/nems-osb.json
 
 
