@@ -46,6 +46,12 @@ if [ -f /var/www/htpasswd ]; then
     chown www-data:www-data /etc/check_mk/multisite.d/wato/users.mk
   fi
 
+  # Fix log location for already deployed NEMS misccommands
+  if grep -q sendmail /etc/nagios3/global/misccommands.cfg; then
+    /bin/sed -i -- 's/sendmail/sendemail/g' /etc/nagios3/global/misccommands.cfg
+  fi
+
+
 fi
 
 # Hide the help buttons in Nagios Core that lead to 404 error pages.
