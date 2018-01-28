@@ -147,8 +147,13 @@ fi
   fi
 
   if ! grep -q "NEMS0007" /tmp/cron.tmp; then
-    printf "\n# Run NEMS Migrator Off-Site Backup NEMS0007\n0 4 * * * /root/nems/nems-migrator/offsite-backup.sh > /dev/null 2>&1\n" >> /tmp/cron.tmp
+    printf "\n# Run NEMS Migrator Off-Site Backup NEMS0007\n30 23 * * * /root/nems/nems-migrator/offsite-backup.sh > /dev/null 2>&1\n" >> /tmp/cron.tmp
     cronupdate=1
+  else # Move to 11:30pm so the daily OSB is more accurate to the date (originally it ran at 4am - this patches previously patched systems)
+    if grep -q "0 4 \* \* \* /root/nems/nems-migrator/offsite-backup.sh" /tmp/cron.tmp; then
+      /bin/sed -i -- 's,0 4 \* \* \* /root/nems/nems-migrator/offsite-backup.sh,30 23 * * * /root/nems/nems-migrator/offsite-backup.sh,g' /tmp/cron.tmp
+      cronupdate=1
+    fi
   fi
 
   if ! grep -q "NEMS0008" /tmp/cron.tmp; then
