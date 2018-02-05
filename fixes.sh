@@ -167,7 +167,6 @@ fi
     cronupdate=1
   fi
 
-
   # Import revised crontab
   if [[ "$cronupdate" == "1" ]]
   then
@@ -311,6 +310,12 @@ fi
 
 # / end of move to snakeoil certs
 
+# Load ZRAM Swap at boot
+  if ! grep -q "NEMS0000" /etc/rc.local; then
+    /bin/sed -i -- 's,"exit 0",exit with errorcode 0,g' /etc/rc.local # fix comment so it doesn't get replaced
+    /bin/sed -i -- 's,exit 0,# Load Swap into ZRAM NEMS0000\n/usr/local/share/nems/nems-scripts/zram.sh > /dev/null 2>\&1\n\nexit 0,g' /etc/rc.local
+  fi
+
 # Make NEMS 1.1-1.3 compatible with NEMS 1.4+ configuration locations
   if [[ ! -d /etc/nems ]]; then
     mkdir -p /etc/nems/conf
@@ -318,3 +323,4 @@ fi
     ln -s /etc/nagios3/global /etc/nems/conf/global
     ln -s /etc/nagios3/Default_collector /etc/nems/conf/Default_collector
   fi
+
