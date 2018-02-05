@@ -312,8 +312,12 @@ fi
 
 # Load ZRAM Swap at boot
   if ! grep -q "NEMS0000" /etc/rc.local; then
-    /bin/sed -i -- 's,"exit 0",exit with errorcode 0,g' /etc/rc.local # fix comment so it doesn't get replaced
+    # fix comment so it doesn't get replaced
+    /bin/sed -i -- 's,"exit 0",exit with errorcode 0,g' /etc/rc.local
+    # add to boot process
     /bin/sed -i -- 's,exit 0,# Load Swap into ZRAM NEMS0000\n/usr/local/share/nems/nems-scripts/zram.sh > /dev/null 2>\&1\n\nexit 0,g' /etc/rc.local
+    # run it now
+    /usr/local/share/nems/nems-scripts/zram.sh # Do it now
   fi
 
 # Make NEMS 1.1-1.3 compatible with NEMS 1.4+ configuration locations
