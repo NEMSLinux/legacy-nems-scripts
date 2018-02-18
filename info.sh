@@ -95,6 +95,10 @@ else
   echo 0
 fi
 
+# See current CPU usage in percent
+elif [[ $COMMAND == "cpupercent" ]]; then
+grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage}'
+
 elif [[ $COMMAND == "temperature" ]]; then
   /usr/local/share/nems/nems-scripts/info2.sh 1
 
