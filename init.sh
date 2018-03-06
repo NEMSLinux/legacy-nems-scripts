@@ -144,7 +144,7 @@ service mysql start
 
 # Replace the Nagios3 cgi.cfg file with the sample and add username
 cp -f /root/nems/nems-migrator/data/nagios/conf/cgi.cfg /etc/nagios3/
-/bin/sed -i -- 's/nagiosadmin/'"$username"'/g' /etc/nagios3/cgi.cfg
+/bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/nagios3/cgi.cfg
 
 # Replace the Check_MK users.mk file with the sample and add username
 cp -f /root/nems/nems-migrator/data/check_mk/users.mk /etc/check_mk/multisite.d/wato/users.mk
