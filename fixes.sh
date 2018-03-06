@@ -35,7 +35,7 @@ if [ -f /var/www/htpasswd ]; then
   fi
 
   # Fix cgi.cfg username (I had pushed out a version where it was set to "robbie")
-  if ! grep -q "robbie" /etc/cgi.cfg; then
+  if ! grep -q "robbie" /etc/nagios3/cgi.cfg; then
     /bin/sed -i -- 's/robbie/'"$username"'/g' /etc/nagios3/cgi.cfg
   fi
 
