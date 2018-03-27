@@ -150,13 +150,22 @@ vm.swappiness = 10
 
 # Upgrade from NEMS 1.3 to NEMS 1.3.1
   if [[ $ver = "1.3" ]]; then
-echo "NEMS 1.3.1 is coming soon. Please check again later."
-exit 1;
+exit
    echo "Upgrading from NEMS $ver to NEMS 1.3.1"
 
    # Copy the fixed MOTD.
    echo "Patching MOTD..."
    cp -f /usr/local/share/nems/nems-scripts/upgrades/1.3.1/motd.tcl /etc/
+   echo "Done."
+
+   # Upgrade packages
+   echo "Updating OS..."
+   apt-get update && apt-get -y upgrade && apt-get -y dist-upgrade
+   echo "Done."
+
+   # Upgrade kernel
+   echo "Upgrading kernel..."
+   SKIP_WARNING=1 /usr/bin/rpi-update
    echo "Done."
 
    # Update NEMS to know the new version
@@ -169,7 +178,6 @@ exit 1;
    echo ""
    upgraded=1
 
-
   fi
 
 
@@ -177,6 +185,9 @@ exit 1;
   # ----------------------------------
   if [[ $upgraded -ne 1 ]]; then
     echo "There are no rolling upgrades available for NEMS $ver"
+    echo ""
+  else
+    echo "You must reboot your NEMS Linux server for the changes to take effect."
     echo ""
   fi
 
