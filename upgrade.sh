@@ -14,6 +14,10 @@ else
    echo "Forced reset to NEMS $ver"
   fi
 
+  # Just in case apt is already doing stuff in the background, hang tight until it completes
+  echo "Please wait for apt tasks to complete..."
+  while fuser /var/{lib/{dpkg,apt/lists},cache/apt/archives}/lock >/dev/null 2>&1; do sleep 1; done
+  echo "Done."
   # ----------------------------------
   
 # Jump irrelevant version 1.2 (did not have rolling updates, but is still the top level of the 1.2.x branch)
