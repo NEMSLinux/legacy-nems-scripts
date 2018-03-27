@@ -205,6 +205,8 @@ exit
   else
     echo "You must reboot your NEMS Linux server for the changes to take effect."
     echo ""
+    read -n 1 -s -p "Press any key to reboot (required)"
+    reboot
   fi
 
 fi
