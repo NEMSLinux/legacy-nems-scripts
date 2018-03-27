@@ -39,11 +39,6 @@ if [ -f /var/www/htpasswd ]; then
     /bin/sed -i -- 's/robbie/'"$username"'/g' /etc/nagios3/cgi.cfg
   fi
 
-  # Fix cgi.cfg path to nagios3 icons
-  if grep -q "/var/www/html/shared/nagios3" /etc/nagios3/cgi.cfg; then
-    /bin/sed -i -- 's\/var/www/html/shared/nagios3\/var/www/html/share/nagios3\g' /etc/nagios3/cgi.cfg
-  fi
-
   # Fix Check_MK access to admin features for user created with nems-init
   if grep -q nagiosadmin /etc/check_mk/multisite.d/wato/users.mk; then
     cp -f /root/nems/nems-migrator/data/check_mk/users.mk /etc/check_mk/multisite.d/wato/users.mk
@@ -58,6 +53,13 @@ if [ -f /var/www/htpasswd ]; then
 
 
 fi
+
+
+# Fix cgi.cfg path to nagios3 icons
+if grep -q "/var/www/html/shared/nagios3" /etc/nagios3/cgi.cfg; then
+  /bin/sed -i -- 's\/var/www/html/shared/nagios3\/var/www/html/share/nagios3\g' /etc/nagios3/cgi.cfg
+fi
+
 
 # Hide the help buttons in Nagios Core that lead to 404 error pages.
 # The context specific help pages, if they exist, are just dumb placeholders anyways
