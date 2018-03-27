@@ -16,9 +16,11 @@ if {![string match -nocase "/home*" $var(path)] && ![string match -nocase "/usr/
 #set nemsver [exec -- /bin/cat /var/www/html/inc/ver.txt]
 #set nemsveravail [exec -- /bin/cat /var/www/html/inc/ver-available.txt]
 # NEMS 1.2
-set nemsplatform [exec -- /usr/local/bin/nems-info platform-name]
 set nemsver [exec -- /usr/local/bin/nems-info nemsver]
 set nemsveravail [exec -- /usr/local/bin/nems-info nemsveravail]
+
+# NEMS 1.3.1
+set nemsplatform [exec -- /usr/local/bin/nems-info platform-name]
 
 # * Calculate last login
 set lastlog [exec -- lastlog -u $var(user)]
