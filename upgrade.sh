@@ -157,6 +157,18 @@ exit
    echo "Patching MOTD..."
    cp -f /usr/local/share/nems/nems-scripts/upgrades/1.3.1/motd.tcl /etc/
    echo "Done."
+   
+   # Upgrade authentic theme
+   echo "Upgrading Webmin authentic-theme..."
+   systemctl stop webmin
+   wget -O /tmp/authentic-theme.gz https://github.com/qooob/authentic-theme/archive/19.09.2.tar.gz
+   cd /tmp
+   tar -xvzf authentic-theme.gz
+   mv authentic-theme-19.09.2 authentic-theme
+   mv /usr/share/webmin/authentic-theme /tmp/authentic-theme~
+   mv /tmp/authentic-theme /usr/share/webmin/
+   systemctl start webmin
+   echo "Done."
 
    # Upgrade packages
    echo "Updating OS..."
