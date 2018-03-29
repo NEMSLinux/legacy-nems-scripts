@@ -1,8 +1,11 @@
 #!/bin/bash
 
-# No need to run this directly. Instead, run: sudo nems-update
+# No need to run this directly.
+# Instead, run: sudo nems-update
 
-platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+ # using hard file location rather than symlink as symlink may not exist yet on older versions
+ platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+ ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver) 
 
 # NEMS 1.2.1 was released with an incorrect permission on this file
 chown www-data:www-data /etc/nagios3/global/timeperiods.cfg
@@ -335,3 +338,11 @@ fi
     ln -s /etc/nagios3/Default_collector /etc/nems/conf/Default_collector
   fi
 
+# Replace ntpd with htpdate - fixes crashing when server cannot be reached
+  if [[ $ver = "1.3.1" ]]; then
+#    apt -y remove --purge --auto-remove ntp
+#    apt -y install htpdate
+  fi
+ 
+ 
+ 
