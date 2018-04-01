@@ -50,7 +50,7 @@
 	# HW_MODEL 12 oDroid C2
 	# HW_MODEL 11 oDroid XU3/4
 	# HW_MODEL 10 oDroid C1
-	# HW_MODEL 3 Raspberry Pi 3
+	# HW_MODEL 3 Raspberry Pi 3/3 B+
 	# HW_MODEL 2 Raspberry Pi 2
 	# HW_MODEL 1 Raspberry Pi 1/Zero (512mb)
 	# HW_MODEL 0 Raspberry Pi 1 (256mb)
