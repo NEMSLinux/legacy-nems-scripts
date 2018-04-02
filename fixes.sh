@@ -176,6 +176,11 @@ fi
     printf "\n# Log NEMS Migrator Off-Site Backup Stats NEMS0008\n30 4 * * * /usr/local/share/nems/nems-scripts/osb-stats.sh > /dev/null 2>&1\n" >> /tmp/cron.tmp
     cronupdate=1
   fi
+  
+  if ! grep -q "NEMS0009" /tmp/cron.tmp; then
+    printf "\n# Test Memory for Errors Weekly NEMS0009\n0 3 * * 0 /usr/sbin/memtester 500 10 > /var/log/nems/memtester.log\n" >> /tmp/cron.tmp
+    cronupdate=1
+  fi
 
   # Import revised crontab
   if [[ "$cronupdate" == "1" ]]
