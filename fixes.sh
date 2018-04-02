@@ -343,6 +343,7 @@ fi
 #    apt -y remove --purge --auto-remove ntp
 #    apt -y install htpdate
   fi
- 
- 
- 
+
+if [ $(dpkg-query -W -f='${Status}' memtester 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+  apt-get -y install memtester
+fi
