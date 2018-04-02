@@ -178,7 +178,7 @@ fi
   fi
   
   if ! grep -q "NEMS0009" /tmp/cron.tmp; then
-    printf "\n# Test Memory for Errors Weekly NEMS0009\n0 3 * * 0 /usr/sbin/memtester 500 10 > /var/log/nems/memtester.log\n" >> /tmp/cron.tmp
+    printf "\n# Test Memory for Errors Weekly NEMS0009\n0 3 * * 0 /usr/sbin/memtester 500 10 > /var/log/nems/memtest.log\n" >> /tmp/cron.tmp
     cronupdate=1
   fi
 
