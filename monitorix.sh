@@ -40,7 +40,7 @@ fi
 rm /tmp/monitorix.nems
 
 # Only proceed if Monitorix is running
-running=`/usr/local/share/nems/nems-scripts/info.sh checkport 8080`
+running=$(/usr/local/share/nems/nems-scripts/info.sh checkport 8080)
 if [[ $running == 0 ]]; then
   echo "Monitorix is not running. Aborting."
   exit 1

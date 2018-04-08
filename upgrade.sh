@@ -154,7 +154,6 @@ vm.swappiness = 10
 
 # Upgrade from NEMS 1.3 to NEMS 1.3.1
   if [[ $ver = "1.3" ]]; then
-exit
    echo "Upgrading from NEMS $ver to NEMS 1.3.1"
 
    # Copy the fixed MOTD.
