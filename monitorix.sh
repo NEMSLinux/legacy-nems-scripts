@@ -17,6 +17,7 @@
 # Sometimes Monitorix (the daemon) stops responding even though it is running.
 # Restart it here just in case, before loading the data.
 /bin/systemctl restart monitorix
+sleep 5
 
 # Detect the default network interface and use it for net graphs
 adapter=`/usr/local/share/nems/nems-scripts/info.sh nic`
