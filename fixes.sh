@@ -344,10 +344,10 @@ fi
   fi
 
 # Replace ntpd with htpdate - fixes crashing when server cannot be reached
-  if [[ $ver = "1.3.1" ]]; then
+#  if [[ $ver = "1.3.1" ]]; then
 #    apt -y remove --purge --auto-remove ntp
 #    apt -y install htpdate
-  fi
+#  fi
 
 if [ $(dpkg-query -W -f='${Status}' memtester 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
   apt-get -y install memtester
