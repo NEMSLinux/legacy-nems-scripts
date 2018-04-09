@@ -3,6 +3,11 @@
 # No need to run this directly.
 # Instead, run: sudo nems-update
 
+ # Just in case apt is already doing stuff in the background, hang tight until it completes
+ echo "Please wait for apt tasks to complete..."
+ while fuser /var/{lib/{dpkg,apt/lists},cache/apt/archives}/lock >/dev/null 2>&1; do sleep 1; done
+ echo "Done."
+
  # using hard file location rather than symlink as symlink may not exist yet on older versions
  platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
  ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver) 
