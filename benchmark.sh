@@ -13,6 +13,9 @@ printf "\nRaspberry Pi Board Revision: " >> /tmp/nems-benchmark.log
 printf "Raspberry Pi Board NEMS ID: " >> /tmp/nems-benchmark.log
 /usr/local/bin/nems-info hwid >> /tmp/nems-benchmark.log
 
+printf "System Uptime: " >> /tmp/nems-benchmark.log
+/usr/bin/uptime >> /tmp/nems-benchmark.log
+
 printf "LAN IP: " >> /tmp/nems-benchmark.log
 /usr/local/bin/nems-info ip >> /tmp/nems-benchmark.log
 
