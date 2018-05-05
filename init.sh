@@ -112,15 +112,15 @@ else
   fi
 
 echo Initializing new Nagios user
-systemctl stop nagios3
+systemctl stop nagios
 
-# Reininitialize Nagios3 user account
+# Reininitialize Nagios user account
   echo "define contactgroup {
                 contactgroup_name                     admins
                 alias                                 Nagios Administrators
                 members                               $username
 }
-" > /etc/nagios3/global/contactgroups.cfg
+" > /etc/nagios/global/contactgroups.cfg
   echo "define contact {
                 contact_name                          $username
                 alias                                 Nagios Admin
@@ -132,7 +132,7 @@ systemctl stop nagios3
                 host_notification_commands            notify-host-by-email
                 service_notification_commands         notify-service-by-email
 }
-" > /etc/nagios3/global/contacts.cfg
+" > /etc/nagios/global/contacts.cfg
 
 # Replace the database with Sample database
 service mysql stop
@@ -142,9 +142,9 @@ chown -R mysql:mysql /var/lib/NEMS-Sample
 mv /var/lib/NEMS-Sample /var/lib/mysql
 service mysql start
 
-# Replace the Nagios3 cgi.cfg file with the sample and add username
-cp -f /root/nems/nems-migrator/data/nagios/conf/cgi.cfg /etc/nagios3/
-/bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/nagios3/cgi.cfg
+# Replace the Nagios cgi.cfg file with the sample and add username
+cp -f /root/nems/nems-migrator/data/nagios/conf/cgi.cfg /etc/nagios/
+/bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/nagios/cgi.cfg
 
 # Replace the Check_MK users.mk file with the sample and add username
 cp -f /root/nems/nems-migrator/data/check_mk/users.mk /etc/check_mk/multisite.d/wato/users.mk
@@ -155,10 +155,10 @@ chown www-data:www-data /etc/check_mk/multisite.d/wato/users.mk
 mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"
 
 # Import new configuration into NConf
-echo "  Importing: contact" && /var/www/nconf/bin/add_items_from_nagios.pl -c contact -f /etc/nagios3/global/contacts.cfg 2>&1 | grep -E "ERROR"
-echo "  Importing: contactgroup" && /var/www/nconf/bin/add_items_from_nagios.pl -c contactgroup -f /etc/nagios3/global/contactgroups.cfg 2>&1 | grep -E "ERROR"
+echo "  Importing: contact" && /var/www/nconf/bin/add_items_from_nagios.pl -c contact -f /etc/nagios/global/contacts.cfg 2>&1 | grep -E "ERROR"
+echo "  Importing: contactgroup" && /var/www/nconf/bin/add_items_from_nagios.pl -c contactgroup -f /etc/nagios/global/contactgroups.cfg 2>&1 | grep -E "ERROR"
   
-systemctl start nagios3
+systemctl start nagios
 
 # Localization
 
