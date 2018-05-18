@@ -7,7 +7,7 @@ diskusage=$(/usr/local/bin/nems-info diskusage)
 
 ip=$(/usr/local/bin/nems-info ip)
 dialog --title "NEMS Linux $ver" --infobox "\
-Hostname:         $host\n\
+Hostname:         $host.local\n\
 IP Address:       $ip\n\
 CPU Usage:        $cpupercent%\n\
 Disk Usage:       $diskusage%\n\
