@@ -143,7 +143,11 @@ mv /var/lib/NEMS-Sample /var/lib/mysql
 service mysql start
 
 # Replace the Nagios cgi.cfg file with the sample and add username
-cp -f /root/nems/nems-migrator/data/nagios/conf/cgi.cfg /etc/nagios/
+if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
+  cp -fr /root/nems/nems-migrator/data/1.4/nagios/etc/* /etc/nagios/
+else
+  cp -f /root/nems/nems-migrator/data/nagios/conf/cgi.cfg /etc/nagios/
+fi
 /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/nagios/cgi.cfg
 
 # Replace the Check_MK users.mk file with the sample and add username
