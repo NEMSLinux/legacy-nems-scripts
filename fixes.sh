@@ -330,6 +330,15 @@ fi
     /bin/systemctl restart webmin
   fi
 
+  # When we moved to snakeoil certs, we did not also point Monit to these new certs, so it broke. Fix it (NEMS 1.1-1.3.x)
+  # Fix permissions for monit to use the cert (max 700)
+  chmod 600 /etc/ssl/certs/ssl-cert-snakeoil-combined.pem
+  if grep -q "/var/www/certs/combined.pem" /etc/monit/conf.d/nems.conf; then
+    /bin/sed -i -- 's,/var/www/certs/combined.pem,/etc/ssl/certs/ssl-cert-snakeoil-combined.pem,g' /etc/monit/conf.d/nems.conf
+    # not regenerating script this time since this is a future fix
+    systemctl restart monit
+  fi
+
 # / end of move to snakeoil certs
 
 # Load ZRAM Swap at boot
