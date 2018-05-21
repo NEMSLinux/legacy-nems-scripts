@@ -13,7 +13,9 @@
  ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver) 
 
 # NEMS 1.2.1 was released with an incorrect permission on this file
-chown www-data:www-data /etc/nagios3/global/timeperiods.cfg
+if [[ $ver = "1.2.1" ]]; then
+  chown www-data:www-data /etc/nagios3/global/timeperiods.cfg
+fi
 
 # Prepare the 1.2.x->1.3.x transition to move away from /home/pi folder
   # Will create this folder now to avoid errors
