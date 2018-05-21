@@ -11,8 +11,11 @@
   # Generating new Snakeoil cert
   /usr/sbin/make-ssl-cert generate-default-snakeoil --force-overwrite
 
-  # Combine for Webmin
+  # Combine for Webmin and other interfaces
   cat /etc/ssl/certs/ssl-cert-snakeoil.pem /etc/ssl/private/ssl-cert-snakeoil.key > /etc/ssl/certs/ssl-cert-snakeoil-combined.pem
+  # Maximum permission for monit to use the cert is 600
+  # Cert is owned by root:root
+  chmod 600 /etc/ssl/certs/ssl-cert-snakeoil-combined.pem
 
   echo Done.
 

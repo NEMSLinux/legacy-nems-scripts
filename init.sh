@@ -80,6 +80,7 @@ else
   # Allow user to become super-user
   usermod -aG sudo $username
   # Allow user to login to monit web interface
+  [ $(getent group monit) ] || groupadd monit
   usermod -aG monit $username
   # Set the user password
   echo -e "$password\n$password" | passwd $username >/tmp/init 2>&1
