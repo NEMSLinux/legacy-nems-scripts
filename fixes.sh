@@ -1,5 +1,5 @@
 #!/bin/bash
-
+exit
 # No need to run this directly.
 # Instead, run: sudo nems-update
 
