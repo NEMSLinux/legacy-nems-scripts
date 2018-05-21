@@ -13,7 +13,7 @@
 
   # Combine for Webmin and other interfaces
   cat /etc/ssl/certs/ssl-cert-snakeoil.pem /etc/ssl/private/ssl-cert-snakeoil.key > /etc/ssl/certs/ssl-cert-snakeoil-combined.pem
-  # Maximum permission for monit to use the cert is 600
+  # Maximum permission for monit to use the cert is 700 and since we don't need an x bit, we'll do 600
   # Cert is owned by root:root
   chmod 600 /etc/ssl/certs/ssl-cert-snakeoil-combined.pem
 
