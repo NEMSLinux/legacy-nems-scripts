@@ -1,5 +1,5 @@
 #!/bin/bash
-exit
+
 # No need to run this directly.
 # Instead, run: sudo nems-update
 
@@ -20,7 +20,7 @@ fi
 if (( $(awk 'BEGIN {print ("'$ver'" <= "'1.3.1'")}') )); then
   /usr/local/share/nems/nems-scripts/fixes-legacy.sh
 fi
-
+exit
 # Prepare the 1.2.x->1.3.x transition to move away from /home/pi folder
   # Will create this folder now to avoid errors
   if [ ! -d /usr/local/share/nems ]; then
