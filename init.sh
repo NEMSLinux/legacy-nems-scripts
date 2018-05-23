@@ -103,7 +103,7 @@ else
   # Delete the initial admin account
   if [[ -d /home/$username ]] && [[ -d /home/nemsadmin ]]; then
     # echo "Deleting nemsadmin user. Remember you must now login as $username"
-    # userdel -r nemsadmin
+    userdel -rf nemsadmin
 
     # nemsadmin user will be deleted automatically now that you're initialized, but this stuff is just to protect users in case for some reason the nemsuser user remains.
     echo "Disabling nemsadmin access. Remember you must now login as $username"
@@ -152,9 +152,11 @@ fi
 /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/nagios/cgi.cfg
 
 # Replace the Check_MK users.mk file with the sample and add username
-cp -f /root/nems/nems-migrator/data/check_mk/users.mk /etc/check_mk/multisite.d/wato/users.mk
-/bin/sed -i -- 's/nagiosadmin/'"$username"'/g' /etc/check_mk/multisite.d/wato/users.mk
-chown www-data:www-data /etc/check_mk/multisite.d/wato/users.mk
+if [[ -d /etc/check_mk ]]; then # Removed in NEMS 1.4+
+  cp -f /root/nems/nems-migrator/data/check_mk/users.mk /etc/check_mk/multisite.d/wato/users.mk
+  /bin/sed -i -- 's/nagiosadmin/'"$username"'/g' /etc/check_mk/multisite.d/wato/users.mk
+  chown www-data:www-data /etc/check_mk/multisite.d/wato/users.mk
+fi
 
 # Remove nconf history, should it exist
 mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"
