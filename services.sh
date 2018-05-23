@@ -28,3 +28,12 @@ platform=$(/usr/local/bin/nems-info platform)
      sleep 15 # Need to wait a bit so Nagios has time to load first
      /root/nems/nagios-api/nagios-api -p 8090 -c /var/lib/nagios3/rw/live.sock -s /var/cache/nagios3/status.dat -l /var/log/nagios3/nagios.log >> /var/log/nagios-api.log 2>&1 &
    fi
+
+   # webmin
+   if grep -q "webmin=0" "$conf"; then
+     systemctl stop webmin
+     systemctl disable webmin
+   else
+     systemctl enable webmin
+     systemctl start webmin
+   fi
