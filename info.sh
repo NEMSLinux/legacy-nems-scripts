@@ -108,6 +108,18 @@ elif [[ $COMMAND == "nemsbranch" ]]; then
 elif [[ $COMMAND == "sslcert" ]]; then
   /usr/bin/openssl s_client -connect localhost:443 < /dev/null 2>/dev/null | openssl x509 -text -in /dev/stdin
 
+elif [[ $COMMAND == "init" ]]; then
+  if [[ -f /var/www/htpasswd ]]; then
+    lenhtpass=$(wc -m /var/www/htpasswd | awk '{print $1}')
+    if [ "$lenhtpass" -gt "0" ]; then
+      echo 1
+    else
+      echo 0
+    fi
+  else
+    echo 0
+  fi
+
 # Output usage info as no valid command line argument was provided
 else
   echo "Usage: ./$me command"
