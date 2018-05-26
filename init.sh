@@ -5,6 +5,11 @@
 
 ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver) 
 
+if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
+  confbase=/etc/nems/conf/
+else
+  confbase=/etc/nagios3/
+fi
 echo ""
 echo Welcome to NEMS initialization script.
 echo ""
@@ -121,7 +126,7 @@ systemctl stop nagios
                 alias                                 Nagios Administrators
                 members                               $username
 }
-" > /etc/nagios/global/contactgroups.cfg
+" > $confbase/global/contactgroups.cfg
   echo "define contact {
                 contact_name                          $username
                 alias                                 Nagios Admin
@@ -133,23 +138,28 @@ systemctl stop nagios
                 host_notification_commands            notify-host-by-email
                 service_notification_commands         notify-service-by-email
 }
-" > /etc/nagios/global/contacts.cfg
+" > $confbase/global/contacts.cfg
 
 # Replace the database with Sample database
 service mysql stop
 rm -rf /var/lib/mysql/
-cp -R /root/nems/nems-migrator/data/mysql/NEMS-Sample /var/lib
-chown -R mysql:mysql /var/lib/NEMS-Sample
-mv /var/lib/NEMS-Sample /var/lib/mysql
+if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
+  cp -R /root/nems/nems-migrator/data/1.4/mysql /var/lib
+else
+  cp -R /root/nems/nems-migrator/data/mysql/NEMS-Sample /var/lib
+  mv /var/lib/NEMS-Sample /var/lib/mysql
+fi
+chown -R mysql:mysql /var/lib/mysql
 service mysql start
 
 # Replace the Nagios cgi.cfg file with the sample and add username
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
-  cp -fr /root/nems/nems-migrator/data/1.4/nagios/etc/* /etc/nagios/
+  cp -fr /root/nems/nems-migrator/data/1.4/nagios/etc/* /usr/local/nagios/etc/
+  /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /usr/local/nagios/etc/cgi.cfg
 else
   cp -f /root/nems/nems-migrator/data/nagios/conf/cgi.cfg /etc/nagios/
+  /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/nagios/cgi.cfg
 fi
-/bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/nagios/cgi.cfg
 
 # Replace the Check_MK users.mk file with the sample and add username
 if [[ -d /etc/check_mk ]]; then # Removed in NEMS 1.4+
@@ -162,8 +172,8 @@ fi
 mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"
 
 # Import new configuration into NConf
-echo "  Importing: contact" && /var/www/nconf/bin/add_items_from_nagios.pl -c contact -f /etc/nagios/global/contacts.cfg 2>&1 | grep -E "ERROR"
-echo "  Importing: contactgroup" && /var/www/nconf/bin/add_items_from_nagios.pl -c contactgroup -f /etc/nagios/global/contactgroups.cfg 2>&1 | grep -E "ERROR"
+echo "  Importing: contact" && /var/www/nconf/bin/add_items_from_nagios.pl -c contact -f $confbase/global/contacts.cfg 2>&1 | grep -E "ERROR"
+echo "  Importing: contactgroup" && /var/www/nconf/bin/add_items_from_nagios.pl -c contactgroup -f $confbase/global/contactgroups.cfg 2>&1 | grep -E "ERROR"
   
 systemctl start nagios
 
