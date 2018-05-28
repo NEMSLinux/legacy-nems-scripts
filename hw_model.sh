@@ -1,5 +1,10 @@
 #!/bin/bash
 {
+
+  if [[ ! -f /var/log/nems/hw_model ]]; then
+    touch /var/log/nems/hw_model
+  fi
+
 	#////////////////////////////////////
 	# hw_model from DietPi
 	#
