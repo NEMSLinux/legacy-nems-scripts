@@ -111,6 +111,12 @@ fi
     cronupdate=1
   fi
 
+  if ! grep -q "NEMS0010" /tmp/cron.tmp; then
+    printf "\n# Detect and Set Local DNS Settings NEMS0010\n@reboot /sbin/resolvconf -u > /dev/null 2>&1\n" >> /tmp/cron.tmp
+    cronupdate=1
+  fi
+
+
   # Import revised crontab
   if [[ "$cronupdate" == "1" ]]
   then
