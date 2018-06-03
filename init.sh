@@ -201,7 +201,11 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.3'")}') )); then
   if [ -f /etc/nagvis/etc/auth.db ]; then
     rm /etc/nagvis/etc/auth.db
   fi
-  cp /root/nems/nems-migrator/data/nagvis/auth.db /etc/nagvis/etc/
+  if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
+    cp /root/nems/nems-migrator/data/1.4/nagvis/auth.db /etc/nagvis/etc/
+  else
+    cp /root/nems/nems-migrator/data/nagvis/auth.db /etc/nagvis/etc/
+  fi
   chown www-data:www-data /etc/nagvis/etc/auth.db
   # Note, this is being added as specifically userId 1 as this user is users2role 1, administrator
   # NagVis hashes its SHA1 passwords with the long string, which is duplicated in the nagvis ini file - /etc/nagvis/etc/nagvis.ini.php
