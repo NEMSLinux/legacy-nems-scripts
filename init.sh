@@ -7,8 +7,10 @@ ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver)
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
   confbase=/etc/nems/conf/
+  nagios=nagios
 else
   confbase=/etc/nagios3/
+  nagios=nagios3
 fi
 echo ""
 echo Welcome to NEMS initialization script.
@@ -105,12 +107,9 @@ else
     /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/samba/smb.conf
     systemctl restart smbd
 
-  # Delete the initial admin account
+  # Distable the initial admin account
   if [[ -d /home/$username ]] && [[ -d /home/nemsadmin ]]; then
-    # echo "Deleting nemsadmin user. Remember you must now login as $username"
-    # userdel -rf nemsadmin
-
-    # nemsadmin user will be deleted automatically now that you're initialized, but this stuff is just to protect users in case for some reason the nemsuser user remains.
+    # nemsadmin user will be deleted automatically via cron now that you're initialized, but this stuff is just to protect users in case for some reason the nemsuser user remains.
     echo "Disabling nemsadmin access. Remember you must now login as $username"
     deluser nemsadmin sudo # Remove super user access from nemsadmin account
     rndpass=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-32} | head -n 1)
@@ -118,7 +117,7 @@ else
   fi
 
 echo Initializing new Nagios user
-systemctl stop nagios
+systemctl stop $nagios
 
 # Reininitialize Nagios user account
   echo "define contactgroup {
@@ -175,7 +174,7 @@ mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"
 echo "  Importing: contact" && /var/www/nconf/bin/add_items_from_nagios.pl -c contact -f $confbase/global/contacts.cfg 2>&1 | grep -E "ERROR"
 echo "  Importing: contactgroup" && /var/www/nconf/bin/add_items_from_nagios.pl -c contactgroup -f $confbase/global/contactgroups.cfg 2>&1 | grep -E "ERROR"
   
-systemctl start nagios
+systemctl start $nagios
 
 # Localization
 
@@ -218,10 +217,12 @@ fi
 
   echo "Now we will resize your root partition to give you access to all the space"
 
+  ## NEED TO CHANGE TO DETECT PLATFORM
   /usr/bin/raspi-config --expand-rootfs > /dev/null 2>&1
   echo "Done."
 
   echo ""
+  echo "*** YOU MUST REBOOT NOW ***"
   echo "NOTICE: When you reboot, you must login as $username"
   echo ""
   read -n 1 -s -p "Press any key to reboot (required)"
