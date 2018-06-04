@@ -146,11 +146,17 @@ fi
 
 # Randomize nemsadmin password if NEMS is initialized
 # After nems-init you must first become root, then su nemsadmin to access nemsadmin
-  if [ -d /home/nemsadmin ]; then # nemsadmin is missing, so do not proceed
+  if [ -d /home/nemsadmin ]; then # the nemsadmin user folder exists
     usercount=$(find /home/* -maxdepth 0 -type d | wc -l)
     if (( $usercount > 1)); then # Only do this if there are other users on the system
+    # This assumes (and rightly so) that an extra user means NEMS has been initialized
+    # It would be best and most accurate to also/instead check the init status
       rndpass=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-32} | head -n 1)
       echo -e "$rndpass\n$rndpass" | passwd nemsadmin >/tmp/init 2>&1
+      # Attempt to delete the nemsadmin user: will not proceed if in use
+      # Doing this now instead of during init to avoid crashing during init
+      # where user continues as nemsadmin
+      userdel -r nemsadmin
     fi
   fi
 

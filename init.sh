@@ -108,7 +108,7 @@ else
   # Delete the initial admin account
   if [[ -d /home/$username ]] && [[ -d /home/nemsadmin ]]; then
     # echo "Deleting nemsadmin user. Remember you must now login as $username"
-    userdel -rf nemsadmin
+    # userdel -rf nemsadmin
 
     # nemsadmin user will be deleted automatically now that you're initialized, but this stuff is just to protect users in case for some reason the nemsuser user remains.
     echo "Disabling nemsadmin access. Remember you must now login as $username"
