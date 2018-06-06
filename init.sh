@@ -171,8 +171,8 @@ fi
 mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"
 
 # Import new configuration into NConf
-echo "  Importing: contact" && /var/www/nconf/bin/add_items_from_nagios.pl -c contact -f $confbase/global/contacts.cfg 2>&1 | grep -E "ERROR"
-echo "  Importing: contactgroup" && /var/www/nconf/bin/add_items_from_nagios.pl -c contactgroup -f $confbase/global/contactgroups.cfg 2>&1 | grep -E "ERROR"
+echo "  Importing: contact" && /var/www/nconf/bin/add_items_from_nagios.pl -c contact -f $confbase/global/contacts.cfg 2>&1 | grep -E "ERROR|WARN"
+echo "  Importing: contactgroup" && /var/www/nconf/bin/add_items_from_nagios.pl -c contactgroup -f $confbase/global/contactgroups.cfg 2>&1 | grep -E "ERROR|WARN"
   
 systemctl start $nagios
 
