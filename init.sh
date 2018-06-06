@@ -143,11 +143,11 @@ systemctl stop $nagios
 service mysql stop
 rm -rf /var/lib/mysql/
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
-  cp -R /root/nems/nems-migrator/data/1.4/mysql /var/lib
+  cp -R /root/nems/nems-migrator/data/1.4/mysql/NEMS-Sample /var/lib
 else
   cp -R /root/nems/nems-migrator/data/mysql/NEMS-Sample /var/lib
-  mv /var/lib/NEMS-Sample /var/lib/mysql
 fi
+mv /var/lib/NEMS-Sample /var/lib/mysql
 chown -R mysql:mysql /var/lib/mysql
 service mysql start
 
