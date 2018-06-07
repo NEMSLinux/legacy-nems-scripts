@@ -227,6 +227,8 @@ fi
      echo "\
 service.nagios-api=0
 service.webmin=0
+service.monitorix=0
+service.cockpit=0
 service.rpi-monitor=0
 " >> /usr/local/share/nems/nems.conf
   fi

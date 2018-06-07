@@ -1,8 +1,6 @@
 #!/bin/bash
 # Enable or disable services on boot based on nems.conf
 
-# systemctl disable service
-
 conf='/usr/local/share/nems/nems.conf'
 
 platform=$(/usr/local/bin/nems-info platform) 
@@ -30,10 +28,26 @@ platform=$(/usr/local/bin/nems-info platform)
    fi
 
    # webmin
-   if grep -q "webmin=0" "$conf"; then
+   if grep -q "service.webmin=0" "$conf"; then
      systemctl stop webmin
      systemctl disable webmin
    else
      systemctl enable webmin
      systemctl start webmin
+   fi
+
+   # monitorix
+   if grep -q "service.monitorix=0" "$conf"; then
+     systemctl stop monitorix
+     systemctl disable monitorix
+   else
+     systemctl enable monitorix
+     systemctl start monitorix
+   fi
+
+   # cockpit
+   if grep -q "service.cockpit=0" "$conf"; then
+     systemctl disable cockpit.socket
+   else
+     systemctl enable cockpit.socket
    fi
