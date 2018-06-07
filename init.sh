@@ -3,7 +3,9 @@
 # Run this script with: sudo nems-init
 # It's already in the path via a symlink
 
-ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver) 
+ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver)
+platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+#move down to bottom when ready
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
   confbase=/etc/nems/conf/
@@ -214,6 +216,20 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.3'")}') )); then
 fi
 
   echo ""
+
+# Generate nems.conf file
+  echo "version=$ver" > /usr/local/share/nems/nems.conf
+  # If it's low-end hardware, disable all extraneous daemons by default
+  if \
+   (( $platform == 0 )) || \
+   (( $platform == 1 )) || \
+   (( $platform == 2 )); then
+     echo "\
+service.nagios-api=0
+service.webmin=0
+service.rpi-monitor=0
+" >> /usr/local/share/nems/nems.conf
+  fi
 
   echo "Now we will resize your root partition to give you access to all the space"
 
