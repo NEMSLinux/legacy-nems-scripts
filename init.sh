@@ -53,12 +53,24 @@ else
     (( ${#1} > 16 )) && return 1
     [[ $1 =~ $re ]]
   }
+  containsElement () {
+    local e match="$1"
+    shift
+    for e; do [[ "$e" == "$match" ]] && return 0; done
+    return 1
+  }
+  badnames=("nemsadmin" "nagios" "nems" "root" "user" "config" "pi" "admin" "robbie")
   while true; do
   read -p "What would you like your NEMS Username to be? " username
     if [[ ${username,,} == $username ]]; then
       if isValidUsername "$username"; then
-        echo Username accepted.
-        break
+        if containsElement "$username" "${badnames[@]}"; then
+          echo Username is not allowed. Please try again.
+          username=""
+        else
+          echo Username accepted.
+          break
+        fi
       else
         echo Username is invalid. Please try again.
       fi
@@ -98,6 +110,7 @@ else
   cp /root/nems/nems-migrator/data/rpimonitor/daemon.conf /etc/rpimonitor
 
   # Configure RPi-Monitor to run as the new user
+#need to set this to not run on non-pi systems
   /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/rpimonitor/daemon.conf
 
   # Samba config
@@ -219,6 +232,7 @@ fi
 
 # Generate nems.conf file
   echo "version=$ver" > /usr/local/share/nems/nems.conf
+  echo "nemsuser=$username" >> /usr/local/share/nems/nems.conf
   # If it's low-end hardware, disable all extraneous daemons by default
   if \
    (( $platform == 0 )) || \

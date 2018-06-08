@@ -95,6 +95,18 @@ else
   echo 0
 fi
 
+elif [[ $COMMAND == "username" ]]; then
+  # Get NEMS username
+  # From nems.conf
+  username=`cat /usr/local/share/nems/nems.conf | grep username |  printf '%s' $(cut -n -d '=' -f 2)`
+  # Legacy support: from htpasswd
+  if [[ $username == "" ]]; then
+    username=`cat /var/www/htpasswd | cut -d: -f1`
+  fi
+  echo $username
+
+
+
 # See current CPU usage in percent
 elif [[ $COMMAND == "cpupercent" ]]; then
 grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage}'
