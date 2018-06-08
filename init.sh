@@ -5,7 +5,6 @@
 
 ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver)
 platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
-#move down to bottom when ready
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
   confbase=/etc/nems/conf/
