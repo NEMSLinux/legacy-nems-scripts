@@ -12,5 +12,6 @@ IP Address:       $ip\n\
 CPU Usage:        $cpupercent%\n\
 Disk Usage:       $diskusage%\n\
 Active Sessions:  $users\n\
-" 10 40
+\n\
+To login, use SSH or press CTRL-ALT-F2" 10 40
 sleep 30
