@@ -52,7 +52,9 @@ ver=$(/usr/local/bin/nems-info nemsver)
 
    # cockpit
    if grep -q "service.cockpit=0" "$conf"; then
+     systemctl stop cockpit.socket
      systemctl disable cockpit.socket
    else
      systemctl enable cockpit.socket
+     systemctl start cockpit.socket
    fi
