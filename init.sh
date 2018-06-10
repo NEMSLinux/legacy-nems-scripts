@@ -21,6 +21,13 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 else
 
+  online=$(/usr/local/share/nems/nems-scripts/info.sh online)
+  if [[ $online == 0 ]]; then
+    echo "You need to configure Internet connectivity first."
+    echo ""
+    exit
+  fi
+
   # Perform any fixes that have been released since NEMS was built
   /usr/local/share/nems/nems-scripts/fixes.sh
 
@@ -121,7 +128,7 @@ else
     /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/samba/smb.conf
     systemctl restart smbd
 
-  # Distable the initial admin account
+  # Disable the initial admin account
   if [[ -d /home/$username ]] && [[ -d /home/nemsadmin ]]; then
     # nemsadmin user will be deleted automatically via cron now that you're initialized, but this stuff is just to protect users in case for some reason the nemsuser user remains.
     echo "Disabling nemsadmin access. Remember you must now login as $username"

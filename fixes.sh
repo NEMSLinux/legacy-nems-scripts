@@ -3,6 +3,15 @@
 # No need to run this directly.
 # Instead, run: sudo nems-update
 
+ online=$(/usr/local/share/nems/nems-scripts/info.sh online)
+ if [[ $online == 0 ]]; then
+   echo "Internet is offline. NEMS needs Internet connectivity."
+   echo ""
+   exit
+ fi
+
+
+
  # Just in case apt is already doing stuff in the background, hang tight until it completes
  echo "Please wait for apt tasks to complete..."
  while fuser /var/{lib/{dpkg,apt/lists},cache/apt/archives}/lock >/dev/null 2>&1; do sleep 1; done
