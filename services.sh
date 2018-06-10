@@ -4,6 +4,7 @@
 conf='/usr/local/share/nems/nems.conf'
 
 platform=$(/usr/local/bin/nems-info platform) 
+ver=$(/usr/local/bin/nems-info nemsver)
 
  # Raspberry Pi Only
  if [[ $platform == 0 ]] || [[ $platform == 1 ]] || [[ $platform == 2 ]] || [[ $platform == 3 ]]; then
@@ -24,7 +25,11 @@ platform=$(/usr/local/bin/nems-info platform)
      sleep 1
    else
      sleep 15 # Need to wait a bit so Nagios has time to load first
-     /root/nems/nagios-api/nagios-api -p 8090 -c /var/lib/nagios3/rw/live.sock -s /var/cache/nagios3/status.dat -l /var/log/nagios3/nagios.log >> /var/log/nagios-api.log 2>&1 &
+     if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
+       /root/nems/nagios-api/nagios-api -p 8090 -c /var/lib/nagios3/rw/live.sock -s /var/cache/nagios/status.dat -l /var/log/nagios/nagios.log >> /var/log/nagios-api.log 2>&1 &
+     else
+       /root/nems/nagios-api/nagios-api -p 8090 -c /var/lib/nagios3/rw/live.sock -s /var/cache/nagios3/status.dat -l /var/log/nagios3/nagios.log >> /var/log/nagios-api.log 2>&1 &
+     fi
    fi
 
    # webmin
