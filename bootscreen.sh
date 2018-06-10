@@ -1,5 +1,8 @@
 #!/bin/bash
 ver=$(/usr/local/bin/nems-info nemsver)
+dialog --title "NEMS Linux $ver" --infobox "\
+Refreshing...
+" 20 72
 veravail=$(/usr/local/bin/nems-info nemsveravail)
 
 host=$(/bin/hostname)
@@ -38,5 +41,5 @@ Internet Status:  $internet\n\
 \n\
 To login, use SSH or press CTRL-ALT-F2\n\
 \n\
-For help, visit: docs.nemslinux.com" 20 72
+For help, visit: docs.nemslinux.com" 20 72 # make these number match the refreshing note
 sleep 30
