@@ -132,6 +132,9 @@ elif [[ $COMMAND == "init" ]]; then
     echo 0
   fi
 
+elif [[ $COMMAND == "online" ]]; then
+  ping -q -w 1 -c 1 github.com > /dev/null 2>&1 && echo 1 || echo 0
+
 # Output usage info as no valid command line argument was provided
 else
   echo "Usage: ./$me command"
