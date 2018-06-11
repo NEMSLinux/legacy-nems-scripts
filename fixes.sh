@@ -21,6 +21,18 @@
  platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
  ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver) 
 
+
+if [[ "$ver" == "1.4" ]]; then
+  if grep -q "lock_file=/var/run/nagios/nagios.pid" /usr/local/nagios/etc/nagios.cfg; then
+    echo Changing location of Nagios lock file...
+    /bin/sed -i -- 's,lock_file=/var/run/nagios/nagios.pid,lock_file=/var/lock/subsys/nagios,g' /usr/local/nagios/etc/nagios.cfg
+    /usr/bin/killall -9 nagios
+    sleep 3
+    /bin/systemctl start nagios
+    echo Done.
+  fi
+fi
+exit
 if (( $(awk 'BEGIN {print ("'$ver'" <= "'1.3.1'")}') )); then
   /usr/local/share/nems/nems-scripts/fixes-legacy.sh
 fi
