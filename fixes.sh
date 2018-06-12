@@ -44,7 +44,8 @@ if [[ "$ver" == "1.4" ]]; then
   /bin/systemctl start nagios
   /bin/systemctl start monit
   # /Fix Nagios lockfile location (was causing systemd to be unable to restart Nagios)
-
+#TEMPORARY :
+/bin/systemctl/stop monit
 
 
 fi
