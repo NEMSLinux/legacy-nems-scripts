@@ -25,22 +25,40 @@ exit
 if [[ "$ver" == "1.4" ]]; then
 
   # Fix Nagios lockfile location (was causing systemd to be unable to restart Nagios)
-  if grep -q "lock_file=/var/run/nagios/nagios.pid" /usr/local/nagios/etc/nagios.cfg; then
-    /bin/systemctl stop monit
-    echo Changing location of Nagios lock file in Nagios config...
-    /bin/sed -i -- 's,lock_file=/var/run/nagios/nagios.pid,lock_file=/var/lock/subsys/nagios,g' /usr/local/nagios/etc/nagios.cfg
-    /usr/bin/killall -9 nagios
-    sleep 1
-    echo Done.
-  fi
-  if grep -q "/run/nagios/nagios.pid" /etc/monit/conf.d/nems.conf; then
-    /bin/systemctl stop monit
-    echo Changing location of Nagios lock file in Monit...
-    /bin/sed -i -- 's,/run/nagios/nagios.pid,/var/lock/subsys/nagios,g' /etc/monit/conf.d/nems.conf
-    /usr/bin/killall -9 nagios
-    sleep 1
-    echo Done.
-  fi
+  # Fix the original attempt
+   if grep -q "lock_file=/var/lock/subsys/nagios" /usr/local/nagios/etc/nagios.cfg; then
+     /bin/systemctl stop monit
+     echo Changing location of Nagios lock file in Nagios config...
+     /bin/sed -i -- 's,lock_file=/var/lock/subsys/nagios,lock_file=/run/nagios.lock,g' /usr/local/nagios/etc/nagios.cfg
+     /usr/bin/killall -9 nagios
+     sleep 1
+     echo Done.
+   fi
+   if grep -q "/var/lock/subsys/nagios" /etc/monit/conf.d/nems.conf; then
+     /bin/systemctl stop monit
+     echo Changing location of Nagios lock file in Monit...
+     /bin/sed -i -- 's,/var/lock/subsys/nagios,/run/nagios.lock,g' /etc/monit/conf.d/nems.conf
+     /usr/bin/killall -9 nagios
+     sleep 1
+     echo Done.
+   fi
+  # Actual fix
+   if grep -q "lock_file=/var/run/nagios/nagios.pid" /usr/local/nagios/etc/nagios.cfg; then
+     /bin/systemctl stop monit
+     echo Changing location of Nagios lock file in Nagios config...
+     /bin/sed -i -- 's,lock_file=/var/run/nagios/nagios.pid,lock_file=/run/nagios.lock,g' /usr/local/nagios/etc/nagios.cfg
+     /usr/bin/killall -9 nagios
+     sleep 1
+     echo Done.
+   fi
+   if grep -q "/run/nagios/nagios.pid" /etc/monit/conf.d/nems.conf; then
+     /bin/systemctl stop monit
+     echo Changing location of Nagios lock file in Monit...
+     /bin/sed -i -- 's,/run/nagios/nagios.pid,/run/nagios.lock,g' /etc/monit/conf.d/nems.conf
+     /usr/bin/killall -9 nagios
+     sleep 1
+     echo Done.
+   fi
   /bin/systemctl start nagios
   /bin/systemctl start monit
   # /Fix Nagios lockfile location (was causing systemd to be unable to restart Nagios)
