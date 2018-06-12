@@ -11,7 +11,6 @@
  fi
 
 
-exit
  # Just in case apt is already doing stuff in the background, hang tight until it completes
  echo "Please wait for apt tasks to complete..."
  while fuser /var/{lib/{dpkg,apt/lists},cache/apt/archives}/lock >/dev/null 2>&1; do sleep 1; done
@@ -28,6 +27,7 @@ if [[ "$ver" == "1.4" ]]; then
   # Fix the original attempt
    if grep -q "lock_file=/var/lock/subsys/nagios" /usr/local/nagios/etc/nagios.cfg; then
      /bin/systemctl stop monit
+     /bin/systemctl stop nagios
      echo Changing location of Nagios lock file in Nagios config...
      /bin/sed -i -- 's,lock_file=/var/lock/subsys/nagios,lock_file=/run/nagios.lock,g' /usr/local/nagios/etc/nagios.cfg
      /usr/bin/killall -9 nagios
@@ -36,6 +36,7 @@ if [[ "$ver" == "1.4" ]]; then
    fi
    if grep -q "/var/lock/subsys/nagios" /etc/monit/conf.d/nems.conf; then
      /bin/systemctl stop monit
+     /bin/systemctl stop nagios
      echo Changing location of Nagios lock file in Monit...
      /bin/sed -i -- 's,/var/lock/subsys/nagios,/run/nagios.lock,g' /etc/monit/conf.d/nems.conf
      /usr/bin/killall -9 nagios
@@ -45,6 +46,7 @@ if [[ "$ver" == "1.4" ]]; then
   # Actual fix
    if grep -q "lock_file=/var/run/nagios/nagios.pid" /usr/local/nagios/etc/nagios.cfg; then
      /bin/systemctl stop monit
+     /bin/systemctl stop nagios
      echo Changing location of Nagios lock file in Nagios config...
      /bin/sed -i -- 's,lock_file=/var/run/nagios/nagios.pid,lock_file=/run/nagios.lock,g' /usr/local/nagios/etc/nagios.cfg
      /usr/bin/killall -9 nagios
@@ -53,6 +55,7 @@ if [[ "$ver" == "1.4" ]]; then
    fi
    if grep -q "/run/nagios/nagios.pid" /etc/monit/conf.d/nems.conf; then
      /bin/systemctl stop monit
+     /bin/systemctl stop nagios
      echo Changing location of Nagios lock file in Monit...
      /bin/sed -i -- 's,/run/nagios/nagios.pid,/run/nagios.lock,g' /etc/monit/conf.d/nems.conf
      /usr/bin/killall -9 nagios
@@ -62,12 +65,11 @@ if [[ "$ver" == "1.4" ]]; then
   /bin/systemctl start nagios
   /bin/systemctl start monit
   # /Fix Nagios lockfile location (was causing systemd to be unable to restart Nagios)
-#TEMPORARY :
-/bin/systemctl/stop monit
 
+  exit
 
 fi
-exit
+
 if (( $(awk 'BEGIN {print ("'$ver'" <= "'1.3.1'")}') )); then
   /usr/local/share/nems/nems-scripts/fixes-legacy.sh
 fi
