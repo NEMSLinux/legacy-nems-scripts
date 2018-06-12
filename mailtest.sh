@@ -51,7 +51,12 @@ if (!filter_var($CONTACTEMAIL, FILTER_VALIDATE_EMAIL)) {
   exit();
 }
 echo 'Please wait...';
-$resource = file('/etc/nagios3/resource.cfg');
+$ver = shell_exec('/usr/local/bin/nems-info nemsver');
+if ($ver >= 1.4) {
+  $resource = file('/usr/local/nagios/etc/resource.cfg');
+} else {
+  $resource = file('/etc/nagios3/resource.cfg');
+}
 if (is_array($resource)) {
   foreach ($resource as $line) {
     if (strstr($line,'$=')) {
