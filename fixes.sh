@@ -66,6 +66,15 @@ if [[ "$ver" == "1.4" ]]; then
   /bin/systemctl start monit
   # /Fix Nagios lockfile location (was causing systemd to be unable to restart Nagios)
 
+
+  # Add a symlink to the check_nrpe executable from within the correct Nagios plugin folder
+  if [[ ! -e /usr/local/nagios/libexec/check_nrpe ]]; then
+    if [[ -f /usr/lib/nagios/plugins/check_nrpe ]]; then
+      ln -s /usr/lib/nagios/plugins/check_nrpe /usr/local/nagios/libexec/check_nrpe
+    fi
+  fi
+
+
   exit
 
 fi
