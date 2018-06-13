@@ -74,6 +74,12 @@ if [[ "$ver" == "1.4" ]]; then
     fi
   fi
 
+  # Activate automatic security updates
+  if [[ ! -e /etc/apt/apt.conf.d/20auto-upgrades ]]; then
+    if [[ -f /root/nems/nems-admin/build/025-auto-upgrades ]]; then
+      /root/nems/nems-admin/build/025-auto-upgrades
+    fi
+  fi
 
   exit
 
