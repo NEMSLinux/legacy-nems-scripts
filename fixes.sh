@@ -88,6 +88,7 @@ if [[ "$ver" == "1.4" ]]; then
   if (( $platform >= 0 )) && (( $platform <= 9 )); then
     if [[ ! -e /usr/bin/vcgencmd ]]; then
       apt -y install libraspberrypi-bin
+      /bin/systemctl restart rpimonitor
     fi
   fi
 
