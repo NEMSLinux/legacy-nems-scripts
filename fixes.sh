@@ -16,6 +16,9 @@
  while fuser /var/{lib/{dpkg,apt/lists},cache/apt/archives}/lock >/dev/null 2>&1; do sleep 1; done
  echo "Done."
 
+ # Update apt here so we don't have to do it below
+ apt update
+
  # using hard file location rather than symlink as symlink may not exist yet on older versions
  platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
  ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver) 
@@ -78,6 +81,13 @@ if [[ "$ver" == "1.4" ]]; then
   if [[ ! -e /etc/apt/apt.conf.d/20auto-upgrades ]]; then
     if [[ -f /root/nems/nems-admin/build/025-auto-upgrades ]]; then
       /root/nems/nems-admin/build/025-auto-upgrades
+    fi
+  fi
+
+  # Fix RPi-Monitor CPU Frequency Reporting
+  if (( $platform >= 0 )) && (( $platform <= 9 )); then
+    if [[ ! -e /usr/bin/vcgencmd ]]; then
+      apt -y install libraspberrypi-bin
     fi
   fi
 
