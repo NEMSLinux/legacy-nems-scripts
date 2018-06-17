@@ -55,8 +55,14 @@ switch($argv[1]) {
   case 4: // Load the platform data from the API
     $platform['id'] = shell_exec('/usr/local/share/nems/nems-scripts/info.sh platform');
     if (!file_exists('/tmp/platform_data')) {
-      $platform['data'] = @json_decode(@file_get_contents('https://nemslinux.com/api/platform/' . $platform['id']));
-      if (strlen($platform['data']->name) > 0) {
+      if (file_exists('/var/log/nems/hw_model')) { // try to get it from the hw_model file
+        $tmp = file('/var/log/nems/hw_model');
+        $platform['data'] = new stdclass();
+        $platform['data']->name = trim($tmp[1]);
+      } else { // try to get it from the online API
+        $platform['data'] = @json_decode(@file_get_contents('https://nemslinux.com/api/platform/' . $platform['id']));
+      }
+      if (is_object($platform['data']) && strlen($platform['data']->name) > 0) {
         file_put_contents('/tmp/platform_data',$platform['data']->name);
         chmod('/tmp/platform_data',0444);
       }

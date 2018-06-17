@@ -92,6 +92,10 @@ if [[ "$ver" == "1.4" ]]; then
     fi
   fi
 
+  # NEMS 1.4 upgraded to 1.4.1 now that Raspberry Pi Zero W is fully supported
+  # Because NEMS 1.4.1 meant a new image (for Pi Zero W) we'll roll up all 1.4 systems
+  sed -i -e "s/1.4/1.4.1/g" /usr/local/share/nems/nems.conf
+
   exit
 
 fi
