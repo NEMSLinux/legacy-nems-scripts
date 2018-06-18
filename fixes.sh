@@ -157,6 +157,13 @@ check process 9590 with pidfile /run/9590.pid
     /root/nems/nems-admin/build/011-tty
   fi
 
+  # Remove Izzy's repository (at least temporarily).
+  # cert is broken and it causes all kinds of grief.
+  # Perhaps need to evaluate building monitorix ourselves.
+  if [[ -f /etc/apt/sources.list.d/monitorix.list ]]; then
+    rm /etc/apt/sources.list.d/monitorix.list
+  fi
+
 fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
