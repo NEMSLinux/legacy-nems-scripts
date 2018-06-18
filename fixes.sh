@@ -208,7 +208,8 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
    if [[ $adagioscache = "1" ]]; then
      cd /var/www/adagios
      /usr/bin/find /var/www/adagios/ -name "*.pyc" -exec rm -rf {} \;
-     /usr/local/bin/pip install django-clear-cache
+     /usr/local/bin/pip install --trusted-host pypi.python.org --trusted-host pypi.org --trusted-host files.pythonhosted.org --trusted-host piwheels.org --upgrade pip
+     /usr/local/bin/pip install --trusted-host pypi.python.org --trusted-host pypi.org --trusted-host files.pythonhosted.org --trusted-host piwheels.org django-clear-cache
      /usr/bin/python manage.py clear_cache
      /bin/systemctl restart apache2
    fi
