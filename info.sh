@@ -30,7 +30,11 @@ elif [[ $COMMAND == "nemsver" ]]; then
 
 # Output the current available NEMS version (update.sh generates this every day at midnight and at reboot)
 elif [[ $COMMAND == "nemsveravail" ]]; then
-  /bin/cat /var/www/html/inc/ver-available.txt
+  if [[ -f /root/nems/nems-migrator/data/nems/ver-current.txt ]]; then
+    /bin/cat /root/nems/nems-migrator/data/nems/ver-current.txt
+  elif [[ -f /var/www/html/inc/ver-available.txt ]]; then
+    /bin/cat /var/www/html/inc/ver-available.txt
+  fi
 
 # Output the number of users connected to server
 elif [[ $COMMAND == "users" ]]; then
