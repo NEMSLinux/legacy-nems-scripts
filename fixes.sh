@@ -101,7 +101,7 @@ if [[ "$ver" == "1.4" ]]; then
 fi
 
 # Fix strange issue where some systems got bumped to 1.4.1.1
-if ! grep -q "version=1.4.1.1" /usr/local/share/nems/nems.conf; then
+if grep -q "version=1.4.1.1" /usr/local/share/nems/nems.conf; then
   sed -i -e "s/1.4.1.1/1.4.1/g" /usr/local/share/nems/nems.conf
   ver="1.4.1"
 fi
