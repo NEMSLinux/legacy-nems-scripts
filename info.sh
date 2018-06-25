@@ -65,8 +65,14 @@ elif [[ $COMMAND == "hwver" ]]; then
 
 # Output an MD5 of the Pi board serial number - we'll call this the NEMS Pi ID
 elif [[ $COMMAND == "hwid" ]]; then
-# if is pi
- cat /proc/cpuinfo | grep Serial |  printf '%s' $(cut -n -d ' ' -f 2) | md5sum | cut -d"-" -f1 -
+  platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+  # Raspberry Pi
+  if (( $platform >= 0 )) && (( $platform <= 9 )); then
+    cat /proc/cpuinfo | grep Serial |  printf '%s' $(cut -n -d ' ' -f 2) | md5sum | cut -d"-" -f1 -
+  # Pine A64/A64+
+  elif (( $platform >= 40 )) && (( $platform <= 42 )); then 
+    ifconfig eth0 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
+  fi
 
 elif [[ $COMMAND == "platform" ]]; then
 # show if is pi or if is xu4, etc. by numerical value
