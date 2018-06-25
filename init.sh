@@ -254,9 +254,13 @@ service.rpi-monitor=0
   fi
 
   echo "Now we will resize your root partition to give you access to all the space"
-
-  ## NEED TO CHANGE TO DETECT PLATFORM
-  /usr/bin/raspi-config --expand-rootfs > /dev/null 2>&1
+    # Raspberry Pi
+    if (( $platform >= 0 )) && (( $platform <= 9 )); then
+      /usr/bin/raspi-config --expand-rootfs > /dev/null 2>&1
+    # Pine A64/A64+
+    elif (( $platform >= 40 )) && (( $platform <= 42 )); then 
+      /root/nems/nems-admin/resize_rootfs.sh
+    fi
   echo "Done."
 
   echo ""
