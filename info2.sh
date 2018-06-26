@@ -10,25 +10,6 @@ if (!isset($argv[1])) exit('Invalid usage. Please use the nems-info command.' . 
 switch($argv[1]) {
 
   case 1: // temperature
-   /*
-    $monitorix = monitorix('raspberrypi');
-    if (is_array($monitorix['data']['rpi_temp0'])) {
-      $tmp = 0;
-      $count = 0;
-      foreach ($monitorix['data']['rpi_temp0'] as $date=>$temperature) {
-        if (floatval($temperature) > 0) { // Failsafe in case thermals aren't working
-          $tmp = ($tmp + floatval($temperature));
-          $count++;
-        }
-      }
-      if ($tmp > 0) {
-        $average_temperature = ($tmp/$count);
-        echo $average_temperature . PHP_EOL;
-      } else {
-        echo 0 . PHP_EOL; // 0 means "unknown"
-      }
-    }
-   */
    if (file_exists('/var/log/nems/thermal.log')) {
      echo file_get_contents('/var/log/nems/thermal.log');
    } else {
