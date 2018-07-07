@@ -71,7 +71,7 @@ elif [[ $COMMAND == "hwid" ]]; then
     cat /proc/cpuinfo | grep Serial |  printf '%s' $(cut -n -d ' ' -f 2) | md5sum | cut -d"-" -f1 -
   # Pine A64/A64+
   elif (( $platform >= 40 )) && (( $platform <= 42 )); then 
-    ifconfig eth0 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
+    /sbin/ifconfig eth0 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
   fi
 
 elif [[ $COMMAND == "platform" ]]; then
