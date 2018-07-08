@@ -15,15 +15,26 @@ if (file_exists('/var/log/nems/hw_model')) { // Don't run this until system is r
   // Get the platform of your NEMS server
   $platform = trim(shell_exec('/usr/local/bin/nems-info platform'));
 
+  // Get the NEMS version
+  $ver = trim(shell_exec('/usr/local/bin/nems-info nemsver'));
+
   // Get the number of configured hosts
-  $hostdata = file('/etc/nagios3/Default_collector/hosts.cfg');
+  if ($ver < 1.4) {
+    $hostdata = file('/etc/nagios3/Default_collector/hosts.cfg');
+  } else {
+    $hostdata = file('/etc/nems/conf/Default_collector/hosts.cfg');
+  }
   $hosts = 0;
   if (is_array($hostdata)) foreach ($hostdata as $line) {
     if (strstr($line, 'define host')) $hosts++;
   }
 
   // Get the number of configured services
-  $servicedata = file('/etc/nagios3/Default_collector/services.cfg');
+  if ($ver < 1.4) {
+    $servicedata = file('/etc/nagios3/Default_collector/services.cfg');
+  } else {
+    $servicedata = file('/etc/nems/conf/Default_collector/services.cfg');
+  }
   $services = 0;
   if (is_array($servicedata)) foreach ($servicedata as $line) {
     if (strstr($line, 'define service')) $services++;
@@ -49,7 +60,7 @@ if (file_exists('/var/log/nems/hw_model')) { // Don't run this until system is r
     'uptime_hours'=>$hours,
     'uptime_mins'=>$mins,
     'uptime_secs'=>$secs,
-    'nemsver'=>trim(shell_exec('/usr/local/bin/nems-info nemsver')),
+    'nemsver'=>$ver,
     'hosts'=>$hosts,
     'services'=>$services,
     'disksize'=>$disksize,
