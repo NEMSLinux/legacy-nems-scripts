@@ -96,6 +96,12 @@ if [[ "$ver" == "1.4" ]]; then
   # Because NEMS 1.4.1 meant a new image (for Pi Zero W) we'll roll up all 1.4 systems
   sed -i -e "s/1.4/1.4.1/g" /usr/local/share/nems/nems.conf
 
+  # Fix Default Collector name if incorrect
+  collector=$(/usr/bin/mysql -u nconf -h 127.0.0.1 -pnagiosadmin -D nconf -e "SELECT attr_value FROM ConfigValues WHERE fk_id_attr = 1;")
+  if [[ ! $collector = *"Default Nagios"* ]]; then
+    /usr/bin/mysql -u nconf -h 127.0.0.1 -pnagiosadmin -D nconf -e "UPDATE ConfigValues SET attr_value='Default Nagios' WHERE fk_id_attr = 1;"
+  fi
+
   exit
 
 fi
