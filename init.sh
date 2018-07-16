@@ -103,7 +103,9 @@ else
   # Create the Linux user
   adduser --disabled-password --gecos "" $username
   # Giving you files
-  cp /home/nemsadmin/* /home/$username/
+  printf "Moving all files in /home/nemsadmin to /home/$username... "
+  cp /home/nemsadmin/* /home/$username/ > /dev/null 2>&1
+  echo Done.
   # Allow user to become super-user
   usermod -aG sudo $username
   # Allow user to login to monit web interface
@@ -139,6 +141,18 @@ else
 
 echo Initializing new Nagios user
 systemctl stop $nagios
+
+# Import default Nagios configs for NEMS 1.4+
+if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
+  rm -rf $confbase
+  mkdir -p $confbase
+  cp -R /root/nems/nems-migrator/data/1.4/nagios/conf/* $confbase
+  okconfig="okconfig"
+  if [[ ! -d $confbase$okconfig ]]; then
+    mkdir $confbase$okconfig
+  fi
+  chown -R www-data:www-data $confbase
+fi
 
 # Reininitialize Nagios user account
   echo "define contactgroup {
