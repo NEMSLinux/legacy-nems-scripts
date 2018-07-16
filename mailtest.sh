@@ -89,6 +89,12 @@ if (strlen($CONTACTEMAIL) > 0) {
 
 if (isset($USER5) && $USER5 == $CONTACTEMAIL) $error .= '- You need to send to a different email address: same as sender.' . PHP_EOL;
 
+if (!isset($USER7)) $error .= '- Missing SMTP server in NEMS SST.' . PHP_EOL;
+if (!isset($USER9)) $error .= '- Missing SMTP username in NEMS SST.' . PHP_EOL;
+if (!isset($USER10)) $error .= '- Missing SMTP password in NEMS SST.' . PHP_EOL;
+
+
+
 // Die on errors
 if (strlen($error) > 0) die($error . PHP_EOL . 'Aborted.' . PHP_EOL);
 
@@ -97,4 +103,5 @@ $command = "/usr/bin/printf \"%b\" \"***** NEMS Test Email *****\n\nNotification
 $output = shell_exec($command);
 echo $output;
 shell_exec('chown nagios:nagios /var/log/sendemail'); // Log gets created as running user. Fix.
+
 ?>
