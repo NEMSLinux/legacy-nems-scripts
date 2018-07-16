@@ -50,7 +50,7 @@ if (!filter_var($CONTACTEMAIL, FILTER_VALIDATE_EMAIL)) {
   echo 'Usage: ./mailtest.sh youremail@yourdomain.com' . PHP_EOL;
   exit();
 }
-echo 'Please wait...';
+echo 'Please wait...' . PHP_EOL;
 $ver = shell_exec('/usr/local/bin/nems-info nemsver');
 if ($ver >= 1.4) {
   $resource = file('/usr/local/nagios/etc/resource.cfg');
@@ -71,7 +71,28 @@ if (is_array($resource)) {
 $HOSTADDRESS = shell_exec('/usr/local/bin/nems-info ip');
 $HOSTNAME = shell_exec('hostname');
 $LONGDATETIME = date('r');
-if ($USER5 == $CONTACTEMAIL) exit('You need to send to a different email address: same as sender.' . PHP_EOL);
+
+$error = ''; // create a list of errors
+if (isset($USER5) && strlen($USER5) > 0) {
+  if (!filter_var($USER5, FILTER_SANITIZE_EMAIL)) {
+    $error .= '- Email address in NEMS SST is invalid.' . PHP_EOL;
+  }
+} else {
+  $error .= '- Email address missing from NEMS SST.' . PHP_EOL;
+}
+
+if (strlen($CONTACTEMAIL) > 0) {
+  if (!filter_var($CONTACTEMAIL, FILTER_SANITIZE_EMAIL)) {
+    $error .= '- Email address in ' . $CONTACTEMAIL . ' is invalid.' . PHP_EOL;
+  }
+}
+
+if (isset($USER5) && $USER5 == $CONTACTEMAIL) $error .= '- You need to send to a different email address: same as sender.' . PHP_EOL;
+
+// Die on errors
+if (strlen($error) > 0) die($error . PHP_EOL . 'Aborted.' . PHP_EOL);
+
+
 $command = "/usr/bin/printf \"%b\" \"***** NEMS Test Email *****\n\nNotification Type: Test\nHost: $HOSTNAME\nAddress: $HOSTADDRESS\n\nDate/Time: $LONGDATETIME\n\" | /usr/bin/sendemail -v -s $USER7 -xu $USER9 -xp $USER10 -t $CONTACTEMAIL -f $USER5 -l /var/log/sendemail -u \"** NEMS Test Email: $HOSTNAME **\" -m \"***** NEMS Test Email *****\n\nNotification Type: Test\nHost: $HOSTNAME\nAddress: $HOSTADDRESS\n\nDate/Time: $LONGDATETIME\n\"";
 $output = shell_exec($command);
 echo $output;
