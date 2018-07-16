@@ -151,7 +151,14 @@ elif [[ $COMMAND == "init" ]]; then
   fi
 
 elif [[ $COMMAND == "online" ]]; then
-  ping -q -w 1 -c 1 github.com > /dev/null 2>&1 && echo 1 || echo 0
+  # Check if Github responds
+  online=$(ping -q -w 1 -c 1 github.com > /dev/null 2>&1 && echo 1 || echo 0)
+  if [[ $online == 1 ]]; then
+    echo 1
+  else
+    # Try a second time as failsafe
+    ping -q -w 1 -c 1 github.com > /dev/null 2>&1 && echo 1 || echo 0
+  fi
 
 # Output usage info as no valid command line argument was provided
 else
