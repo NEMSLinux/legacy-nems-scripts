@@ -10,7 +10,6 @@
    exit
  fi
 
-
  # Just in case apt is already doing stuff in the background, hang tight until it completes
  echo "Please wait for apt tasks to complete..."
  while fuser /var/{lib/{dpkg,apt/lists},cache/apt/archives}/lock >/dev/null 2>&1; do sleep 1; done
@@ -22,6 +21,12 @@
  # using hard file location rather than symlink as symlink may not exist yet on older versions
  platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
  ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver) 
+
+ # Fix Default Collector name if incorrect
+ collector=$(/usr/bin/mysql -u nconf -h 127.0.0.1 -pnagiosadmin -D nconf -e "SELECT attr_value FROM ConfigValues WHERE fk_id_attr = 1;")
+ if [[ ! $collector = *"Default Nagios"* ]]; then
+   /usr/bin/mysql -u nconf -h 127.0.0.1 -pnagiosadmin -D nconf -e "UPDATE ConfigValues SET attr_value='Default Nagios' WHERE fk_id_attr = 1;"
+ fi
 
 
 if [[ "$ver" == "1.4" ]]; then
@@ -96,14 +101,6 @@ if [[ "$ver" == "1.4" ]]; then
   # Because NEMS 1.4.1 meant a new image (for Pi Zero W) we'll roll up all 1.4 systems
   sed -i -e "s/1.4/1.4.1/g" /usr/local/share/nems/nems.conf
 
-  # Fix Default Collector name if incorrect
-  collector=$(/usr/bin/mysql -u nconf -h 127.0.0.1 -pnagiosadmin -D nconf -e "SELECT attr_value FROM ConfigValues WHERE fk_id_attr = 1;")
-  if [[ ! $collector = *"Default Nagios"* ]]; then
-    /usr/bin/mysql -u nconf -h 127.0.0.1 -pnagiosadmin -D nconf -e "UPDATE ConfigValues SET attr_value='Default Nagios' WHERE fk_id_attr = 1;"
-  fi
-
-  exit
-
 fi
 
 # Fix strange issue where some systems got bumped to 1.4.1.1
@@ -116,7 +113,7 @@ if [[ "$ver" == "1.4.1" ]]; then
 
   # Fix permissions for Nagios log archiving
   chmod ug+x /usr/local/nagios/var/archives
-  
+
 fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" <= "'1.3.1'")}') )); then
@@ -147,6 +144,11 @@ fi
 # Install nems-quickfix command
 if [ ! -f /usr/local/bin/nems-quickfix ]; then
   ln -s /usr/local/share/nems/nems-scripts/quickfix.sh /usr/local/bin/nems-quickfix
+fi
+
+# Install nems-support command
+if [ ! -f /usr/local/bin/nems-support ]; then
+  ln -s /root/nems/nems-migrator/support.sh /usr/local/bin/nems-support
 fi
 
 # Add new cron entries
@@ -244,11 +246,6 @@ apt update
 apikey=$(cat /usr/local/share/nems/nems.conf | grep apikey | printf '%s' $(cut -n -d '=' -f 2))
 if [[ $apikey == '' ]]; then
   sed -i~ '/apikey/d' /usr/local/share/nems/nems.conf
-fi
-
-# Force hw_model - I never took into account some people might not reboot to trigger this.
-if [ ! -f /var/log/nems/hw_model.log ]; then
-  /usr/local/share/nems/nems-scripts/hw_model.sh
 fi
 
 # Randomize nemsadmin password if NEMS is initialized
