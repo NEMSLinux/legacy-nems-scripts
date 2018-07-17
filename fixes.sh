@@ -225,6 +225,11 @@ fi
     cronupdate=1
   fi
 
+  if ! grep -q "NEMS0011" /tmp/cron.tmp; then
+    printf "\n# support.nems Self-Destruct NEMS0011\n* * * * * /root/nems/nems-migrator/support-sd.sh > /dev/null 2>&1\n" >> /tmp/cron.tmp
+    cronupdate=1
+  fi
+
 
   # Import revised crontab
   if [[ "$cronupdate" == "1" ]]
