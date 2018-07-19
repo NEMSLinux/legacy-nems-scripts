@@ -116,6 +116,14 @@ if [[ "$ver" == "1.4.1" ]]; then
 
 fi
 
+if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
+
+  # Give Adagios access to socket
+  /bin/sed -i -- 's,livestatus_path = None,livestatus_path = "/usr/local/nagios/var/rw/live.sock",g' /var/www/adagios/settings.py
+
+
+fi
+
 if (( $(awk 'BEGIN {print ("'$ver'" <= "'1.3.1'")}') )); then
   /usr/local/share/nems/nems-scripts/fixes-legacy.sh
 fi
