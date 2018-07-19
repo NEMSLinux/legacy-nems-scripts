@@ -121,6 +121,10 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
   # Give Adagios access to socket
   /bin/sed -i -- 's,livestatus_path = None,livestatus_path = "/usr/local/nagios/var/rw/live.sock",g' /var/www/adagios/settings.py
 
+  # Fix logs for Nagios (in particular, this fixes Adagios history)
+  if [[ ! -d /var/log/nagios/archives ]]; then
+    mkdir /var/log/nagios/archives
+  fi
 
 fi
 
