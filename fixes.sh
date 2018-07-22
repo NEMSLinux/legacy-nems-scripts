@@ -124,7 +124,51 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
   # Fix logs for Nagios (in particular, this fixes Adagios history)
   if [[ ! -d /var/log/nagios/archives ]]; then
     mkdir /var/log/nagios/archives
+    chown nagios:nagios /var/log/nagios/archives
+    chmod ug+x /var/log/nagios/archives
+    chmod g+ws /var/log/nagios/archives
   fi
+
+  # Allow Nagios to check for external commands from Nagios Core web UI or Adagios
+  if grep -q "check_external_commands=0" /usr/local/nagios/etc/nagios.cfg; then
+    /bin/sed -i -- 's/check_external_commands=0/check_external_commands=1/g' /usr/local/nagios/etc/nagios.cfg
+    /bin/systemctl restart nagios
+  fi
+
+ # Make Adagios work on NEMS 1.4.1+
+   if [[ -d /var/www/adagios ]]; then
+     rm -rf /var/www/adagios
+     ln -s /usr/local/lib/python2.7/dist-packages/adagios /var/www/adagios
+   fi
+
+   if ! grep -q "NEMS00000" /var/www/adagios/settings.py; then
+     cp -f /root/nems/nems-migrator/data/1.4/adagios/settings.py /var/www/adagios/
+     chown www-data:www-data /var/www/adagios/settings.py
+     adagioscache=1;
+   fi
+   if ! grep -q "NEMS00000" /etc/adagios/adagios.conf; then
+     echo "
+# NEMS00000 A hacky way of disabling the admin portions of Adagios
+enable_authorization=True
+administrators=\"nobodyisadmin\"
+" >> /etc/adagios/adagios.conf
+   fi
+   if ! grep -q "NEMS00000" /var/www/adagios/templates/403.html; then
+     cp -f /root/nems/nems-migrator/data/1.4/adagios/templates/403.html /var/www/adagios/templates/
+     adagioscache=1;
+   fi
+   if ! grep -q "NEMS00000" /var/www/adagios/templates/base.html; then
+     cp -f /root/nems/nems-migrator/data/1.4/adagios/templates/base.html /var/www/adagios/templates/
+     adagioscache=1;
+   fi
+   if [[ $adagioscache = "1" ]]; then
+     cd /var/www/adagios
+     /usr/local/bin/pip install django-clear-cache
+     /usr/bin/find /var/www/adagios/ -name "*.pyc" -exec rm -rf {} \;
+     /bin/systemctl restart apache2
+     /usr/local/bin/pip install django-clear-cache
+     /usr/bin/python manage.py clear_cache
+   fi
 
 fi
 
@@ -299,3 +343,5 @@ fi
 if [ $(dpkg-query -W -f='${Status}' memtester 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
   apt-get -y install memtester
 fi
+
+
