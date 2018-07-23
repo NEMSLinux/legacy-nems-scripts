@@ -127,6 +127,17 @@ if [[ "$ver" == "1.4.1" ]]; then
   # Fix ownership of new Adagios web folder (which is now a symlink)
   chown -R www-data:www-data /var/www/adagios/
 
+  if ! grep -q "NEMS00000" /etc/monit/conf.d/nems.conf; then
+    echo '# NEMS00000 Monitorix
+check process monitorix with pidfile /run/monitorix.pid
+    start program = "/etc/init.d/monitorix start"
+    stop program  = "/etc/init.d/monitorix stop"
+  ' >> /etc/monit/conf.d/nems.conf
+    /bin/systemctl restart monitorix
+  fi
+
+
+
 fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
