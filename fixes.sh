@@ -133,7 +133,7 @@ check process monitorix with pidfile /run/monitorix.pid
     start program = "/etc/init.d/monitorix start"
     stop program  = "/etc/init.d/monitorix stop"
   ' >> /etc/monit/conf.d/nems.conf
-    /bin/systemctl restart monitorix
+    /bin/systemctl restart monit
   fi
 
 
