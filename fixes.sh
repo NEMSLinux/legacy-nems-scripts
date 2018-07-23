@@ -121,6 +121,12 @@ if [[ "$ver" == "1.4.1" ]]; then
     sed -i~ '/administrators="nobodyisadmin"/d' /etc/adagios/adagios.conf
   fi
 
+  # Fix ownership of Nagios logs folder
+  chown -R nagios:nagios /var/log/nagios
+
+  # Fix ownership of new Adagios web folder (which is now a symlink)
+  chown -R www-data:www-data /var/www/adagios/
+
 fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
@@ -171,11 +177,10 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
    fi
    if [[ $adagioscache = "1" ]]; then
      cd /var/www/adagios
-     /usr/local/bin/pip install django-clear-cache
      /usr/bin/find /var/www/adagios/ -name "*.pyc" -exec rm -rf {} \;
-     /bin/systemctl restart apache2
      /usr/local/bin/pip install django-clear-cache
      /usr/bin/python manage.py clear_cache
+     /bin/systemctl restart apache2
    fi
 
 fi
