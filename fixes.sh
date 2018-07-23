@@ -136,7 +136,21 @@ check process monitorix with pidfile /run/monitorix.pid
     /bin/systemctl restart monit
   fi
 
-
+  # Install 9590
+  # A simple listener on Port 9590 for documentation examples
+  cp /root/nems/nems-migrator/data/1.4/init.d/9590 /etc/init.d/
+  /usr/sbin/update-rc.d 9590 defaults
+  /usr/sbin/update-rc.d 9590 enable
+  /etc/init.d/9590 start
+  # And add it to monit
+  if ! grep -q "NEMS00001" /etc/monit/conf.d/nems.conf; then
+    echo '# NEMS00001 9590
+check process 9590 with pidfile /run/9590.pid
+    start program = "/etc/init.d/9590 start"
+    stop program  = "/etc/init.d/9590 stop"
+  ' >> /etc/monit/conf.d/nems.conf
+    /bin/systemctl restart monit
+  fi
 
 fi
 
