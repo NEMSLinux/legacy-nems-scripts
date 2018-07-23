@@ -114,6 +114,13 @@ if [[ "$ver" == "1.4.1" ]]; then
   # Fix permissions for Nagios log archiving
   chmod ug+x /usr/local/nagios/var/archives
 
+  # Remove NEMS00000 patch from adagios.conf. It caused problems if user renamed admin user in NConf.
+  if grep -q "# NEMS00000 A hacky way of disabling the admin portions of Adagios" /etc/adagios/adagios.conf; then
+    sed -i~ '/# NEMS00000/d' /etc/adagios/adagios.conf
+    sed -i~ '/enable_authorization=True/d' /etc/adagios/adagios.conf
+    sed -i~ '/administrators="nobodyisadmin"/d' /etc/adagios/adagios.conf
+  fi
+
 fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
@@ -146,13 +153,14 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
      chown www-data:www-data /var/www/adagios/settings.py
      adagioscache=1;
    fi
-   if ! grep -q "NEMS00000" /etc/adagios/adagios.conf; then
-     echo "
-# NEMS00000 A hacky way of disabling the admin portions of Adagios
-enable_authorization=True
-administrators=\"nobodyisadmin\"
-" >> /etc/adagios/adagios.conf
-   fi
+# DISABLED and REVERSED. If user renamed admin user in NConf, Adagios would be empty.
+#   if ! grep -q "NEMS00000" /etc/adagios/adagios.conf; then
+#     echo "
+## NEMS00000 A hacky way of disabling the admin portions of Adagios
+#enable_authorization=True
+#administrators=\"nobodyisadmin\"
+#" >> /etc/adagios/adagios.conf
+#   fi
    if ! grep -q "NEMS00000" /var/www/adagios/templates/403.html; then
      cp -f /root/nems/nems-migrator/data/1.4/adagios/templates/403.html /var/www/adagios/templates/
      adagioscache=1;
@@ -343,5 +351,9 @@ fi
 if [ $(dpkg-query -W -f='${Status}' memtester 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
   apt-get -y install memtester
 fi
+
+
+
+
 
 
