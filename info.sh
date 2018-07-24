@@ -160,6 +160,23 @@ elif [[ $COMMAND == "online" ]]; then
     ping -q -w 1 -c 1 github.com > /dev/null 2>&1 && echo 1 || echo 0
   fi
 
+elif [[ $COMMAND == "socket" ]]; then
+  ver=$(/usr/local/bin/nems-info nemsver)
+  if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
+    socket=/usr/local/nagios/var/rw/live.sock
+  else
+    socket=/var/lib/nagios3/rw/live.sock
+  fi
+  echo $socket
+
+elif [[ $COMMAND == "hosts" ]]; then
+  socket=$(/usr/local/bin/nems-info socket)
+  /usr/local/share/nems/nems-scripts/stats-livestatus.py $socket hosts
+
+elif [[ $COMMAND == "services" ]]; then
+  socket=$(/usr/local/bin/nems-info socket)
+  /usr/local/share/nems/nems-scripts/stats-livestatus.py $socket services
+
 # Output usage info as no valid command line argument was provided
 else
   echo "Usage: ./$me command"

@@ -26,26 +26,10 @@ if (file_exists('/var/log/nems/hw_model')) { // Don't run this until system is r
   $ver = trim(shell_exec('/usr/local/bin/nems-info nemsver'));
 
   // Get the number of configured hosts
-  if ($ver < 1.4) {
-    $hostdata = file('/etc/nagios3/Default_collector/hosts.cfg');
-  } else {
-    $hostdata = file('/etc/nems/conf/Default_collector/hosts.cfg');
-  }
-  $hosts = 0;
-  if (is_array($hostdata)) foreach ($hostdata as $line) {
-    if (strstr($line, 'define host')) $hosts++;
-  }
+  hosts=$(/usr/local/bin/nems-info hosts)
 
   // Get the number of configured services
-  if ($ver < 1.4) {
-    $servicedata = file('/etc/nagios3/Default_collector/services.cfg');
-  } else {
-    $servicedata = file('/etc/nems/conf/Default_collector/services.cfg');
-  }
-  $services = 0;
-  if (is_array($servicedata)) foreach ($servicedata as $line) {
-    if (strstr($line, 'define service')) $services++;
-  }
+  services=$(/usr/local/bin/nems-info services)
 
   // Get the size of your storage media
   $disksize = disk_total_space('/');
