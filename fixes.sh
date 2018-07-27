@@ -152,6 +152,11 @@ check process 9590 with pidfile /run/9590.pid
     /bin/systemctl restart monit
   fi
 
+  # Stop TTY1 from blanking since keyboard is likely not connected
+  if ! grep -q "NEMS00000" /etc/rc.local; then
+    /root/nems/nems-admin/build/011-tty
+  fi
+
 fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
