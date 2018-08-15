@@ -72,6 +72,9 @@ elif [[ $COMMAND == "hwid" ]]; then
   # Pine A64/A64+
   elif (( $platform >= 40 )) && (( $platform <= 42 )); then 
     /sbin/ifconfig eth0 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
+  # ODROID XU3/XU4
+  elif (( $platform == 11 )); then 
+    /sbin/ifconfig eth0 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
   # Virtual Appliance
   elif (( $platform >= 20 )); then 
     /sbin/ifconfig enp0s3 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
