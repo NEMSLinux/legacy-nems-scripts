@@ -108,6 +108,8 @@ else
   echo Done.
   # Allow user to become super-user
   usermod -aG sudo $username
+  # Allow them to also administer nagios, access livestatus, etc.
+  usermod -a -G www-data,nagios $username
   # Allow user to login to monit web interface
   [ $(getent group monit) ] || groupadd monit
   usermod -aG monit $username
