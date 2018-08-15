@@ -696,7 +696,7 @@
 		fi
 
 		# - Add HW arch to HW desc
-		HW_MODEL_DESCRIPTION+=" ($HW_ARCH_DESCRIPTION)"
+#		HW_MODEL_DESCRIPTION+=" ($HW_ARCH_DESCRIPTION)"
 
 		#Save data
 		cat << _EOF_ > /var/log/nems/hw_model
