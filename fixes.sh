@@ -28,7 +28,6 @@
    /usr/bin/mysql -u nconf -h 127.0.0.1 -pnagiosadmin -D nconf -e "UPDATE ConfigValues SET attr_value='Default Nagios' WHERE fk_id_attr = 1;"
  fi
 
-
 if [[ "$ver" == "1.4" ]]; then
 
   # Fix Nagios lockfile location (was causing systemd to be unable to restart Nagios)
@@ -169,6 +168,13 @@ check process 9590 with pidfile /run/9590.pid
   # Allow the NEMS user to also administer nagios, access livestatus, etc.
   username=$(/usr/local/bin/nems-info username)
   usermod -a -G www-data,nagios $username
+
+  # Install phoronix test suite to supplement our benchmarks
+  if [[ ! -f /usr/bin/phoronix-test-suite ]]; then
+    if [[ -f /root/nems/nems-admin/build/221-phoronix ]]; then
+      /root/nems/nems-admin/build/221-phoronix
+    fi
+  fi
 
 fi
 
