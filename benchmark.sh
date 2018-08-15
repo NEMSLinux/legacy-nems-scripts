@@ -3,6 +3,12 @@ start=`date +%s`
 
 echo "NEMS System Benchmark... Please Wait (may take a while)."
 
+# Phoronix Test Suite
+# In development, so commented for now (can take many hours)
+#/usr/bin/phoronix-test-suite batch-benchmark 1803222-FO-MODEL3BPL99
+#/usr/bin/phoronix-test-suite batch-benchmark smallpt
+
+
 echo "NEMS System Benchmark" > /tmp/nems-benchmark.log
 date >> /tmp/nems-benchmark.log
 printf "NEMS Version: " >> /tmp/nems-benchmark.log
