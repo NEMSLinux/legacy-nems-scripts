@@ -166,6 +166,10 @@ check process 9590 with pidfile /run/9590.pid
     rm /etc/apt/sources.list.d/monitorix.list
   fi
 
+  # Allow the NEMS user to also administer nagios, access livestatus, etc.
+  username=$(/usr/local/bin/nems-info username)
+  usermod -a -G www-data,nagios $username
+
 fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
