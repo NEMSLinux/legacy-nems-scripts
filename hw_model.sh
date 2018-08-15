@@ -581,18 +581,18 @@
 			#oDroid U3
 			elif (( $HW_MODEL == 13 )); then
 
-				HW_MODEL_DESCRIPTION='oDroid U3'
+				HW_MODEL_DESCRIPTION='ODROID U3'
 				#IMAGE_ADDITIONAL_CREDITS='Meveric'
 
 			elif (( $HW_MODEL == 12 )); then
 
-				HW_MODEL_DESCRIPTION='oDroid C2'
+				HW_MODEL_DESCRIPTION='ODROID C2'
 				IMAGE_ADDITIONAL_CREDITS='Meveric'
 
 				#oDroid XU3/4 via /etc/.dietpi_hw_model
 			elif (( $HW_MODEL == 11 )); then
 
-				HW_MODEL_DESCRIPTION='oDroid XU3/4'
+				HW_MODEL_DESCRIPTION='ODROID XU3/XU4'
 				IMAGE_ADDITIONAL_CREDITS='Meveric'
 
 			# Logic Supply CL100
@@ -628,21 +628,21 @@
 		#oDroid C2
 		elif (( $(cat /proc/cpuinfo | grep -ci -m1 'ODROID-C2') )); then
 
-			HW_MODEL_DESCRIPTION='oDroid C2'
+			HW_MODEL_DESCRIPTION='ODROID C2'
 			HW_MODEL=12
 			IMAGE_ADDITIONAL_CREDITS='Meveric'
 
 		#oDroid XU3/4
 		elif (( $(cat /proc/cpuinfo | grep -ci -m1 'ODROID-XU3') )); then
 
-			HW_MODEL_DESCRIPTION='oDroid XU3/4'
+			HW_MODEL_DESCRIPTION='ODROID XU3/4'
 			HW_MODEL=11
 			IMAGE_ADDITIONAL_CREDITS='Meveric'
 
 		#oDroid C1
 		elif (( $(cat /proc/cpuinfo | grep -ci -m1 'ODROIDC') )); then
 
-			HW_MODEL_DESCRIPTION='oDroid C1'
+			HW_MODEL_DESCRIPTION='ODROID C1'
 			HW_MODEL=10
 			IMAGE_ADDITIONAL_CREDITS='Meveric'
 
