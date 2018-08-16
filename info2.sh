@@ -64,14 +64,38 @@ switch($argv[1]) {
       $logdir = '/var/log/nems/phoronix/';
       $logfile = 'composite.xml';
       $loglist = array_filter(explode(PHP_EOL,shell_exec('find ' . $logdir . ' -iname ' . $logfile)));
-      $tests = array(
-        'smallpt',
-        'himeno',
-        'ramspeed',
-        'iozone'
-      );
+
+      // list of supported tests
+//      $tests[] = 'smallpt';
+//      $tests[] = 'himeno';
+//      $tests[] = 'ramspeed';
+//      $tests[] = 'iozone';
+      $tests[] = 'netperf';
+      $tests[] = 'cachebench';
+      $tests[] = 'scimark2';
+      $tests[] = 'graphics-magick';
+      $tests[] = 'ebizzy';
+      $tests[] = 'c-ray';
+      $tests[] = 'stockfish';
+      $tests[] = 'aobench';
+      $tests[] = 'timed-audio-encode';
+      $tests[] = 'encode-mp3';
+      $tests[] = 'perl-benchmark';
+      $tests[] = 'openssl';
+      $tests[] = 'redis';
+      $tests[] = 'pybench';
+      $tests[] = 'phpbench';
+      $tests[] = 'git';
+      $tests[] = 'apache';
+
+      sort($tests);
+      $usage = '';
+      foreach($tests as $test) {
+        $usage .= $test . '|';
+      }
+      $usage = substr($usage,0,-1);
       if (!isset($argv[2]) || !in_array($argv[2],$tests)) {
-        echo "Usage: nems-info phoronix [smallpt|himeno|ramspeed|iozone]" . PHP_EOL;
+        echo "Usage: nems-info phoronix [$usage]" . PHP_EOL;
         exit();
       }
       if (is_array($loglist)) {

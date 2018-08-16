@@ -176,6 +176,11 @@ check process 9590 with pidfile /run/9590.pid
     fi
   fi
 
+  # Install less command
+    if [[ ! -e /usr/bin/less ]]; then
+      apt -y install less
+    fi
+
 fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
