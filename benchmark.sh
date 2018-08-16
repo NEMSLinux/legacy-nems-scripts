@@ -24,18 +24,20 @@ echo "---------------------------------" >> /tmp/nems-benchmark.log
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
   # Phoronix Test Suite in NEMS 1.4.1+
-  printf "Running Phoronix 'himeno' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark himeno
-  echo " Done." >> /tmp/nems-benchmark.log
-  printf "Running Phoronix 'ramspeed' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark ramspeed
-  echo " Done." >> /tmp/nems-benchmark.log
-  printf "Running Phoronix 'iozone' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark iozone
-  echo " Done." >> /tmp/nems-benchmark.log
-  printf "Running Phoronix 'smallpt' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark smallpt
-  echo " Done." >> /tmp/nems-benchmark.log
+#  printf "Running Phoronix 'iozone' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark iozone
+#  echo " Done." >> /tmp/nems-benchmark.log
+#  printf "Running Phoronix 'smallpt' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark smallpt
+#  echo " Done." >> /tmp/nems-benchmark.log
+#  printf "Running Phoronix 'himeno' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark himeno
+#  echo " Done." >> /tmp/nems-benchmark.log
+#  printf "Running Phoronix 'ramspeed' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark ramspeed
+#  echo " Done." >> /tmp/nems-benchmark.log
+
+
 else
   printf "SD Card READ:" >> /tmp/nems-benchmark.log
   /sbin/hdparm -t /dev/mmcblk0p2 >> /tmp/nems-benchmark.log
