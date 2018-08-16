@@ -57,6 +57,79 @@ switch($argv[1]) {
       echo '[API Did Not Respond]';
     }
   break;
+
+  case 5:
+    $ver = floatval(shell_exec('/usr/local/bin/nems-info nemsver'));
+    if ($ver >= 1.4) { // EVERYTHING 1.4+
+      $logdir = '/var/log/nems/phoronix/';
+      $logfile = 'composite.xml';
+      $loglist = array_filter(explode(PHP_EOL,shell_exec('find ' . $logdir . ' -iname ' . $logfile)));
+      $tests = array(
+        'smallpt',
+        'himeno',
+        'ramspeed',
+        'iozone'
+      );
+      if (!isset($argv[2]) || !in_array($argv[2],$tests)) {
+        echo "Usage: nems-info phoronix [smallpt|himeno|ramspeed|iozone]" . PHP_EOL;
+        exit();
+      }
+      if (is_array($loglist)) {
+        foreach ($loglist as $file) {
+          $tmp = explode($logdir,$file);
+          $tmp = array_filter(explode($logfile,$tmp[1]));
+          $date = strtotime(str_replace('/','',$tmp[0]));
+          $logs[$date] = $file;
+        }
+        if (is_array($logs)) {
+          ksort($logs); // sort to ensure oldest is first (so value overwrites)
+
+          function check_test($title,$tests) {
+            if (is_array($tests)) { // checking array (list of tests)
+              foreach($tests as $test) {
+                if (strpos(strtolower($title), $test) !== false) {
+                  return true;
+                }
+	      }
+            } else { // checking string (one specific test)
+                if (strpos(strtolower($title), $tests) !== false) {
+                  return true;
+                }
+            }
+            return false;
+          }
+
+          foreach ($logs as $date => $log) {
+            $data = new SimpleXMLElement(file_get_contents($log));
+            if (check_test(strtolower($data->Result->Title),$tests)) {
+              if (check_test(strtolower($data->Result->Title),$argv[2])) {
+                $count=0; foreach ($data->Result as $dataresult) { $count++; } // YES, I am being lazy.
+                foreach ($data->Result as $dataresult) {
+		  if ($count > 1) { // use the one labeled "average"
+                    if (check_test(strtolower($dataresult->Description),'average')) {
+                      $result = floatval($dataresult->Data->Entry->Value);
+                    }
+                  } else {
+                    $result = floatval($dataresult->Data->Entry->Value);
+                  }
+                }
+              }
+            }
+          }
+          if (isset($result)) {
+            echo $result;
+          } else {
+            echo 0;
+          }
+        }
+      } else {
+        return false;
+      }
+    } else {
+      echo 0;
+    }
+  break;
+
 }
 
 
@@ -97,6 +170,8 @@ function monitorix($db) {
   }
 
 }
+
+
 
 
 ?>

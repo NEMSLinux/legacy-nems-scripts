@@ -180,6 +180,9 @@ elif [[ $COMMAND == "services" ]]; then
   socket=$(/usr/local/bin/nems-info socket)
   /usr/local/share/nems/nems-scripts/stats-livestatus.py $socket services
 
+elif [[ $COMMAND == "phoronix" ]]; then
+  /usr/local/share/nems/nems-scripts/info2.sh 5 $VARIABLE
+
 # Output usage info as no valid command line argument was provided
 else
   echo "Usage: ./$me command"
