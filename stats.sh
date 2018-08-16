@@ -43,6 +43,9 @@ if (file_exists('/var/log/nems/hw_model')) { // Don't run this until system is r
   $hours = $num % 24;      $num = intdiv($num, 24);
   $days  = $num;
 
+  // Get system benchmarks
+  $benchmarks = (array)json_decode(shell_exec('/usr/local/bin/nems-info phoronix all'));
+
   // Put it together to send to the server
   $data = array(
     'hwid'=>trim(shell_exec('/usr/local/bin/nems-info hwid')),
@@ -59,6 +62,7 @@ if (file_exists('/var/log/nems/hw_model')) { // Don't run this until system is r
     'loadaverage'=>trim(shell_exec('/usr/local/bin/nems-info loadaverage')),
     'temperature'=>trim(shell_exec('/usr/local/bin/nems-info temperature')),
     'timezone'=>date('T'),
+    'benchmarks'=>json_encode($benchmarks),
   );
 
   file_put_contents('/var/log/nems/stats.log',serialize($data) . PHP_EOL,FILE_APPEND);

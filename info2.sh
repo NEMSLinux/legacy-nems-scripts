@@ -88,6 +88,7 @@ switch($argv[1]) {
       $tests[] = 'git';
       $tests[] = 'apache';
 
+      $tests[] = 'all';
       sort($tests);
       $usage = '';
       foreach($tests as $test) {
@@ -112,12 +113,12 @@ switch($argv[1]) {
             if (is_array($tests)) { // checking array (list of tests)
               foreach($tests as $test) {
                 if (strpos(strtolower($title), $test) !== false) {
-                  return true;
+                  return $test;
                 }
 	      }
             } else { // checking string (one specific test)
                 if (strpos(strtolower($title), $tests) !== false) {
-                  return true;
+                  return $tests;
                 }
             }
             return false;
@@ -126,6 +127,26 @@ switch($argv[1]) {
           foreach ($logs as $date => $log) {
             $data = new SimpleXMLElement(file_get_contents($log));
             if (check_test(strtolower($data->Result->Title),$tests)) {
+             if ($argv[2] == 'all') {
+                $count=0; foreach ($data->Result as $dataresult) { $count++; } // YES, I am being lazy.
+                foreach ($data->Result as $dataresult) {
+		  if ($count > 1) { // use the one labeled "average"
+                    if ($testpass = check_test(strtolower($dataresult->Description),'average')) {
+                      $testpass = check_test(strtolower($data->Result->Title),$tests);
+                      $resulttmp[$testpass] = floatval($dataresult->Data->Entry->Value);
+                    }
+                  } else {
+                    $testpass = check_test(strtolower($data->Result->Title),$tests);
+                    $resulttmp[$testpass] = floatval($dataresult->Data->Entry->Value);
+                  }
+                }
+                // Append any missing tests with 0 value
+                foreach ($tests as $test) {
+                  if ($test != 'all' && !isset($resulttmp[strtolower($test)])) $resulttmp[strtolower($test)] = 0;
+                }
+                ksort($resulttmp);
+                $result = json_encode($resulttmp);
+             } else {
               if (check_test(strtolower($data->Result->Title),$argv[2])) {
                 $count=0; foreach ($data->Result as $dataresult) { $count++; } // YES, I am being lazy.
                 foreach ($data->Result as $dataresult) {
@@ -137,6 +158,7 @@ switch($argv[1]) {
                     $result = floatval($dataresult->Data->Entry->Value);
                   }
                 }
+               }
               }
             }
           }
