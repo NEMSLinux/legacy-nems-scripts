@@ -99,14 +99,14 @@ switch($argv[1]) {
         echo "Usage: nems-info phoronix [$usage]" . PHP_EOL;
         exit();
       }
-      if (is_array($loglist)) {
+      if (isset($loglist) && is_array($loglist)) {
         foreach ($loglist as $file) {
           $tmp = explode($logdir,$file);
           $tmp = array_filter(explode($logfile,$tmp[1]));
           $date = strtotime(str_replace('/','',$tmp[0]));
           $logs[$date] = $file;
         }
-        if (is_array($logs)) {
+        if (isset($logs) && is_array($logs)) {
           ksort($logs); // sort to ensure oldest is first (so value overwrites)
 
           function check_test($title,$tests) {
@@ -125,9 +125,12 @@ switch($argv[1]) {
           }
 
           foreach ($logs as $date => $log) {
-            $data = new SimpleXMLElement(file_get_contents($log));
+           $dataobj = new SimpleXMLElement(file_get_contents($log));
+
+           foreach ($dataobj as $data) {
             if (check_test(strtolower($data->Result->Title),$tests)) {
              if ($argv[2] == 'all') {
+echo 'hi';
                 $count=0; foreach ($data->Result as $dataresult) { $count++; } // YES, I am being lazy.
                 foreach ($data->Result as $dataresult) {
 		  if ($count > 1) { // use the one labeled "average"
@@ -146,6 +149,7 @@ switch($argv[1]) {
                 }
                 ksort($resulttmp);
                 $result = json_encode($resulttmp);
+                break;
              } else {
               if (check_test(strtolower($data->Result->Title),$argv[2])) {
                 $count=0; foreach ($data->Result as $dataresult) { $count++; } // YES, I am being lazy.
@@ -153,14 +157,17 @@ switch($argv[1]) {
 		  if ($count > 1) { // use the one labeled "average"
                     if (check_test(strtolower($dataresult->Description),'average')) {
                       $result = floatval($dataresult->Data->Entry->Value);
+                      break;
                     }
                   } else {
                     $result = floatval($dataresult->Data->Entry->Value);
+                    break;
                   }
                 }
                }
               }
             }
+           }
           }
           if (isset($result)) {
             echo $result;
