@@ -66,7 +66,7 @@ switch($argv[1]) {
       $loglist = array_filter(explode(PHP_EOL,shell_exec('find ' . $logdir . ' -iname ' . $logfile)));
 
       // list of supported tests
-      // key is the command-line name, value is how it appears in Result->Title in the xml ($dataobj)
+      // key is the command-line name, value is how it appears in Result->Identifier in the xml ($dataobj)
       $tests['netperf'] = 'netperf';
       $tests['cachebench'] = 'cachebench';
       $tests['scimark2'] = 'scimark';
@@ -85,7 +85,7 @@ switch($argv[1]) {
       $tests['git'] = 'git';
       $tests['apache'] = 'apache';
 
-      $tests[] = 'all';
+      $tests['all'] = 'all';
       ksort($tests);
       $usage = '';
       foreach($tests as $test) {
@@ -96,6 +96,28 @@ switch($argv[1]) {
         echo "Usage: nems-info phoronix [$usage]" . PHP_EOL;
         exit();
       }
+
+      // Some tests have multiple tests within
+      // choose the one we want via the description field
+      // If you leave it blank, it'll just be the last result of the test (ie., the only one if only one)
+      $descfield['netperf'] = '';
+      $descfield['cachebench'] = 'Test: Read / Modify / Write';
+      $descfield['scimark2'] = 'Computational Test: Jacobi Successive Over-Relaxation';
+      $descfield['graphics-magick'] = 'Operation: Resizing';
+      $descfield['ebizzy'] = ''; // actually does not have a description
+      $descfield['c-ray'] = '';
+      $descfield['stockfish'] = '';
+      $descfield['aobench'] = '';
+      $descfield['timed-audio-encode'] = '';
+      $descfield['encode-mp3'] = '';
+      $descfield['perl-benchmark'] = '';
+      $descfield['openssl'] = '';
+      $descfield['redis'] = 'Test: LPOP';
+      $descfield['pybench'] = '';
+      $descfield['phpbench'] = '';
+      $descfield['git'] = '';
+      $descfield['apache'] = 'Static Web Page Serving';
+
       if (isset($loglist) && is_array($loglist)) {
         foreach ($loglist as $file) {
           $tmp = explode($logdir,$file);
@@ -111,11 +133,11 @@ switch($argv[1]) {
               foreach($tests as $key=>$test) {
                 // First, check the test name (key) as per array above
                 if (strpos(strtolower($title), $key) !== false) {
-                  return $test;
+                  return $key;
                 }
-                // Try searching the xml Result->Title name (test)
+                // Try searching the xml Result->Identifier name (test)
                 if (strpos(strtolower($title), $test) !== false) {
-                  return $test;
+                  return $key;
                 }
 	            }
             } else { // checking string (one specific test)
@@ -130,34 +152,22 @@ switch($argv[1]) {
            $dataobj = new SimpleXMLElement(file_get_contents($log));
 
            foreach ($dataobj as $data) {
-
-
-            if (check_test(strtolower($data->Result->Title),$tests)) {
-              echo 'hi';
+            if ($approvedtest = check_test(strtolower($data->Identifier),$tests)) {
              if ($argv[2] == 'all') {
-                $count=0; foreach ($data->Result as $dataresult) { $count++; } // YES, I am being lazy.
-                foreach ($data->Result as $dataresult) {
-		  if ($count > 1) { // use the one labeled "average"
-                    if ($testpass = check_test(strtolower($dataresult->Description),'average')) {
-                      $testpass = check_test(strtolower($data->Result->Title),$tests);
-                      $resulttmp[$testpass] = floatval($dataresult->Data->Entry->Value);
-                    }
-                  } else {
-                    $testpass = check_test(strtolower($data->Result->Title),$tests);
-                    $resulttmp[$testpass] = floatval($dataresult->Data->Entry->Value);
+                // we already know the test's title matches, so let's see if the desc does
+                if ($descfield[$approvedtest] == '' || $data->Description == $descfield[$approvedtest]) {
+                  $resulttmp[$approvedtest] = floatval($data->Data->Entry->Value);
+                  // Append any missing tests with 0 value
+                  foreach ($tests as $test => $internalname) {
+                    if ($test != 'all' && !isset($resulttmp[strtolower($test)])) $resulttmp[strtolower($test)] = 0;
                   }
+                  ksort($resulttmp);
+                  $result = json_encode($resulttmp);
                 }
-                // Append any missing tests with 0 value
-                foreach ($tests as $test) {
-                  if ($test != 'all' && !isset($resulttmp[strtolower($test)])) $resulttmp[strtolower($test)] = 0;
-                }
-                ksort($resulttmp);
-                $result = json_encode($resulttmp);
-                break;
              } else {
-              if (check_test(strtolower($data->Result->Title),$argv[2])) {
-                $count=0; foreach ($data->Result as $dataresult) { $count++; } // YES, I am being lazy.
-                foreach ($data->Result as $dataresult) {
+              if (check_test(strtolower($data->Identifier),$argv[2])) {
+                $count=0; foreach ($data as $dataresult) { $count++; } // YES, I am being lazy.
+                foreach ($data as $dataresult) {
 		  if ($count > 1) { // use the one labeled "average"
                     if (check_test(strtolower($dataresult->Description),'average')) {
                       $result = floatval($dataresult->Data->Entry->Value);
