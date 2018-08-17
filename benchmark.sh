@@ -39,53 +39,58 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
 #  printf "Running Phoronix 'netperf' test..." >> /tmp/nems-benchmark.log
 #    /usr/bin/phoronix-test-suite batch-benchmark netperf
 #  echo " Done." >> /tmp/nems-benchmark.log
-  printf "Running Phoronix 'apache' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark apache
-  echo " Done." >> /tmp/nems-benchmark.log
-  printf "Running Phoronix 'cachebench' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark cachebench
-  echo " Done." >> /tmp/nems-benchmark.log
-  printf "Running Phoronix 'scimark2' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark scimark2
-  echo " Done." >> /tmp/nems-benchmark.log
-  printf "Running Phoronix 'graphics-magick' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark graphics-magick
-  echo " Done." >> /tmp/nems-benchmark.log
-  printf "Running Phoronix 'ebizzy' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark ebizzy
-  echo " Done." >> /tmp/nems-benchmark.log
-  printf "Running Phoronix 'c-ray' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark c-ray
-  echo " Done." >> /tmp/nems-benchmark.log
-  printf "Running Phoronix 'stockfish' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark stockfish
-  echo " Done." >> /tmp/nems-benchmark.log
-  printf "Running Phoronix 'aobench' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark aobench
-  echo " Done." >> /tmp/nems-benchmark.log
-  printf "Running Phoronix 'timed-audio-encode' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark timed-audio-encode
-  echo " Done." >> /tmp/nems-benchmark.log
-  printf "Running Phoronix 'encode-mp3' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark encode-mp3
-  echo " Done." >> /tmp/nems-benchmark.log
-  printf "Running Phoronix 'perl-benchmark' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark perl-benchmark
-  echo " Done." >> /tmp/nems-benchmark.log
-  printf "Running Phoronix 'openssl' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark openssl
-  echo " Done." >> /tmp/nems-benchmark.log
-  printf "Running Phoronix 'redis' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark redis
-  echo " Done." >> /tmp/nems-benchmark.log
-  printf "Running Phoronix 'pybench' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark pybench
-  echo " Done." >> /tmp/nems-benchmark.log
-  printf "Running Phoronix 'phpbench' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark phpbench
-  echo " Done." >> /tmp/nems-benchmark.log
-  printf "Running Phoronix 'git' test..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark git
+
+#  printf "Running Phoronix 'apache' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark apache
+#  echo " Done." >> /tmp/nems-benchmark.log
+#  printf "Running Phoronix 'cachebench' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark cachebench
+#  echo " Done." >> /tmp/nems-benchmark.log
+#  printf "Running Phoronix 'scimark2' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark scimark2
+#  echo " Done." >> /tmp/nems-benchmark.log
+#  printf "Running Phoronix 'graphics-magick' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark graphics-magick
+#  echo " Done." >> /tmp/nems-benchmark.log
+#  printf "Running Phoronix 'ebizzy' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark ebizzy
+#  echo " Done." >> /tmp/nems-benchmark.log
+#  printf "Running Phoronix 'c-ray' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark c-ray
+#  echo " Done." >> /tmp/nems-benchmark.log
+#  printf "Running Phoronix 'stockfish' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark stockfish
+#  echo " Done." >> /tmp/nems-benchmark.log
+#  printf "Running Phoronix 'aobench' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark aobench
+#  echo " Done." >> /tmp/nems-benchmark.log
+#  printf "Running Phoronix 'timed-audio-encode' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark timed-audio-encode
+#  echo " Done." >> /tmp/nems-benchmark.log
+#  printf "Running Phoronix 'encode-mp3' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark encode-mp3
+#  echo " Done." >> /tmp/nems-benchmark.log
+#  printf "Running Phoronix 'perl-benchmark' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark perl-benchmark
+#  echo " Done." >> /tmp/nems-benchmark.log
+#  printf "Running Phoronix 'openssl' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark openssl
+#  echo " Done." >> /tmp/nems-benchmark.log
+#  printf "Running Phoronix 'redis' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark redis
+#  echo " Done." >> /tmp/nems-benchmark.log
+#  printf "Running Phoronix 'pybench' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark pybench
+#  echo " Done." >> /tmp/nems-benchmark.log
+#  printf "Running Phoronix 'phpbench' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark phpbench
+#  echo " Done." >> /tmp/nems-benchmark.log
+#  printf "Running Phoronix 'git' test..." >> /tmp/nems-benchmark.log
+#    /usr/bin/phoronix-test-suite batch-benchmark git
+#  echo " Done." >> /tmp/nems-benchmark.log
+
+  printf "Running Phoronix benchmarks..." >> /tmp/nems-benchmark.log
+    /usr/bin/phoronix-test-suite batch-benchmark apache cachebench scimark2 graphics-magick ebizzy c-ray stockfish aobench timed-audio-encode encode-mp3perl-benchmark openssl redis pybench phpbench git
   echo " Done." >> /tmp/nems-benchmark.log
 
 else
