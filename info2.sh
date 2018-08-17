@@ -66,36 +66,33 @@ switch($argv[1]) {
       $loglist = array_filter(explode(PHP_EOL,shell_exec('find ' . $logdir . ' -iname ' . $logfile)));
 
       // list of supported tests
-//      $tests[] = 'smallpt';
-//      $tests[] = 'himeno';
-//      $tests[] = 'ramspeed';
-//      $tests[] = 'iozone';
-      $tests[] = 'netperf';
-      $tests[] = 'cachebench';
-      $tests[] = 'scimark2';
-      $tests[] = 'graphics-magick';
-      $tests[] = 'ebizzy';
-      $tests[] = 'c-ray';
-      $tests[] = 'stockfish';
-      $tests[] = 'aobench';
-      $tests[] = 'timed-audio-encode';
-      $tests[] = 'encode-mp3';
-      $tests[] = 'perl-benchmark';
-      $tests[] = 'openssl';
-      $tests[] = 'redis';
-      $tests[] = 'pybench';
-      $tests[] = 'phpbench';
-      $tests[] = 'git';
-      $tests[] = 'apache';
+      // key is the command-line name, value is how it appears in Result->Title in the xml ($dataobj)
+      $tests['netperf'] = 'netperf';
+      $tests['cachebench'] = 'cachebench';
+      $tests['scimark2'] = 'scimark';
+      $tests['graphics-magick'] = 'graphicsmagick';
+      $tests['ebizzy'] = 'ebizzy';
+      $tests['c-ray'] = 'c-ray';
+      $tests['stockfish'] = 'stockfish';
+      $tests['aobench'] = 'aobench';
+      $tests['timed-audio-encode'] = 'timed-audio-encode';
+      $tests['encode-mp3'] = 'encode-mp3';
+      $tests['perl-benchmark'] = 'perl-benchmark';
+      $tests['openssl'] = 'openssl';
+      $tests['redis'] = 'redis';
+      $tests['pybench'] = 'pybench';
+      $tests['phpbench'] = 'phpbench';
+      $tests['git'] = 'git';
+      $tests['apache'] = 'apache';
 
       $tests[] = 'all';
-      sort($tests);
+      ksort($tests);
       $usage = '';
       foreach($tests as $test) {
         $usage .= $test . '|';
       }
       $usage = substr($usage,0,-1);
-      if (!isset($argv[2]) || !in_array($argv[2],$tests)) {
+      if (!isset($argv[2]) || !array_key_exists($argv[2],$tests)) {
         echo "Usage: nems-info phoronix [$usage]" . PHP_EOL;
         exit();
       }
@@ -111,11 +108,16 @@ switch($argv[1]) {
 
           function check_test($title,$tests) {
             if (is_array($tests)) { // checking array (list of tests)
-              foreach($tests as $test) {
+              foreach($tests as $key=>$test) {
+                // First, check the test name (key) as per array above
+                if (strpos(strtolower($title), $key) !== false) {
+                  return $test;
+                }
+                // Try searching the xml Result->Title name (test)
                 if (strpos(strtolower($title), $test) !== false) {
                   return $test;
                 }
-	      }
+	            }
             } else { // checking string (one specific test)
                 if (strpos(strtolower($title), $tests) !== false) {
                   return $tests;
@@ -128,9 +130,11 @@ switch($argv[1]) {
            $dataobj = new SimpleXMLElement(file_get_contents($log));
 
            foreach ($dataobj as $data) {
+
+
             if (check_test(strtolower($data->Result->Title),$tests)) {
+              echo 'hi';
              if ($argv[2] == 'all') {
-echo 'hi';
                 $count=0; foreach ($data->Result as $dataresult) { $count++; } // YES, I am being lazy.
                 foreach ($data->Result as $dataresult) {
 		  if ($count > 1) { // use the one labeled "average"
