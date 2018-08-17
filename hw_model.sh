@@ -53,7 +53,7 @@
 	# HW_MODEL 20 VM x64 (VMware VirtualBox)
 	# HW_MODEL 13 oDroid U3
 	# HW_MODEL 12 oDroid C2
-	# HW_MODEL 11 oDroid XU3/4
+	# HW_MODEL 11 oDroid XU3/XU4/HC1/HC2
 	# HW_MODEL 10 oDroid C1
 	# HW_MODEL 3 Raspberry Pi 3/3 B+
 	# HW_MODEL 2 Raspberry Pi 2
@@ -592,7 +592,7 @@
 				#oDroid XU3/4 via /etc/.dietpi_hw_model
 			elif (( $HW_MODEL == 11 )); then
 
-				HW_MODEL_DESCRIPTION='ODROID XU3/XU4'
+				HW_MODEL_DESCRIPTION='ODROID XU3/XU4/HC1/HC2'
 				IMAGE_ADDITIONAL_CREDITS='Meveric'
 
 			# Logic Supply CL100
