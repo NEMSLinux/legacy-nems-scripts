@@ -26,10 +26,10 @@ if (file_exists('/var/log/nems/hw_model')) { // Don't run this until system is r
   $ver = trim(shell_exec('/usr/local/bin/nems-info nemsver'));
 
   // Get the number of configured hosts
-  $hosts = shell_exec('/usr/local/bin/nems-info hosts');
+  $hosts = trim(shell_exec('/usr/local/bin/nems-info hosts'));
 
   // Get the number of configured services
-  $services = shell_exec('/usr/local/bin/nems-info services');
+  $services = trim(shell_exec('/usr/local/bin/nems-info services'));
 
   // Get the size of your storage media
   $disksize = disk_total_space('/');
