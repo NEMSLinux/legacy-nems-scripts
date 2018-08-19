@@ -1,5 +1,7 @@
 #!/bin/bash
 start=`date +%s`
+echo "New benchmark system is in the works. Will not run this week"
+exit
 
 echo "NEMS System Benchmark... Please Wait (may take a while)."
 
