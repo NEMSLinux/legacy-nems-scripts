@@ -197,6 +197,18 @@ switch($argv[1]) {
     }
   break;
 
+  case 6: // list scheduled downtime
+     $ch = curl_init();
+	$timeout = 5;
+	curl_setopt($ch, CURLOPT_URL, 'http://127.0.0.1/nems-api/downtimes');
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+	$data = curl_exec($ch);
+	curl_close($ch);
+        echo $data;
+  break;
+
+
 }
 
 
