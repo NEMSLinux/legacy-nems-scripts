@@ -1,7 +1,15 @@
 #!/bin/bash
 start=`date +%s`
-echo "New benchmark system is in the works. Will not run this week"
-exit
+plannedend=$(($start + 18000))
+
+nemsinit=`/usr/local/bin/nems-info init`
+if [[ $nemsinit == 0 ]]; then
+  echo "NEMS hasn't been initialized. Benchmark rejected."
+  exit
+fi
+
+# Schedule downtime on CPU Load notifications for 5 hours during benchmarks
+/usr/bin/printf "[%lu] SCHEDULE_SVC_DOWNTIME;NEMS;Current Load;$start;$plannedend;0;0;18000;NEMS Linux;Weekly Benchmarks Running\n" $start > /usr/local/nagios/var/rw/nagios.cmd
 
 echo "NEMS System Benchmark... Please Wait (may take a while)."
 
@@ -129,6 +137,9 @@ echo "---------------------------------" >> /tmp/nems-benchmark.log
 end=`date +%s`
 runtime=$((end-start))
 echo "Benchmark of this benchmark: "$runtime" seconds" >> /tmp/nems-benchmark.log
+
+# sometime in future, get the downtime ID from livestatus and output it in place of the '1'
+#/usr/bin/printf "[%lu] DEL_SVC_DOWNTIME;1\n" $end > /usr/local/nagios/var/rw/nagios.cmd
 
 cat /tmp/nems-benchmark.log
 rm  /tmp/nems-benchmark.log
