@@ -275,7 +275,7 @@ service.rpi-monitor=0
       /usr/bin/raspi-config --expand-rootfs > /dev/null 2>&1
     # Pine A64/A64+
     elif (( $platform >= 40 )) && (( $platform <= 42 )); then 
-      /root/nems/nems-admin/resize_rootfs.sh
+      /root/nems/nems-admin/resize_rootfs/pine64
     fi
   echo "Done."
 
