@@ -69,8 +69,8 @@ elif [[ $COMMAND == "hwid" ]]; then
   # Raspberry Pi
   if (( $platform >= 0 )) && (( $platform <= 9 )); then
     cat /proc/cpuinfo | grep Serial |  printf '%s' $(cut -n -d ' ' -f 2) | md5sum | cut -d"-" -f1 -
-  # Pine A64/A64+
-  elif (( $platform >= 40 )) && (( $platform <= 42 )); then 
+  # Pine64 Devices
+  elif (( $platform >= 40 )) && (( $platform <= 49 )); then 
     /sbin/ifconfig eth0 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
   # ODROID XU3/XU4
   elif (( $platform == 11 )); then 
