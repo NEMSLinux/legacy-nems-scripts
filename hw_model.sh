@@ -36,7 +36,7 @@
 	# HW_MODEL 60 NanoPi Neo
 	# HW_MODEL 51 BananaPi Pro (Lemaker)
 	# HW_MODEL 50 BananaPi M2+ (sinovoip)
-	# HW_MODEL 44 Pine A64-LTS
+	# HW_MODEL 44 Pine A64-LTS/Sopine
 	# HW_MODEL 43 Rock64
 	# HW_MODEL 42 Pine A64+ (2048mb)
 	# HW_MODEL 41 Pine A64+ (1024mb)
@@ -481,7 +481,7 @@
 			#Pine A64-LTS
 			elif (( $HW_MODEL == 44 )); then
 
-				HW_MODEL_DESCRIPTION='Pine A64-LTS'
+				HW_MODEL_DESCRIPTION='Pine A64-LTS/Sopine'
 				IMAGE_ADDITIONAL_CREDITS='Longsleep, Ayufan'
 
 			#Rock64
