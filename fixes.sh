@@ -181,6 +181,12 @@ check process 9590 with pidfile /run/9590.pid
       apt -y install less
     fi
 
+  # Install nems-tools
+    if [[ ! -d /root/nems/nems-tools ]]; then
+      cd /root/nems
+      git clone https://github.com/Cat5TV/nems-tools
+    fi
+
 fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then

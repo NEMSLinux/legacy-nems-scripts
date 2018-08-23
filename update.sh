@@ -39,6 +39,15 @@ else
   cd /var/www/nconf && git pull
   echo "Done."
 
+  # Update nems-tools
+  printf "Updating nems-tools... "
+  if [[ -d /root/nems/nems-tools ]]; then
+    cd /root/nems/nems-tools && git pull
+    echo "Done."
+  else
+    echo "nems-tools is not installed."
+  fi
+
   # Update self
   printf "Updating nems-scripts... "
   if [ -d /usr/local/share/nems/nems-scripts ]; then

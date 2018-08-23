@@ -114,7 +114,6 @@ fi
 elif [[ $COMMAND == "username" ]]; then
   # Get NEMS username
   # From nems.conf
-  username='nemsadmin'
   if [[ -f /usr/local/share/nems/nems.conf ]]; then
     if grep -q "username" /usr/local/share/nems/nems.conf; then
       username=`cat /usr/local/share/nems/nems.conf | grep username |  printf '%s' $(cut -n -d '=' -f 2)`
@@ -125,6 +124,9 @@ elif [[ $COMMAND == "username" ]]; then
     if [[ -f /var/www/htpasswd ]] ; then
       username=`cat /var/www/htpasswd | cut -d: -f1`
     fi
+  fi
+  if [[ $username == "" ]]; then
+    username='nemsadmin' # Default if none found
   fi
   echo $username
 
