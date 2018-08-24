@@ -360,6 +360,16 @@ fi
     cronupdate=1
   fi
 
+  if ! grep -q "NEMS0012" /tmp/cron.tmp; then
+    if [[ ! -d /var/log/nems/nems-tools/ ]]; then
+      mkdir /var/log/nems/nems-tools/
+    fi
+    printf "\n# nems-tools warninglight NEMS0012\n@reboot /root/nems/nems-tools/warninglight >> /var/log/nems/nems-tools/warninglight 2>&1\n" >> /tmp/cron.tmp
+    cronupdate=1
+    # Run it now
+    /root/nems/nems-tools/warninglight >> /var/log/nems/nems-tools/warninglight 2>&1 &
+  fi
+
 
   # Import revised crontab
   if [[ "$cronupdate" == "1" ]]
