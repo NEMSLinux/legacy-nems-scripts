@@ -6,6 +6,11 @@
   echo ""
   echo "Let's generate your SSL Certificates..."
 
+  # Install make-ssl-cert if it isn't already installed
+  if [[ ! -e /usr/sbin/make-ssl-cert ]]; then
+    apt -y install ssl-cert
+  fi
+  
   # Using snakeoil for the time being since we had issues with nems-cert and Windows 10.
 
   # Generating new Snakeoil cert
