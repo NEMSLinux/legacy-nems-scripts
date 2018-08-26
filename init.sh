@@ -73,7 +73,7 @@ else
     echo "         If you wish to keep your settings, please"
     echo "         make a copy of your backup.nems file first,"
     echo "         initialize, and then run nems-restore."
-    echo "         Press CTRL-C to abort.
+    echo "         Press CTRL-C to abort."
     echo ""
   fi
 
