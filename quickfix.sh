@@ -16,4 +16,5 @@ do
   /tmp/qf.sh > /dev/null 2>&1
 
 done
+rm /tmp/qf.sh
 echo " Done."
