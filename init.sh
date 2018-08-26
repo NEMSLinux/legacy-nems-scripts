@@ -70,8 +70,8 @@ else
   if [[ $init = 1 ]]; then
     echo "WARNING! Your NEMS server is already initialized!"
     echo "         If you proceed, all settings will be lost."
-    echo "         If you wish to keep your settings, please
-    echo "         make a copy of your backup.nems file first,
+    echo "         If you wish to keep your settings, please"
+    echo "         make a copy of your backup.nems file first,"
     echo "         initialize, and then run nems-restore."
     echo ""
   fi
