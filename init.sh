@@ -5,6 +5,7 @@
 
 ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver)
 platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+init=$(/usr/local/share/nems/nems-scripts/info.sh init)
 
 if [[ -f /tmp/qf.sh ]]; then
   qfrunning=`ps aux | grep -i "myscript.sh" | grep -v "grep" | wc -l`
@@ -64,6 +65,15 @@ else
 
     echo "Your new password has been set for the Linux pi user."
     echo "Use that password to access NEMS over SSH or when logging in to Webmin."
+  fi
+  
+  if [[ $init = 1 ]]; then
+    echo "WARNING! Your NEMS server is already initialized!"
+    echo "         If you proceed, all settings will be lost."
+    echo "         If you wish to keep your settings, please
+    echo "         make a copy of your backup.nems file first,
+    echo "         initialize, and then run nems-restore."
+    echo ""
   fi
 
   isValidUsername() {
