@@ -7,13 +7,19 @@ ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver)
 platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
 
 if [[ -f /tmp/qf.sh ]]; then
-  printf "Please wait... your NEMS server is being updated."
-  while [ -f /tmp/qf.sh ]
-  do
-    printf "."
-    sleep 2
-  done
-  echo " Ready."
+  qfrunning=`ps aux | grep -i "myscript.sh" | grep -v "grep" | wc -l`
+  if [ $qfrunning -ge 1 ]
+   then
+    printf "Please wait... your NEMS server is being updated."
+    while [ -f /tmp/qf.sh ]
+    do
+      printf "."
+      sleep 2
+    done
+    echo " Ready."
+   else
+    rm /tmp/qf.sh
+   fi
 fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
