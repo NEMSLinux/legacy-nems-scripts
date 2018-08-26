@@ -66,8 +66,6 @@ else
     echo "Use that password to access NEMS over SSH or when logging in to Webmin."
   fi
 
-  echo ""
-
   isValidUsername() {
     local re='^[[:lower:]_][[:lower:][:digit:]_-]{2,15}$'
     (( ${#1} > 16 )) && return 1
