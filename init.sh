@@ -6,6 +6,16 @@
 ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver)
 platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
 
+if [[ -f /tmp/qf.sh ]]; then
+  printf "Please wait... your NEMS server is being updated."
+  while [ -f /tmp/qf.sh ]
+  do
+    printf "."
+    sleep 2
+  done
+  echo " Ready."
+fi
+
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
   confbase=/etc/nems/conf/
   nagios=nagios
@@ -23,13 +33,11 @@ else
 
   online=$(/usr/local/share/nems/nems-scripts/info.sh online)
   if [[ $online == 0 ]]; then
-    echo "You need to configure Internet connectivity first."
+    echo "Your Internet connection doesn't appear to be functional."
+    echo "Please ensure your NEMS Linux server has Internet connectivity and try again."
     echo ""
     exit
   fi
-
-  # Perform any fixes that have been released since NEMS was built
-  /usr/local/share/nems/nems-scripts/fixes.sh
 
   if [[ -d /home/pi ]]; then
     # Must continue to support NEMS 1.1 and 1.2.x
