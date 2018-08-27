@@ -187,6 +187,11 @@ check process 9590 with pidfile /run/9590.pid
       git clone https://github.com/Cat5TV/nems-tools
     fi
 
+  # Clean up log errors from early build of nems-tools
+  if grep -q "PHP Warning" /var/log/nems/nems-tools/warninglight; then
+    sed -i~ '/PHP Warning/d' /var/log/nems/nems-tools/warninglight
+  fi
+
 fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
