@@ -112,7 +112,7 @@ switch($argv[1]) {
       $descfield['encode-mp3'] = '';
       $descfield['perl-benchmark'] = '';
       $descfield['openssl'] = '';
-      $descfield['redis'] = 'Test: LPOP';
+      $descfield['redis'] = 'Test: SET';
       $descfield['pybench'] = '';
       $descfield['phpbench'] = '';
       $descfield['git'] = '';
