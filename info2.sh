@@ -83,7 +83,8 @@ switch($argv[1]) {
       $tests['pybench'] = 'pybench';
       $tests['phpbench'] = 'phpbench';
       $tests['git'] = 'git';
-      $tests['apache'] = 'apache';
+      $tests['smallpt'] = 'smallpt';
+      $tests['himeno'] = 'himeno';
 
       $tests['all'] = 'all';
       ksort($tests);
@@ -117,6 +118,8 @@ switch($argv[1]) {
       $descfield['phpbench'] = '';
       $descfield['git'] = '';
       $descfield['apache'] = 'Static Web Page Serving';
+      $descfield['smallpt'] = '';
+      $descfield['himeno'] = '';
 
       if (isset($loglist) && is_array($loglist)) {
         foreach ($loglist as $file) {
