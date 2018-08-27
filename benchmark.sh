@@ -100,7 +100,7 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
 #  echo " Done." >> /tmp/nems-benchmark.log
 
   printf "Running Phoronix benchmarks..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark smallpt apache cachebench scimark2 graphics-magick ebizzy c-ray stockfish aobench timed-audio-encode encode-mp3perl-benchmark openssl redis pybench phpbench git
+    /usr/bin/phoronix-test-suite batch-benchmark smallpt himeno apache cachebench scimark2 graphics-magick ebizzy c-ray stockfish aobench timed-audio-encode encode-mp3perl-benchmark openssl redis pybench phpbench git
   echo " Done." >> /tmp/nems-benchmark.log
 
 else
