@@ -158,7 +158,7 @@ switch($argv[1]) {
             if ($approvedtest = check_test(strtolower($data->Identifier),$tests)) {
              if ($argv[2] == 'all') {
                 // we already know the test's title matches, so let's see if the desc does
-                if ($descfield[$approvedtest] == '' || $data->Description == $descfield[$approvedtest]) {
+                if ($approvedtest != 'all' && ($descfield[$approvedtest] == '' || $data->Description == $descfield[$approvedtest])) {
                   $resulttmp[$approvedtest] = floatval($data->Data->Entry->Value);
                   // Append any missing tests with 0 value
                   foreach ($tests as $test => $internalname) {
