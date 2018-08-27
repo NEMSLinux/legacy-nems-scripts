@@ -98,13 +98,13 @@ if [[ "$ver" == "1.4" ]]; then
 
   # NEMS 1.4 upgraded to 1.4.1 now that Raspberry Pi Zero W is fully supported
   # Because NEMS 1.4.1 meant a new image (for Pi Zero W) we'll roll up all 1.4 systems
-  sed -i -e "s/1.4/1.4.1/g" /usr/local/share/nems/nems.conf
+  /bin/sed -i -e "s/1.4/1.4.1/g" /usr/local/share/nems/nems.conf
 
 fi
 
 # Fix strange issue where some systems got bumped to 1.4.1.1
 if grep -q "version=1.4.1.1" /usr/local/share/nems/nems.conf; then
-  sed -i -e "s/1.4.1.1/1.4.1/g" /usr/local/share/nems/nems.conf
+  /bin/sed -i -e "s/1.4.1.1/1.4.1/g" /usr/local/share/nems/nems.conf
   ver="1.4.1"
 fi
 
@@ -115,9 +115,9 @@ if [[ "$ver" == "1.4.1" ]]; then
 
   # Remove NEMS00000 patch from adagios.conf. It caused problems if user renamed admin user in NConf.
   if grep -q "# NEMS00000 A hacky way of disabling the admin portions of Adagios" /etc/adagios/adagios.conf; then
-    sed -i~ '/# NEMS00000/d' /etc/adagios/adagios.conf
-    sed -i~ '/enable_authorization=True/d' /etc/adagios/adagios.conf
-    sed -i~ '/administrators="nobodyisadmin"/d' /etc/adagios/adagios.conf
+    /bin/sed -i~ '/# NEMS00000/d' /etc/adagios/adagios.conf
+    /bin/sed -i~ '/enable_authorization=True/d' /etc/adagios/adagios.conf
+    /bin/sed -i~ '/administrators="nobodyisadmin"/d' /etc/adagios/adagios.conf
   fi
 
   # Fix ownership of Nagios logs folder
@@ -189,7 +189,10 @@ check process 9590 with pidfile /run/9590.pid
 
   # Clean up log errors from early build of nems-tools
   if grep -q "PHP Warning" /var/log/nems/nems-tools/warninglight; then
-    sed -i~ '/PHP Warning/d' /var/log/nems/nems-tools/warninglight
+    /bin/sed -i~ '/PHP Warning/d' /var/log/nems/nems-tools/warninglight
+  fi
+  if grep -q "PHP Notice" /var/log/nems/nems-tools/warninglight; then
+    /bin/sed -i~ '/PHP Notice/d' /var/log/nems/nems-tools/warninglight
   fi
 
 fi
@@ -395,7 +398,7 @@ apt update
 # Remove apikey if it is not set (eg., did not get a response from the server)
 apikey=$(cat /usr/local/share/nems/nems.conf | grep apikey | printf '%s' $(cut -n -d '=' -f 2))
 if [[ $apikey == '' ]]; then
-  sed -i~ '/apikey/d' /usr/local/share/nems/nems.conf
+  /bin/sed -i~ '/apikey/d' /usr/local/share/nems/nems.conf
 fi
 
 # Randomize nemsadmin password if NEMS is initialized
