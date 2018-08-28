@@ -130,7 +130,6 @@ switch($argv[1]) {
         }
         if (isset($logs) && is_array($logs)) {
           ksort($logs); // sort to ensure oldest is first (so value overwrites)
-
           function check_test($title,$tests) {
             if (is_array($tests)) { // checking array (list of tests)
               foreach($tests as $key=>$test) {
