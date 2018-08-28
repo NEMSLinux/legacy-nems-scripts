@@ -190,9 +190,14 @@ check process 9590 with pidfile /run/9590.pid
   # Clean up log errors from early build of nems-tools
   if grep -q "PHP Warning" /var/log/nems/nems-tools/warninglight; then
     /bin/sed -i~ '/PHP Warning/d' /var/log/nems/nems-tools/warninglight
+    restartwarninglight=1
   fi
   if grep -q "PHP Notice" /var/log/nems/nems-tools/warninglight; then
     /bin/sed -i~ '/PHP Notice/d' /var/log/nems/nems-tools/warninglight
+    restartwarninglight=1
+  fi
+  if (( $restartwarninglight == 1 )); then
+    kill `cat /var/run/warninglight.pid` && /root/nems/nems-tools/warninglight >> /var/log/nems/nems-tools/warninglight 2>&1 &
   fi
 
 fi
