@@ -143,8 +143,9 @@ else
   cp /root/nems/nems-migrator/data/rpimonitor/daemon.conf /etc/rpimonitor
 
   # Configure RPi-Monitor to run as the new user
-#need to set this to not run on non-pi systems
-  /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/rpimonitor/daemon.conf
+  if [[ -f /etc/rpimonitor/daemon.conf ]]; then
+    /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/rpimonitor/daemon.conf
+  fi
 
   # Samba config
     # Create Samba User
@@ -292,22 +293,38 @@ service.rpi-monitor=0
 " >> /usr/local/share/nems/nems.conf
   fi
 
-  echo "Now we will resize your root partition to give you access to all the space"
+    reboot=0
     # Raspberry Pi
     if (( $platform >= 0 )) && (( $platform <= 9 )); then
       /usr/bin/raspi-config --expand-rootfs > /dev/null 2>&1
+      reboot=1
     # Pine A64/A64+
     elif (( $platform >= 40 )) && (( $platform <= 42 )); then 
       /root/nems/nems-admin/resize_rootfs/pine64
+      reboot=1
     fi
   echo "Done."
 
   echo ""
-  echo "*** YOU MUST REBOOT NOW ***"
-  echo "NOTICE: When you reboot, you must login as $username"
-  echo ""
-  read -n 1 -s -p "Press any key to reboot (required)"
-
-  reboot
+  if [[ $reboot == 1 ]]; then
+    echo "Now we will resize your root partition to give you access to all the space"
+    echo ""
+    echo "*** YOU MUST REBOOT NOW ***"
+    echo ""
+    read -n 1 -s -p "Press any key to reboot (required)"
+    echo ""
+    echo "****************************************************"
+    echo "NOTICE: When you reboot, you must login as $username"
+    echo "****************************************************"
+    echo ""
+    echo "After rebooting, visit https://$(/usr/local/bin/nems-info ip)/ to get started."
+    echo ""
+    reboot
+  else
+    echo "You can now visit https://$(/usr/local/bin/nems-info ip)/ to get started."
+    echo ""
+    echo "Enjoy NEMS Linux!"
+    echo ""
+  fi
 
 fi
