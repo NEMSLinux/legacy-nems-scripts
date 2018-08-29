@@ -36,8 +36,10 @@
 	# HW_MODEL 60 NanoPi Neo
 	# HW_MODEL 51 BananaPi Pro (Lemaker)
 	# HW_MODEL 50 BananaPi M2+ (sinovoip)
+	# HW_MODEL 47 Rock64 4GB
+	# HW_MODEL 46 Rock64 2GB
+	# HW_MODEL 45 Rock64 1GB
 	# HW_MODEL 44 Pine A64-LTS/Sopine
-	# HW_MODEL 43 Rock64
 	# HW_MODEL 42 Pine A64+ (2048mb)
 	# HW_MODEL 41 Pine A64+ (1024mb)
 	# HW_MODEL 40 Pine A64  (512mb)
@@ -485,10 +487,28 @@
 				IMAGE_ADDITIONAL_CREDITS='Longsleep, Ayufan'
 
 			#Rock64
-			elif (( $HW_MODEL == 43 )); then
+			elif  (( $HW_MODEL >= 45 && $HW_MODEL <= 47 )); then
 
-				HW_MODEL_DESCRIPTION='Rock64'
 				IMAGE_ADDITIONAL_CREDITS='Longsleep, Ayufan'
+
+                                MEMTOTAL=$(free | awk '/^Mem:/{print $2}')
+                                if (( $MEMTOTAL > 4000000 )); then
+
+                                        HW_MODEL_DESCRIPTION='Rock64 4GB'
+                                        HW_MODEL=47
+
+                                elif (( $MEMTOTAL > 2000000 )); then
+
+                                        HW_MODEL_DESCRIPTION='Rock64 2GB'
+                                        HW_MODEL=46
+
+                                else
+
+                                        HW_MODEL_DESCRIPTION='Rock64 1GB'
+                                        HW_MODEL=45
+
+                                fi
+
 
 			#PineA64
 			elif (( $HW_MODEL >= 40 && $HW_MODEL <= 42 )); then
