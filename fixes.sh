@@ -28,6 +28,13 @@
    /usr/bin/mysql -u nconf -h 127.0.0.1 -pnagiosadmin -D nconf -e "UPDATE ConfigValues SET attr_value='Default Nagios' WHERE fk_id_attr = 1;"
  fi
 
+ # Make a symlink to the PHP interpreter if it doesn't exist in /usr/local/bin
+ if [[ ! -e /usr/local/bin/php ]]; then
+  if [[ -e /usr/bin/php ]]; then
+   ln -s /usr/bin/php /usr/local/bin/php
+  fi
+ fi
+
 if [[ "$ver" == "1.4" ]]; then
 
   # Fix Nagios lockfile location (was causing systemd to be unable to restart Nagios)
