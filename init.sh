@@ -40,10 +40,13 @@ else
 
   online=$(/usr/local/share/nems/nems-scripts/info.sh online)
   if [[ $online == 0 ]]; then
-    echo "Your Internet connection doesn't appear to be functional."
-    echo "Please ensure your NEMS Linux server has Internet connectivity and try again."
+    echo "I am not able to connect with Github."
+    echo "This could be due to a lack of Internet connectivity, or a firewall issue."
+    echo "We'll proceed with initialization, however please note you need to fix this."
+    echo "NEMS updates come in via Github, and these patches ensure everything works well."
+    echo "Please resolve this issue, and confirm by pinging github.com from your NEMS server."
     echo ""
-    exit
+    sleep 5
   fi
 
   if [[ -d /home/pi ]]; then
