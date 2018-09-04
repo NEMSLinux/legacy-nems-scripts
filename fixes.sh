@@ -209,7 +209,8 @@ check process 9590 with pidfile /run/9590.pid
     restartwarninglight=1
   fi
   if (( $restartwarninglight == 1 )); then
-    kill `cat /var/run/warninglight.pid` && /root/nems/nems-tools/warninglight >> /var/log/nems/nems-tools/warninglight 2>&1 &
+    kill `cat /var/run/warninglight.pid` && sleep 1
+    /root/nems/nems-tools/warninglight >> /var/log/nems/nems-tools/warninglight 2>&1 &
   fi
 
 fi
