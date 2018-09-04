@@ -204,6 +204,10 @@ check process 9590 with pidfile /run/9590.pid
     /bin/sed -i~ '/PHP Notice/d' /var/log/nems/nems-tools/warninglight
     restartwarninglight=1
   fi
+  if grep -q "sh: 1: /usr/local/bin/gpio: not found" /var/log/nems/nems-tools/warninglight; then
+    /bin/sed -i~ '/sh: 1: \/usr\/local\/bin\/gpio: not found/d' /var/log/nems/nems-tools/warninglight
+    restartwarninglight=1
+  fi
   if (( $restartwarninglight == 1 )); then
     kill `cat /var/run/warninglight.pid` && /root/nems/nems-tools/warninglight >> /var/log/nems/nems-tools/warninglight 2>&1 &
   fi
