@@ -1,6 +1,9 @@
 #!/bin/bash
 # NEMS Server Info Script (primarily used for MOTD)
 
+# Force decimals to use ... decimals (for compatibility with foreign locales)
+export LC_NUMERIC=C
+
 export COMMAND=$1
 export VARIABLE=$2
 
