@@ -93,13 +93,13 @@ if (!isset($USER7)) $error .= '- Missing SMTP server in NEMS SST.' . PHP_EOL;
 if (!isset($USER9)) $error .= '- Missing SMTP username in NEMS SST.' . PHP_EOL;
 if (!isset($USER10)) $error .= '- Missing SMTP password in NEMS SST.' . PHP_EOL;
 
-
+// Add slashes to password
+$USER10 = str_replace('"','\"',$USER10);
 
 // Die on errors
 if (strlen($error) > 0) die($error . PHP_EOL . 'Aborted.' . PHP_EOL);
 
-
-$command = "/usr/bin/printf \"%b\" \"***** NEMS Test Email *****\n\nNotification Type: Test\nHost: $HOSTNAME\nAddress: $HOSTADDRESS\n\nDate/Time: $LONGDATETIME\n\" | /usr/bin/sendemail -v -s $USER7 -xu $USER9 -xp $USER10 -t $CONTACTEMAIL -f $USER5 -l /var/log/sendemail -u \"** NEMS Test Email: $HOSTNAME **\" -m \"***** NEMS Test Email *****\n\nNotification Type: Test\nHost: $HOSTNAME\nAddress: $HOSTADDRESS\n\nDate/Time: $LONGDATETIME\n\"";
+$command = "/usr/bin/printf \"%b\" \"***** NEMS Test Email *****\n\nNotification Type: Test\nHost: $HOSTNAME\nAddress: $HOSTADDRESS\n\nDate/Time: $LONGDATETIME\n\" | /usr/bin/sendemail -v -s \"$USER7\" -xu \"$USER9\" -xp \"$USER10\" -t \"$CONTACTEMAIL\" -f \"$USER5\" -l /var/log/sendemail -u \"** NEMS Test Email: $HOSTNAME **\" -m \"***** NEMS Test Email *****\n\nNotification Type: Test\nHost: $HOSTNAME\nAddress: $HOSTADDRESS\n\nDate/Time: $LONGDATETIME\n\"";
 $output = shell_exec($command);
 echo $output;
 shell_exec('chown nagios:nagios /var/log/sendemail'); // Log gets created as running user. Fix.
