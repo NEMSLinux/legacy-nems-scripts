@@ -1,6 +1,7 @@
 #!/bin/bash
 start=`date +%s`
 plannedend=$(($start + 18000))
+exit
 
 nemsinit=`/usr/local/bin/nems-info init`
 if [[ $nemsinit == 0 ]]; then
