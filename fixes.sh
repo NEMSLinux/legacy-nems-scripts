@@ -213,6 +213,11 @@ check process 9590 with pidfile /run/9590.pid
     /root/nems/nems-tools/warninglight >> /var/log/nems/nems-tools/warninglight 2>&1 &
   fi
 
+  # Install glances command
+  if [[ ! -e /usr/bin/glances ]]; then
+    apt -y install glances
+  fi
+
 fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
