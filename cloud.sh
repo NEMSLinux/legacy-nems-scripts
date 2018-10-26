@@ -1,7 +1,11 @@
 #!/usr/bin/php
 <?php
   declare(strict_types=1);
-  echo "Loading NEMS state information...";
+  echo 'Checking if this NEMS server is authorized to use NEMS Cloud... ';
+  $cloudauth = shell_exec('/usr/local/bin/nems-info cloudauth');
+  if ($cloudauth == 1) {
+  echo 'Yes.' . PHP_EOL;
+  echo 'Loading NEMS state information... ';
   $nems = new stdClass();
   $nems->state = new stdClass();
   $nems->state->raw = trim(shell_exec('/usr/local/bin/nems-info state'));
@@ -34,7 +38,14 @@
     }
   }
 
-
+  if (isset($nems->state->encrypted) && strlen($nems->state->encrypted) > 0) {
+    // proceed, but only if the data is encrypted
+    echo 'Done.' . PHP_EOL;
+    echo 'Sending data...';
+  } else {
+    echo 'Done.' . PHP_EOL;
+    echo 'Encryption failed, so aborting. Did you activate your NEMS Cloud account?';
+  }
 
 
 /**
@@ -109,6 +120,8 @@ function getKeyFromPassword($password, $salt, $keysize = 16)
         true
     );
 }
-
-print_r($nems);
+} else {
+  echo 'No.';
+}
+echo PHP_EOL;
 ?>

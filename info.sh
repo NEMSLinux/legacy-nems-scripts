@@ -199,6 +199,20 @@ elif [[ $COMMAND == "alias" ]]; then
 elif [[ $COMMAND == "state" ]]; then
   /usr/local/share/nems/nems-scripts/stats-livestatus-full.sh
 
+elif [[ $COMMAND == "cloudauth" ]]; then
+  hwid=`/usr/local/bin/nems-info hwid`
+  osbpass=$(cat /usr/local/share/nems/nems.conf | grep osbpass | printf '%s' $(cut -n -d '=' -f 2))
+  osbkey=$(cat /usr/local/share/nems/nems.conf | grep osbkey | printf '%s' $(cut -n -d '=' -f 2))
+  if [[ $osbpass == '' ]] || [[ $osbkey == '' ]]; then
+    echo NEMS Cloud is not currently enabled.
+    exit
+  fi;
+  data=$(curl -s -F "hwid=$hwid" -F "osbkey=$osbkey" -F "query=status" https://nemslinux.com/api-backend/offsite-backup-checkin.php)
+  if [[ $data == '1' ]]; then # this account passes authentication
+    echo 1
+  else
+    echo 0
+  fi
 
 # Output usage info as no valid command line argument was provided
 else
