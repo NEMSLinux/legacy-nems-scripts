@@ -193,6 +193,13 @@ elif [[ $COMMAND == "phoronix" ]]; then
 elif [[ $COMMAND == "downtimes" ]]; then
   /usr/local/share/nems/nems-scripts/info2.sh 6
 
+elif [[ $COMMAND == "alias" ]]; then
+  hostname
+
+elif [[ $COMMAND == "state" ]]; then
+  /usr/local/share/nems/nems-scripts/stats-livestatus-full.sh
+
+
 # Output usage info as no valid command line argument was provided
 else
   echo "Usage: ./$me command"
