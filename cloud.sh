@@ -1,6 +1,12 @@
 #!/usr/bin/php
 <?php
   declare(strict_types=1);
+  echo 'Checking NEMS Version... ';
+  $nemsver = shell_exec('/usr/local/bin/nems-info nemsver');
+  echo $nemsver . PHP_EOL;
+  // NEMS 1.5 includes packages that are needed for the encryption aspects of NEMS Cloud.
+  // Can't continue if on an older version of NEMS Linux.
+  if ($nemsver < 1.5) die('NEMS Cloud requires NEMS 1.5+. Please upgrade.' . PHP_EOL);
   echo 'Checking if this NEMS server is authorized to use NEMS Cloud... ';
   $cloudauth = shell_exec('/usr/local/bin/nems-info cloudauth');
   if ($cloudauth == 1) {
@@ -33,6 +39,8 @@
     }
   }
   if (isset($nems->state->raw) && isset($nems->hwid) && isset($nems->osbkey) && isset($nems->osbpass)) {
+    echo 'Done.' . PHP_EOL;
+    echo 'Encrypting data for transmission... ';
     if (strlen($nems->hwid) > 0 && strlen($nems->osbkey) > 0 && strlen($nems->osbpass) > 0) {
       $nems->state->encrypted = safeEncrypt($nems->state->raw,getKeyFromPassword($nems->osbpass,'::'.$nems->hwid.'::'.$nems->osbkey.'::',32));
     }
@@ -41,12 +49,35 @@
   if (isset($nems->state->encrypted) && strlen($nems->state->encrypted) > 0) {
     // proceed, but only if the data is encrypted
     echo 'Done.' . PHP_EOL;
-    echo 'Sending data...';
+    echo 'Sending data... ';
+
+    // creating a new payload to avoid there EVER being a possibility of accidentally transmitting the raw data
+    $datatransfer = array(
+      'state'=>$nems->state->encrypted,
+      'hwid'=>$nems->hwid,
+      'osbkey'=>$nems->osbkey // notice, I am NOT sending the osbpass - that is for you only
+    );
+
+    $ch = curl_init('https://nemslinux.com/api/cloud/');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $datatransfer);
+    $result = curl_exec($ch);
+    echo $result . PHP_EOL;
+
+    curl_close($ch);
+
   } else {
-    echo 'Done.' . PHP_EOL;
-    echo 'Encryption failed, so aborting. Did you activate your NEMS Cloud account?';
+    echo 'Failed.' . PHP_EOL;
+    echo 'Did you activate your NEMS Cloud account? Aborted.';
   }
 
+
+} else {
+  echo 'No.';
+}
+echo PHP_EOL;
 
 /**
  * Encrypt a message
@@ -120,8 +151,5 @@ function getKeyFromPassword($password, $salt, $keysize = 16)
         true
     );
 }
-} else {
-  echo 'No.';
-}
-echo PHP_EOL;
+
 ?>

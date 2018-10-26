@@ -401,6 +401,11 @@ fi
     /root/nems/nems-tools/warninglight >> /var/log/nems/nems-tools/warninglight 2>&1 &
   fi
 
+  if ! grep -q "NEMS0013" /tmp/cron.tmp; then
+    printf "\n# NEMS Cloud State Update NEMS0013\n* * * * * /usr/local/share/nems/nems-scripts/cloud.sh > /dev/null 2>&1\n" >> /tmp/cron.tmp
+    cronupdate=1
+  fi
+
 
   # Import revised crontab
   if [[ "$cronupdate" == "1" ]]
