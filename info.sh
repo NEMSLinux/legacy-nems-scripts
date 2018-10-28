@@ -197,18 +197,20 @@ elif [[ $COMMAND == "alias" ]]; then
   # From nems.conf
   if [[ -f /usr/local/share/nems/nems.conf ]]; then
     if grep -q "alias" /usr/local/share/nems/nems.conf; then
-      username=`cat /usr/local/share/nems/nems.conf | grep alias | printf '%s ' $(cut -n -d '=' -f 2)`
+      alias=`cat /usr/local/share/nems/nems.conf | grep alias | printf '%s ' $(cut -n -d '=' -f 2)`
     fi
+    # Remove carriage return, and trim
+    alias=$(echo "$alias" | tr '\n' ' ' | xargs)
   fi
   # From hostname (if alias is not set)
-  if [[ $username == "" ]]; then
-    username=`hostname`
+  if [[ $alias == "" ]]; then
+    alias=`hostname`
   fi
   # Fallback to the obvious
-  if [[ $username == "" ]]; then
-    username='NEMS'
+  if [[ $alias == "" ]]; then
+    alias='NEMS'
   fi
-  echo $username
+  echo $alias
 
 elif [[ $COMMAND == "state" ]]; then
   /usr/local/share/nems/nems-scripts/stats-livestatus-full.sh
