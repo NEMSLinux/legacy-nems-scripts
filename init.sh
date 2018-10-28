@@ -91,7 +91,7 @@ else
     for e; do [[ "$e" == "$match" ]] && return 0; done
     return 1
   }
-  badnames=("nemsadmin" "nagios" "nems" "root" "user" "config" "pi" "admin" "robbie")
+  badnames=("nemsadmin" "nagios" "nems" "root" "user" "config" "pi" "admin" "robbie" "nagiosadmin")
   while true; do
   read -p "What would you like your NEMS Username to be? " username
     if [[ ${username,,} == $username ]]; then
