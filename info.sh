@@ -194,7 +194,21 @@ elif [[ $COMMAND == "downtimes" ]]; then
   /usr/local/share/nems/nems-scripts/info2.sh 6
 
 elif [[ $COMMAND == "alias" ]]; then
-  hostname
+  # From nems.conf
+  if [[ -f /usr/local/share/nems/nems.conf ]]; then
+    if grep -q "alias" /usr/local/share/nems/nems.conf; then
+      username=`cat /usr/local/share/nems/nems.conf | grep alias | printf '%s ' $(cut -n -d '=' -f 2)`
+    fi
+  fi
+  # From hostname (if alias is not set)
+  if [[ $username == "" ]]; then
+    username=`hostname`
+  fi
+  # Fallback to the obvious
+  if [[ $username == "" ]]; then
+    username='NEMS'
+  fi
+  echo $username
 
 elif [[ $COMMAND == "state" ]]; then
   /usr/local/share/nems/nems-scripts/stats-livestatus-full.sh
