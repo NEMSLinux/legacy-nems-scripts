@@ -123,6 +123,8 @@ else
     echo "Please try again"
   done
 
+  read -p "What email address should I send notifications to? " email
+
   # In case this is a re-initialization, clear the init file (remove old login), then add this user
   echo "">/var/www/htpasswd && echo $password | /usr/bin/htpasswd -B -c -i /var/www/htpasswd $username
 
@@ -195,7 +197,7 @@ fi
                 alias                                 Nagios Admin
                 host_notification_options             d,u,r,f,s
                 service_notification_options          w,u,c,r,f,s
-                email                                 nagios@localhost
+                email                                 $email
                 host_notification_period              24x7
                 service_notification_period           24x7
                 host_notification_commands            notify-host-by-email
