@@ -54,7 +54,7 @@ echo 'Please wait...' . PHP_EOL;
 $ver = shell_exec('/usr/local/bin/nems-info nemsver');
 if ($ver >= 1.5) {
   $username = shell_exec('/usr/local/bin/nems-info username');
-  echo shell_exec('/usr/local/nagios/libexec/nems_sendmail_service "TEST NOTIFICATION" "NEMS" "Nagios Enterprise Monitoring Server" "UP" "127.0.0.1" "The test email was sent successfully." "' . date('Y-m-d H:i:s') . '" "nems-mailtest" "SUCCESS" "nems@category5.tv" "361" "0.061" "1" "0" "0" "' . strtotime('now') . '" "' . strtotime('now') . '" "0" "" "' . $username . '" "nems-mailtest successfully sent this message." "" "0" "1" "1" "' . $username . '"');
+  echo shell_exec('/usr/local/nagios/libexec/nems_sendmail_service "TEST NOTIFICATION" "NEMS" "Nagios Enterprise Monitoring Server" "UP" "127.0.0.1" "The test email was sent successfully." "' . date('Y-m-d H:i:s') . '" "nems-mailtest" "SUCCESS" "' . $CONTACTEMAIL . '" "361" "0.061" "1" "0" "0" "' . strtotime('now') . '" "' . strtotime('now') . '" "0" "" "' . $username . '" "nems-mailtest successfully sent this message." "" "0" "1" "1" "' . $username . '"');
   exit();
 } elseif ($ver >= 1.4) {
   $resource = file('/usr/local/nagios/etc/resource.cfg');
