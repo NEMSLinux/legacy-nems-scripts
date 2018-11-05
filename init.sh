@@ -71,12 +71,13 @@ else
   fi
   
   if [[ $init = 1 ]]; then
-    echo "WARNING! Your NEMS server is already initialized!"
-    echo "         If you proceed, all settings will be lost."
-    echo "         If you wish to keep your settings, please"
-    echo "         make a copy of your backup.nems file first,"
-    echo "         initialize, and then run nems-restore."
-    echo "         Press CTRL-C to abort."
+    echo -e "\e[1m*** WARNING ***\e[0m"
+    echo "Your NEMS server is already initialized!"
+    echo "If you proceed, all settings will be lost."
+    echo "If you wish to keep your settings, please"
+    echo "make a copy of your backup.nems file first,"
+    echo "initialize, and then run nems-restore."
+    echo "Press CTRL-C to abort."
     echo ""
   fi
 
@@ -177,7 +178,11 @@ systemctl stop $nagios
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
   rm -rf $confbase
   mkdir -p $confbase
-  cp -R /root/nems/nems-migrator/data/1.4/nagios/conf/* $confbase
+  if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
+    cp -R /root/nems/nems-migrator/data/1.5/nagios/conf/* $confbase
+  elif (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
+    cp -R /root/nems/nems-migrator/data/1.4/nagios/conf/* $confbase
+  fi
   okconfig="okconfig"
   if [[ ! -d $confbase$okconfig ]]; then
     mkdir $confbase$okconfig
@@ -208,7 +213,9 @@ fi
 # Replace the database with Sample database
 service mysql stop
 rm -rf /var/lib/mysql/
-if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
+if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
+  cp -R /root/nems/nems-migrator/data/1.5/mysql/NEMS-Sample /var/lib
+elif (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
   cp -R /root/nems/nems-migrator/data/1.4/mysql/NEMS-Sample /var/lib
 else
   cp -R /root/nems/nems-migrator/data/mysql/NEMS-Sample /var/lib
@@ -218,7 +225,10 @@ chown -R mysql:mysql /var/lib/mysql
 service mysql start
 
 # Replace the Nagios cgi.cfg file with the sample and add username
-if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
+if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
+  cp -fr /root/nems/nems-migrator/data/1.5/nagios/etc/* /usr/local/nagios/etc/
+  /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /usr/local/nagios/etc/cgi.cfg
+elif (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
   cp -fr /root/nems/nems-migrator/data/1.4/nagios/etc/* /usr/local/nagios/etc/
   /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /usr/local/nagios/etc/cgi.cfg
 else
