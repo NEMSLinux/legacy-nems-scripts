@@ -4,7 +4,7 @@
 # nemslinux.com | baldnerd.com | category5.tv
 
   echo ""
-  echo "Let's generate your SSL Certificates..."
+  echo "Generating unique SSL Certificates..."
 
   # Install make-ssl-cert if it isn't already installed
   if [[ ! -e /usr/sbin/make-ssl-cert ]]; then
@@ -22,6 +22,16 @@
   # Cert is owned by root:root
   chmod 600 /etc/ssl/certs/ssl-cert-snakeoil-combined.pem
 
+  echo "Generating unique SSH Certificates..."
+  /bin/rm /etc/ssh/ssh_host_*
+  dpkg-reconfigure openssh-server
+  systemctl restart ssh
+
+  echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: NEMS SERVER IDENTIFICATION HAS CHANGED!     @
+@    Next time you connect, you'll need to re-import!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+"
   echo Done.
 
 exit 1

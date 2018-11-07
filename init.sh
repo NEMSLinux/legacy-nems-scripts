@@ -284,7 +284,7 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.3'")}') )); then
   sqlite3 /etc/nagvis/etc/auth.db "INSERT INTO users (userId,name,password) VALUES (1,'$username','$(echo -n '29d58ead6a65f5c00342ae03cdc6d26565e20954'$password | sha1sum | awk '{print $1}')');"
 
 
-  # Setup SSL Certificates
+  # Create new SSL and SSH Certificates
   /usr/local/bin/nems-cert
 
 fi
