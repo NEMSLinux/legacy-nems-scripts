@@ -187,11 +187,23 @@ elif [[ $COMMAND == "services" ]]; then
   socket=$(/usr/local/bin/nems-info socket)
   /usr/local/share/nems/nems-scripts/stats-livestatus.py $socket services
 
-elif [[ $COMMAND == "phoronix" ]]; then
-  /usr/local/share/nems/nems-scripts/info2.sh 5 $VARIABLE
-
 elif [[ $COMMAND == "downtimes" ]]; then
   /usr/local/share/nems/nems-scripts/info2.sh 6
+
+elif [[ $COMMAND == "benchmark" ]]; then
+  if [[ $VARIABLE == 'cpu' ]]; then
+    cat /var/log/nems/benchmarks/cpu
+  fi
+  if [[ $VARIABLE == 'mutex' ]]; then
+    cat /var/log/nems/benchmarks/mutex
+  fi
+  if [[ $VARIABLE == 'io' ]]; then
+    cat /var/log/nems/benchmarks/io
+  fi
+  if [[ $VARIABLE == 'ram' ]]; then
+    cat /var/log/nems/benchmarks/ram
+  fi
+
 
 elif [[ $COMMAND == "alias" ]]; then
   # From nems.conf

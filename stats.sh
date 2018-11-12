@@ -44,7 +44,10 @@ if (file_exists('/var/log/nems/hw_model')) { // Don't run this until system is r
   $days  = $num;
 
   // Get system benchmarks
-  $benchmarks = (array)json_decode(shell_exec('/usr/local/bin/nems-info phoronix all'));
+  $benchmarks['cpu'] = shell_exec('/usr/local/bin/nems-info benchmark cpu');
+  $benchmarks['ram'] = shell_exec('/usr/local/bin/nems-info benchmark ram');
+  $benchmarks['io'] = shell_exec('/usr/local/bin/nems-info benchmark io');
+  $benchmarks['mutex'] = shell_exec('/usr/local/bin/nems-info benchmark mutex');
 
   // Put it together to send to the server
   $data = array(

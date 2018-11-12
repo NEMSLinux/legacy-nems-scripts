@@ -1,7 +1,6 @@
 #!/bin/bash
 start=`date +%s`
 plannedend=$(($start + 18000))
-exit
 
 nemsinit=`/usr/local/bin/nems-info init`
 if [[ $nemsinit == 0 ]]; then
@@ -13,6 +12,10 @@ fi
 /usr/bin/printf "[%lu] SCHEDULE_SVC_DOWNTIME;NEMS;Current Load;$start;$plannedend;0;0;18000;NEMS Linux;Weekly Benchmarks Running\n" $start > /usr/local/nagios/var/rw/nagios.cmd
 
 echo "NEMS System Benchmark... Please Wait (may take a while)."
+
+if [[ ! -f /usr/bin/sysbench ]]; then
+  apt install sysbench
+fi
 
 echo "NEMS System Benchmark" > /tmp/nems-benchmark.log
 date >> /tmp/nems-benchmark.log
@@ -33,90 +36,34 @@ printf "LAN IP: " >> /tmp/nems-benchmark.log
 
 echo "---------------------------------" >> /tmp/nems-benchmark.log
 
-if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
-  # Phoronix Test Suite in NEMS 1.4.1+
-#  printf "Running Phoronix 'iozone' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark iozone
-#  echo " Done." >> /tmp/nems-benchmark.log
-#  printf "Running Phoronix 'smallpt' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark smallpt
-#  echo " Done." >> /tmp/nems-benchmark.log
-#  printf "Running Phoronix 'himeno' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark himeno
-#  echo " Done." >> /tmp/nems-benchmark.log
-#  printf "Running Phoronix 'ramspeed' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark ramspeed
-#  echo " Done." >> /tmp/nems-benchmark.log
-#  printf "Running Phoronix 'netperf' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark netperf
-#  echo " Done." >> /tmp/nems-benchmark.log
-
-#  printf "Running Phoronix 'apache' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark apache
-#  echo " Done." >> /tmp/nems-benchmark.log
-#  printf "Running Phoronix 'cachebench' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark cachebench
-#  echo " Done." >> /tmp/nems-benchmark.log
-#  printf "Running Phoronix 'scimark2' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark scimark2
-#  echo " Done." >> /tmp/nems-benchmark.log
-#  printf "Running Phoronix 'graphics-magick' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark graphics-magick
-#  echo " Done." >> /tmp/nems-benchmark.log
-#  printf "Running Phoronix 'ebizzy' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark ebizzy
-#  echo " Done." >> /tmp/nems-benchmark.log
-#  printf "Running Phoronix 'c-ray' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark c-ray
-#  echo " Done." >> /tmp/nems-benchmark.log
-#  printf "Running Phoronix 'stockfish' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark stockfish
-#  echo " Done." >> /tmp/nems-benchmark.log
-#  printf "Running Phoronix 'aobench' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark aobench
-#  echo " Done." >> /tmp/nems-benchmark.log
-#  printf "Running Phoronix 'timed-audio-encode' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark timed-audio-encode
-#  echo " Done." >> /tmp/nems-benchmark.log
-#  printf "Running Phoronix 'encode-mp3' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark encode-mp3
-#  echo " Done." >> /tmp/nems-benchmark.log
-#  printf "Running Phoronix 'perl-benchmark' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark perl-benchmark
-#  echo " Done." >> /tmp/nems-benchmark.log
-#  printf "Running Phoronix 'openssl' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark openssl
-#  echo " Done." >> /tmp/nems-benchmark.log
-#  printf "Running Phoronix 'redis' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark redis
-#  echo " Done." >> /tmp/nems-benchmark.log
-#  printf "Running Phoronix 'pybench' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark pybench
-#  echo " Done." >> /tmp/nems-benchmark.log
-#  printf "Running Phoronix 'phpbench' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark phpbench
-#  echo " Done." >> /tmp/nems-benchmark.log
-#  printf "Running Phoronix 'git' test..." >> /tmp/nems-benchmark.log
-#    /usr/bin/phoronix-test-suite batch-benchmark git
-#  echo " Done." >> /tmp/nems-benchmark.log
-
-  printf "Running Phoronix benchmarks..." >> /tmp/nems-benchmark.log
-    /usr/bin/phoronix-test-suite batch-benchmark smallpt himeno apache cachebench scimark2 graphics-magick ebizzy c-ray stockfish aobench timed-audio-encode encode-mp3perl-benchmark openssl redis pybench phpbench git
-  echo " Done." >> /tmp/nems-benchmark.log
-
-else
-  printf "SD Card READ:" >> /tmp/nems-benchmark.log
-  /sbin/hdparm -t /dev/mmcblk0p2 >> /tmp/nems-benchmark.log
-  echo "SD Card WRITE:" >> /tmp/nems-benchmark.log
-  /bin/dd count=100 bs=1M if=/dev/zero of=/root/nems-benchmark.img 2>> /tmp/nems-benchmark.log
-  rm /root/nems-benchmark.img
-
-  echo "---------------------------------" >> /tmp/nems-benchmark.log
-
-  echo "Memory WRITE:" >> /tmp/nems-benchmark.log
-  /bin/dd count=100 bs=1M if=/dev/zero of=/tmp/nems-benchmark.img 2>> /tmp/nems-benchmark.log
-  rm /tmp/nems-benchmark.img
+if [[ ! -d /var/log/nems/benchmarks ]]; then
+  mkdir -p /var/log/nems/benchmarks
 fi
+
+# Run the tests
+cores=$(nproc --all)
+
+echo "Number of threads: $cores" >> /tmp/nems-benchmark.log
+
+printf "Performing CPU Benchmark: " >> /tmp/nems-benchmark.log
+cpu=`/usr/bin/sysbench --test=cpu --cpu-max-prime=20000 --num-threads=$cores run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh cpu`
+echo $cpu > /var/log/nems/benchmarks/cpu
+echo "CPU Score $cpu" >> /tmp/nems-benchmark.log
+
+printf "Performing RAM Benchmark: " >> /tmp/nems-benchmark.log
+ram=`/usr/bin/sysbench --test=memory --num-threads=$cores --memory-total-size=10G run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh ram`
+echo $ram > /var/log/nems/benchmarks/ram
+echo "RAM Score $ram" >> /tmp/nems-benchmark.log
+
+printf "Performing Mutex Benchmark: " >> /tmp/nems-benchmark.log
+mutex=`/usr/bin/sysbench --test=mutex --num-threads=64 run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh mutex`
+echo $mutex > /var/log/nems/benchmarks/mutex
+echo "Mutex Score $mutex" >> /tmp/nems-benchmark.log
+
+printf "Performing I/O Benchmark: " >> /tmp/nems-benchmark.log
+io=`/usr/bin/sysbench --test=fileio --file-test-mode=seqwr run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh io`
+echo $io > /var/log/nems/benchmarks/io
+echo "I/O Score $io" >> /tmp/nems-benchmark.log
 
 echo "---------------------------------" >> /tmp/nems-benchmark.log
 
@@ -139,8 +86,9 @@ end=`date +%s`
 runtime=$((end-start))
 echo "Benchmark of this benchmark: "$runtime" seconds" >> /tmp/nems-benchmark.log
 
+cat /tmp/nems-benchmark.log
+rm  /tmp/nems-benchmark.log
+
 # sometime in future, get the downtime ID from livestatus and output it in place of the '1'
 #/usr/bin/printf "[%lu] DEL_SVC_DOWNTIME;1\n" $end > /usr/local/nagios/var/rw/nagios.cmd
 
-cat /tmp/nems-benchmark.log
-rm  /tmp/nems-benchmark.log
