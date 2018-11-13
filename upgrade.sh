@@ -195,6 +195,29 @@ vm.swappiness = 10
 
   fi
 
+# Upgrade from NEMS 1.4.1 to NEMS 1.5
+  if [[ $ver = "1.4.1" ]]; then
+
+   echo "Upgrading from NEMS $ver to NEMS 1.5"
+
+   echo "Not yet supported."
+exit
+
+   # Backup and restore (to migrate to new database)
+   cp /var/www/html/backup/snapshot/backup.nems /tmp/
+   /usr/local/bin/nems-restore /tmp/backup.nems force
+
+   # Update NEMS to know this is version 1.2.2
+   echo "Changing version to 1.5..."
+   oldver=$ver
+   ver="1.5"
+   sed -i -e "s/$oldver/$ver/g" /usr/local/share/nems/nems.conf
+   echo "Done."
+
+   echo ""
+   upgraded=1
+
+  fi
 
   
   # ----------------------------------
