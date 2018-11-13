@@ -53,6 +53,8 @@ cores=$(nproc --all)
 
 echo "Number of threads: $cores" >> /tmp/nems-benchmark.log
 
+cd /tmp
+
 printf "Performing CPU Benchmark: " >> /tmp/nems-benchmark.log
 cpu=`/usr/bin/sysbench --test=cpu --cpu-max-prime=20000 --num-threads=$cores run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh cpu`
 echo $cpu > /var/log/nems/benchmarks/cpu
@@ -72,6 +74,9 @@ printf "Performing I/O Benchmark: " >> /tmp/nems-benchmark.log
 io=`/usr/bin/sysbench --test=fileio --file-test-mode=seqwr run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh io`
 echo $io > /var/log/nems/benchmarks/io
 echo "I/O Score $io" >> /tmp/nems-benchmark.log
+
+# Clear the test files
+rm -f /tmp/test_file.*
 
 echo "---------------------------------" >> /tmp/nems-benchmark.log
 
