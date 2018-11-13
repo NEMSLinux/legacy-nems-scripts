@@ -222,6 +222,12 @@ fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
 
+  # Benchmarks have not been run yet. Force the first-run (will also run every Sunday on Cron)
+  if [[ ! -d /var/log/nems/benchmarks ]]; then
+    /usr/local/share/nems/nems-scripts/benchmark.sh
+  fi
+
+# Can move all this stuff to 1.4.1 once 1.5 releases
   # Give Adagios access to socket
   /bin/sed -i -- 's,livestatus_path = None,livestatus_path = "/usr/local/nagios/var/rw/live.sock",g' /var/www/adagios/settings.py
 
