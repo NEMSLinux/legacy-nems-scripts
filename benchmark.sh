@@ -1,6 +1,5 @@
 #!/bin/bash
 start=`date +%s`
-plannedend=$(($start + 18000))
 
 nemsinit=`/usr/local/bin/nems-info init`
 if [[ $nemsinit == 0 ]]; then
@@ -8,8 +7,17 @@ if [[ $nemsinit == 0 ]]; then
   exit
 fi
 
+# Set a runtime
+if [[ -f /var/log/nems/benchmarks/runtime ]]; then
+  lastruntime=`cat /var/log/nems/benchmarks/runtime`
+  thisruntime=$(($lastruntime+120)) # +2 minutes from the last runtime
+else
+  thisruntime=18000 # 10 minutes
+fi
+plannedend=$(($start + $thisruntime))
+
 # Schedule downtime on CPU Load notifications for 5 hours during benchmarks
-/usr/bin/printf "[%lu] SCHEDULE_SVC_DOWNTIME;NEMS;Current Load;$start;$plannedend;0;0;18000;NEMS Linux;Weekly Benchmarks Running\n" $start > /usr/local/nagios/var/rw/nagios.cmd
+/usr/bin/printf "[%lu] SCHEDULE_SVC_DOWNTIME;NEMS;Current Load;$start;$plannedend;0;0;$thisruntime;NEMS Linux;Weekly Benchmarks Running\n" $start > /usr/local/nagios/var/rw/nagios.cmd
 
 echo "NEMS System Benchmark... Please Wait (may take a while)."
 
@@ -85,6 +93,8 @@ echo "---------------------------------" >> /tmp/nems-benchmark.log
 end=`date +%s`
 runtime=$((end-start))
 echo "Benchmark of this benchmark: "$runtime" seconds" >> /tmp/nems-benchmark.log
+
+echo $runtime > /var/log/nems/benchmarks/runtime
 
 cat /tmp/nems-benchmark.log
 rm  /tmp/nems-benchmark.log
