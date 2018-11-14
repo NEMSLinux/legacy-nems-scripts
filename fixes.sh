@@ -218,7 +218,16 @@ check process 9590 with pidfile /run/9590.pid
     apt -y install glances
   fi
 
+  # Check if nagios-plugins was compiled with openssl. If not, recompile.
+  checkssl=`/usr/local/nagios/libexec/check_http -S`
+  if [[ $checkssl =~ 'SSL is not available' ]];
+  then
+    # Nagios Plugins was not compiled with SSL, so re-compile (was fixed November 14, 2018)
+    /root/nems/nems-admin/build/051-nagios-plugins
+  fi
+
 fi
+# end 1.4.1
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
 
