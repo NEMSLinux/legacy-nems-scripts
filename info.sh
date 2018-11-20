@@ -133,6 +133,20 @@ elif [[ $COMMAND == "username" ]]; then
   fi
   echo $username
 
+elif [[ $COMMAND == "allowupdate" ]]; then
+  # See if we're allowed to run automated updates
+  # From nems.conf (set in NEMS SST)
+  if [[ -f /usr/local/share/nems/nems.conf ]]; then
+    if grep -q "allowupdate" /usr/local/share/nems/nems.conf; then
+      allowupdate=`cat /usr/local/share/nems/nems.conf | grep allowupdate |  printf '%s' $(cut -n -d '=' -f 2)`
+    fi
+  fi
+  # Default is allow (if not set)
+  if [[ $allowupdate == "" ]]; then
+    allowupdate=1
+  fi
+  echo $allowupdate
+
 
 
 # See current CPU usage in percent
