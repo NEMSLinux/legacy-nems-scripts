@@ -1,6 +1,39 @@
 #!/bin/bash
 allowupdate=`/usr/local/bin/nems-info allowupdate`
-if [[ $allowupdate == 1 ]]; then
+
+# 1 = Not allowed
+# 2 = Allowed monthly
+# 3 = Allowed semi-weekly
+# 4 = Allowed weekly
+# 5 = Allowed daily (always)
+
+if [[ -f /var/log/nems/nems-update.last ]]; then
+  lastdate=`cat /var/log/nems/nems-update.last`
+else
+  lastdate=1
+fi
+thisdate=$(date '+%s')
+dayssincelast=$(( ( $thisdate - $lastdate )/(60*60*24) ))
+
+proceed=0
+if [[ $allowupdate == 5 ]]; then
+  proceed=1
+elif [[ $allowupdate == 4 ]]; then
+  if [[ $dayssincelast > 6 ]]; then
+    proceed=1
+  fi
+elif [[ $allowupdate == 3 ]]; then
+  if [[ $dayssincelast > 13 ]]; then
+    proceed=1
+  fi
+elif [[ $allowupdate == 2 ]]; then
+  if [[ $dayssincelast > 29 ]]; then
+    proceed=1
+  fi
+fi
+
+if [[ $proceed == 1 ]]; then
+  echo $thisdate > /var/log/nems/nems-update.last
   echo "Performing NEMS QuickFix..."
   echo "It's really just a fancy name: this may take a while."
   echo "Do not stop this script once it is running."
@@ -21,5 +54,5 @@ if [[ $allowupdate == 1 ]]; then
   rm /tmp/qf.sh
   echo " Done."
 else
-  echo "Updates are disabled in NEMS SST."
+  echo "Update Skipped based on settings in NEMS SST."
 fi

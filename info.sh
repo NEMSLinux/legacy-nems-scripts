@@ -143,7 +143,12 @@ elif [[ $COMMAND == "allowupdate" ]]; then
   fi
   # Default is allow (if not set)
   if [[ $allowupdate == "" ]]; then
-    allowupdate=1
+    # 1 = Not allowed
+    # 2 = Allowed monthly
+    # 3 = Allowed semi-weekly
+    # 4 = Allowed weekly
+    # 5 = Allowed daily
+    allowupdate=5 # Not allowed
   fi
   echo $allowupdate
 
