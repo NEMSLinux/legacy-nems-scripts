@@ -202,7 +202,8 @@ vm.swappiness = 10
 
    echo "NEMS 1.5 has not yet been released."
 
-   read -p "Do you want to install the beta version? " beta
+   read -p "Do you want to install the beta version? [Y/N] " -n 1 -r beta
+   echo ""
    if [[ $beta =~ ^[Yy]$ ]]
    then
      # Backup (to migrate to new database)
