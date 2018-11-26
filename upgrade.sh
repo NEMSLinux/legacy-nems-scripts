@@ -200,23 +200,33 @@ vm.swappiness = 10
 
    echo "Upgrading from NEMS $ver to NEMS 1.5"
 
-   echo "Not yet supported."
-exit
+   echo "NEMS 1.5 has not yet been released."
 
-   # Backup and restore (to migrate to new database)
-   cp /var/www/html/backup/snapshot/backup.nems /tmp/
-   /usr/local/bin/nems-restore /tmp/backup.nems force
+   read -p "Do you want to install the beta version? " beta
+   if [[ $beta =~ ^[Yy]$ ]]
+   then
+     # Backup (to migrate to new database)
+     cp /var/www/html/backup/snapshot/backup.nems /tmp/
 
-   # Update NEMS to know this is version 1.2.2
-   echo "Changing version to 1.5..."
-   oldver=$ver
-   ver="1.5"
-   sed -i -e "s/$oldver/$ver/g" /usr/local/share/nems/nems.conf
-   echo "Done."
+     # Run the upgrader
+     /root/nems/nems-admin/nems-upgrade/1.4.1-1.5
 
-   echo ""
-   upgraded=1
+     # Restore the backup
+     /usr/local/bin/nems-restore /tmp/backup.nems force
 
+     # Update NEMS to know this is version 1.2.2
+     echo "Changing version to 1.5..."
+     oldver=$ver
+     ver="1.5"
+     sed -i -e "s/$oldver/$ver/g" /usr/local/share/nems/nems.conf
+     echo "Done."
+
+     echo ""
+     upgraded=1
+   else
+     echo "Aborted."
+     exit
+   fi
   fi
 
   
