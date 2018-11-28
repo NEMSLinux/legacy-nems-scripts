@@ -2,7 +2,6 @@
 # First run initialization script
 # Run this script with: sudo nems-init
 # It's already in the path via a symlink
-
 ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver)
 platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
 init=$(/usr/local/share/nems/nems-scripts/info.sh init)
@@ -162,15 +161,6 @@ else
     /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/samba/smb.conf
     systemctl restart smbd
 
-  # Disable the initial admin account
-  if [[ -d /home/$username ]] && [[ -d /home/nemsadmin ]]; then
-    # nemsadmin user will be deleted automatically via cron now that you're initialized, but this stuff is just to protect users in case for some reason the nemsuser user remains.
-    echo "Disabling nemsadmin access. Remember you must now login as $username"
-    deluser nemsadmin sudo # Remove super user access from nemsadmin account
-    rndpass=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-32} | head -n 1)
-    echo -e "$rndpass\n$rndpass" | passwd nemsadmin >/tmp/init 2>&1 # set a random password on the account so no longer can login
-  fi
-
 echo Initializing new Nagios user
 systemctl stop $nagios
 
@@ -316,13 +306,26 @@ service.rpi-monitor=0
     fi
   echo "Done."
 
+  # Disable the initial admin account
+  if [[ -d /home/$username ]] && [[ -d /home/nemsadmin ]]; then
+    # nemsadmin user will be deleted automatically via cron now that you're initialized, but this stuff is just to protect users in case for some reason the nemsuser user remains.
+    echo "Disabling nemsadmin access. Remember you must now login as $username"
+    # Cockpit will die here. So warn users they need to reboot
+    echo "You may lose connection now."
+    printf "Please reconnect as $username"
+    if [[ $reboot == 1 ]]; then
+      echo " and reboot your NEMS server."
+    fi
+    deluser nemsadmin sudo # Remove super user access from nemsadmin account
+    rndpass=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-32} | head -n 1)
+    echo -e "$rndpass\n$rndpass" | passwd nemsadmin >/tmp/init 2>&1 # set a random password on the account so no longer can login
+  fi
+
   echo ""
   if [[ $reboot == 1 ]]; then
     echo "Now we will resize your root partition to give you access to all the space"
     echo ""
-    echo "*** YOU MUST REBOOT NOW ***"
-    echo ""
-    read -n 1 -s -p "Press any key to reboot (required)"
+    echo "*** YOUR NEMS SERVER WILL REBOOT NOW ***"
     echo ""
     echo "****************************************************"
     echo "NOTICE: When you reboot, you must login as $username"
