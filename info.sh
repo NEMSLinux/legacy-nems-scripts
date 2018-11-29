@@ -83,6 +83,10 @@ elif [[ $COMMAND == "hwid" ]]; then
     /sbin/ifconfig enp0s3 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
   fi
 
+elif [[ $COMMAND == "wifi" ]]; then
+# output json response of detected wifi networks
+  /usr/local/share/nems/nems-scripts/info2.sh 7
+
 elif [[ $COMMAND == "platform" ]]; then
 # show if is pi or if is xu4, etc. by numerical value
   /usr/local/share/nems/nems-scripts/info2.sh 3

@@ -69,6 +69,32 @@ switch($argv[1]) {
         echo $data;
   break;
 
+  case 7: // list detected wifi access points in json format
+    $wifitmp=shell_exec('nmcli -m multiline dev wifi');
+    $wifiarr=explode(PHP_EOL,$wifitmp);
+    $count=0;
+    if (is_array($wifiarr) && count($wifiarr) > 0) {
+      foreach ($wifiarr as $arr) {
+        $tmp = explode(':',$arr);
+        if ($tmp[0] == '*') {
+	  $count++;
+        } else {
+          if (isset($tmp[1])) $result[$count][$tmp[0]] = trim($tmp[1]);
+        }
+      }
+      if (isset($result) && count($result) > 0) {
+        foreach ($result as $data) {
+          if ($data['SSID'] != '--') {
+            $wifi[$data['SSID']]['channel'] = $data['CHAN'];
+            $wifi[$data['SSID']]['signal'] = $data['SIGNAL'];
+            $wifi[$data['SSID']]['rate'] = $data['RATE'];
+            $wifi[$data['SSID']]['security'] = $data['SECURITY'];
+          }
+        }
+      }
+    }
+    echo json_encode($wifi);
+  break;
 
 }
 
