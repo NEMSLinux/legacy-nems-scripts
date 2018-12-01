@@ -230,6 +230,27 @@ check process 9590 with pidfile /run/9590.pid
     /root/nems/nems-admin/build/051-nagios-plugins
   fi
 
+  # Create the patch log dir
+  if [ ! -d /var/log/nems/patches ]; then
+    mkdir -p /var/log/nems/patches
+  fi
+
+  # Fix WiFi
+  if [ ! -f /var/log/nems/patches/20181201-wifi ]; then
+    # Pi Specific
+    if (( $platform >= 0 )) && (( $platform <= 9 )); then
+      apt -y install raspberrypi-net-mods
+    fi
+    # This is the firmware for RPi WiFi but include for other boards in case needed
+    # May not be available and may say not found, but this only runs once, so no worries
+    apt -y install firmware-brcm80211
+    apt -y install dhcpcd5
+    apt -y install wireless-tools
+    apt -y install wpasupplicant
+    # Simple prevention of doing this every time fixes.sh runs
+    echo "Patched" > /var/log/nems/patches/20181201-wifi
+  fi
+
 fi
 # end 1.4.1
 

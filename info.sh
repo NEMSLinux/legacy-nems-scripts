@@ -16,7 +16,12 @@ if [[ $COMMAND == "ip" ]]; then
 
 elif [[ $COMMAND == "nic" ]]; then
   # Show the active NIC
-  interface=`/sbin/route | /bin/grep '^default' | /bin/grep -o '[^ ]*$'`
+  # OLD way causes errors if connected to two interfaces (eg., eth0 and wlan0)
+#  interface=`/sbin/route | /bin/grep '^default' | /bin/grep -o '[^ ]*$'`
+  # NEW way (20181201) tests the route based on $host and treats that as the interface
+  host=google.com
+  host_ip=$(getent ahosts "$host" | awk '{print $1; exit}')
+  interface=`ip route get "$host_ip" | grep -Po '(?<=(dev )).*(?= src| proto)'`
   echo $interface
 
 elif [[ $COMMAND == "checkport" ]]; then
