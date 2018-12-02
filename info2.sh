@@ -86,7 +86,7 @@ switch($argv[1]) {
       if (isset($result) && count($result) > 0) {
         foreach ($result as $data) {
           if (isset($data['ESSID'])) $data['ESSID'] = str_replace('"','',$data['ESSID']);
-          if (strlen($data['ESSID']) > 0) {
+          if (isset($data['ESSID']) && strlen($data['ESSID']) > 0) {
             $wifi[$data['ESSID']]['channel'] = $data['Channel'];
             $wifi[$data['ESSID']]['frequency'] = $data['Frequency'];
             $wifi[$data['ESSID']]['rate'] = $data['Bit Rates'];
