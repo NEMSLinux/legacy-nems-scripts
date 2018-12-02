@@ -10,6 +10,9 @@
    exit
  fi
 
+ # By default, do not reboot after update
+ reboot=0
+
  # Just in case apt is already doing stuff in the background, hang tight until it completes
  echo "Please wait for apt tasks to complete..."
  while fuser /var/{lib/{dpkg,apt/lists},cache/apt/archives}/lock >/dev/null 2>&1; do sleep 1; done
@@ -253,6 +256,7 @@ check process 9590 with pidfile /run/9590.pid
       installcheck=`/usr/bin/apt --installed -qq list dhcpcd5`
       if [[ $installcheck != '' ]]; then
         echo "Patched" > /var/log/nems/patches/20181201-wifi
+        reboot=1 # Force reboot after this update to activate the firmware
       else
         echo "Patch appears to have failed"
       fi
@@ -512,8 +516,7 @@ if [ $(dpkg-query -W -f='${Status}' memtester 2>/dev/null | grep -c "ok installe
   apt-get -y install memtester
 fi
 
-
-
-
-
-
+# If a reboot is required, do it now
+if [[ $reboot == 1 ]]; then
+  /sbin/reboot
+fi
