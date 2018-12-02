@@ -237,18 +237,26 @@ check process 9590 with pidfile /run/9590.pid
 
   # Fix WiFi
   if [ ! -f /var/log/nems/patches/20181201-wifi ]; then
-    # Pi Specific
-    if (( $platform >= 0 )) && (( $platform <= 9 )); then
-      apt -y install raspberrypi-net-mods
+    online=$(/usr/local/share/nems/nems-scripts/info.sh online)
+    if [[ $online == 1 ]]; then
+      # Pi Specific
+      if (( $platform >= 0 )) && (( $platform <= 9 )); then
+        apt -y install raspberrypi-net-mods
+      fi
+      # This is the firmware for RPi WiFi but include for other boards in case needed
+      # May not be available and may say not found, but this only runs once, so no worries
+      apt -y install firmware-brcm80211
+      apt -y install dhcpcd5
+      apt -y install wireless-tools
+      apt -y install wpasupplicant
+      # Simple prevention of doing this every time fixes.sh runs
+      installcheck=`/usr/bin/apt --installed -qq list dhcpcd5`
+      if [[ $installcheck != '' ]]; then
+        echo "Patched" > /var/log/nems/patches/20181201-wifi
+      else
+        echo "Patch appears to have failed"
+      fi
     fi
-    # This is the firmware for RPi WiFi but include for other boards in case needed
-    # May not be available and may say not found, but this only runs once, so no worries
-    apt -y install firmware-brcm80211
-    apt -y install dhcpcd5
-    apt -y install wireless-tools
-    apt -y install wpasupplicant
-    # Simple prevention of doing this every time fixes.sh runs
-    echo "Patched" > /var/log/nems/patches/20181201-wifi
   fi
 
 fi
