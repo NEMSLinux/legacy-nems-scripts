@@ -214,6 +214,79 @@ mv /var/lib/NEMS-Sample /var/lib/mysql
 chown -R mysql:mysql /var/lib/mysql
 service mysql start
 
+# Remove the default user info from the Sample database (NEMS 1.5+)
+if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
+
+  item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=47;" | sed -n 1p)
+  if [[ $item != '' ]]; then
+    mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
+  fi
+  mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=47;"  # admin username
+
+  item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=55;" | sed -n 1p)
+  if [[ $item != '' ]]; then
+    mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
+  fi
+  mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=55;"  # admin email
+
+  item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=56;" | sed -n 1p)
+  if [[ $item != '' ]]; then
+    mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
+  fi
+  mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=56;"  # admin phone
+
+  item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=48;" | sed -n 1p)
+  if [[ $item != '' ]]; then
+    mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
+  fi
+  mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=48;"  # admin name
+
+  item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=51;" | sed -n 1p)
+  if [[ $item != '' ]]; then
+    mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
+  fi
+  mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=51;"  # admin notifications
+
+  item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=52;" | sed -n 1p)
+  if [[ $item != '' ]]; then
+    mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
+  fi
+  mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=52;"  # admin notifications
+
+  item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=96;" | sed -n 1p)
+  if [[ $item != '' ]]; then
+    mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
+  fi
+  mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=96;"  # admin type
+
+  item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=97;" | sed -n 1p)
+  if [[ $item != '' ]]; then
+    mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
+  fi
+  mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=97;"  # admin enabled
+
+  item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=57;" | sed -n 1p)
+  if [[ $item != '' ]]; then
+    mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
+  fi
+  mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=57;"  # contactgroups
+
+  item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=58;" | sed -n 1p)
+  if [[ $item != '' ]]; then
+    mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
+  fi
+  mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=58;"  # "Nagios Administrators"
+
+  # Import the live configs (sample data from dump)
+  rm /etc/nems/conf/Default_collector/advanced_services.cfg
+  mv /etc/nems/conf/Default_collector/advanced_services_sample.cfg /etc/nems/conf/Default_collector/advanced_services.cfg
+  rm /etc/nems/conf/global/service_templates.cfg
+  mv /etc/nems/conf/global/service_templates_sample.cfg /etc/nems/conf/global/service_templates.cfg
+  # Set ownership
+  chown -R www-data:www-data /etc/nems/conf/Default_collector
+  chown -R www-data:www-data /etc/nems/conf/global
+fi
+
 # Replace the Nagios cgi.cfg file with the sample and add username
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
   cp -fr /root/nems/nems-migrator/data/1.5/nagios/etc/* /usr/local/nagios/etc/
@@ -239,7 +312,13 @@ mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"
 # Import new configuration into NConf
 echo "  Importing: contact" && /var/www/nconf/bin/add_items_from_nagios.pl -c contact -f $confbase/global/contacts.cfg 2>&1 | grep -E "ERROR|WARN"
 echo "  Importing: contactgroup" && /var/www/nconf/bin/add_items_from_nagios.pl -c contactgroup -f $confbase/global/contactgroups.cfg 2>&1 | grep -E "ERROR|WARN"
-  
+
+# Fix admin user missing phone number
+item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=47;" | sed -n 1p)
+if [[ $item != '' ]]; then
+  mysql -s -u nconf -pnagiosadmin nconf -e "INSERT INTO ConfigValues (attr_value, fk_id_attr,fk_id_item) VALUES ('',56,$item);"
+fi
+
 systemctl start $nagios
 
 # Localization
