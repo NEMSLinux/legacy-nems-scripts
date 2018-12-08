@@ -206,14 +206,19 @@ vm.swappiness = 10
    echo ""
    if [[ $beta =~ ^[Yy]$ ]]
    then
-     # Backup (to migrate to new database)
-     cp /var/www/html/backup/snapshot/backup.nems /tmp/
+     # Backup (to migrate to new database), only if initialized
+     initialized=`/usr/local/bin/nems-info init`
+     if [[ $initialized == 1 ]]; then
+       cp /var/www/html/backup/snapshot/backup.nems /tmp/
+     fi
 
      # Run the upgrader
      /root/nems/nems-admin/nems-upgrade/1.4.1-1.5
 
-     # Restore the backup
-     /usr/local/bin/nems-restore /tmp/backup.nems force
+     # Restore the backup, only if initialized
+     if [[ $initialized == 1 ]]; then
+       /usr/local/bin/nems-restore /tmp/backup.nems force
+     fi
 
      # Update NEMS to know this is version 1.2.2
      echo "Changing version to 1.5..."
