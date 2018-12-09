@@ -19,7 +19,19 @@ else
   while fuser /var/{lib/{dpkg,apt/lists},cache/apt/archives}/lock >/dev/null 2>&1; do sleep 1; done
   echo "Done."
   # ----------------------------------
-  
+
+
+  # ensure /boot won't run out of space
+  diskfree=$(($(stat -f --format="%a*%S" /boot)))
+  if (( "$diskfree" < "12582912" )); then
+    echo ""
+    echo "/boot is too full for the upgrade."
+    echo "Please manually remove old kernels before attempting this upgrade."
+    exit
+  fi
+
+
+
 # Jump irrelevant version 1.2 (did not have rolling updates, but is still the top level of the 1.2.x branch)
   if [[ $ver = "1.2" ]]; then
    ver="1.2.1"
