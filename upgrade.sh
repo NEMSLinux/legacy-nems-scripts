@@ -214,10 +214,10 @@ vm.swappiness = 10
 
    echo "NEMS 1.5 has not yet been released."
 
-   read -p "Do you want to install the beta version? [Y/N] " -n 1 -r beta
+   read -r -p "Do you want to install the beta version? [y/N] " beta
+
    echo ""
-   if [[ $beta =~ ^[Yy]$ ]]
-   then
+   if [[ $beta =~ ^([yY][eE][sS]|[yY])$ ]]; then
      # Backup (to migrate to new database), only if initialized
      initialized=`/usr/local/bin/nems-info init`
      if [[ $initialized == 1 ]]; then
