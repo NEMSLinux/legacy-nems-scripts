@@ -335,6 +335,7 @@ service.rpi-monitor=0
     if [[ $reboot == 1 ]]; then
       echo " and reboot your NEMS server."
     fi
+    echo ""
     deluser nemsadmin sudo # Remove super user access from nemsadmin account
     rndpass=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-32} | head -n 1)
     echo -e "$rndpass\n$rndpass" | passwd nemsadmin >/tmp/init 2>&1 # set a random password on the account so no longer can login
