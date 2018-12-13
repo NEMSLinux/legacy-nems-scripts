@@ -161,6 +161,41 @@ elif [[ $COMMAND == "allowupdate" ]]; then
   fi
   echo $allowupdate
 
+elif [[ $COMMAND == "checkin" ]]; then
+  # See if user has enabled checkin
+  # From nems.conf (set in NEMS SST)
+  # Default is to not checkin
+  # This does not affect NEMS Anonymous stats. This is the email function that notifies a user if their NEMS server fails to checkin.
+  checkin=0
+  if [[ -f /usr/local/share/nems/nems.conf ]]; then
+    if grep -q "checkin.enabled" /usr/local/share/nems/nems.conf; then
+      checkin=`cat /usr/local/share/nems/nems.conf | grep checkin.enabled |  printf '%s' $(cut -n -d '=' -f 2)`
+    fi
+  fi
+  echo $checkin
+
+elif [[ $COMMAND == "checkinemail" ]]; then
+  # Get the checkin email address
+  # From nems.conf (set in NEMS SST)
+  checkinemail=""
+  if [[ -f /usr/local/share/nems/nems.conf ]]; then
+    if grep -q "checkin.email" /usr/local/share/nems/nems.conf; then
+      checkinemail=`cat /usr/local/share/nems/nems.conf | grep checkin.email |  printf '%s' $(cut -n -d '=' -f 2)`
+    fi
+  fi
+  echo $checkinemail
+
+elif [[ $COMMAND == "checkininterval" ]]; then
+  # Get the checkin interval
+  # From nems.conf (set in NEMS SST)
+  checkininterval=8
+  if [[ -f /usr/local/share/nems/nems.conf ]]; then
+    if grep -q "checkin.interval" /usr/local/share/nems/nems.conf; then
+      checkininterval=`cat /usr/local/share/nems/nems.conf | grep checkin.interval |  printf '%s' $(cut -n -d '=' -f 2)`
+    fi
+  fi
+  echo $checkininterval
+
 
 
 # See current CPU usage in percent

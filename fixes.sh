@@ -458,6 +458,11 @@ fi
     cronupdate=1
   fi
 
+  if ! grep -q "NEMS0014" /tmp/cron.tmp; then
+    printf "\n# NEMS Checkin NEMS0014\n*/5 * * * * /usr/local/share/nems/nems-scripts/checkin.sh > /dev/null 2>&1\n" >> /tmp/cron.tmp
+    cronupdate=1
+  fi
+
 
   # Import revised crontab
   if [[ "$cronupdate" == "1" ]]
