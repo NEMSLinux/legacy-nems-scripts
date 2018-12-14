@@ -18,10 +18,34 @@ echo 'Checking NEMS Version... ';
 $nemsver = shell_exec('/usr/local/bin/nems-info nemsver');
 echo $nemsver . PHP_EOL;
 if ($nemsver < 1.5) die('NEMS Cloud requires NEMS 1.5+. Please upgrade.' . PHP_EOL);
+echo 'Checking if this NEMS server is authorized to use NEMS Cloud... ';
+$cloudauth = shell_exec('/usr/local/bin/nems-info cloudauth');
+if ($cloudauth == 1) {
+echo 'Yes.' . PHP_EOL;
 
 $checkinenabled = trim(shell_exec('/usr/local/bin/nems-info checkin'));
 $checkinemail = trim(shell_exec('/usr/local/bin/nems-info checkinemail'));
 $checkininterval = trim(shell_exec('/usr/local/bin/nems-info checkininterval'));
+$alias = trim(shell_exec('/usr/local/bin/nems-info alias'));
+
+# Get the NEMS Cloud Services key (entered in NEMS SST)
+  $tmp = file('/usr/local/share/nems/nems.conf');
+  $osbkey = '';
+  if (is_array($tmp)) {
+    foreach($tmp as $line) {
+      if (strstr($line,'=')) {
+        $tmp2 = explode('=',$line);
+        if (isset($tmp2[1])) {
+          $tmp2[0] = trim($tmp2[0]);
+          $tmp2[1] = trim($tmp2[1]);
+        }
+        if ($tmp2[0] == 'osbkey') {
+          $osbkey = $tmp2[1];
+        }
+        unset($tmp,$tmp2);
+      }
+    }
+  }
 
 if ($checkinenabled != 1) {
   echo "Checkin not enabled in NEMS SST." . PHP_EOL;
@@ -43,7 +67,9 @@ file_put_contents('/var/log/nems/checkin.log',$output,FILE_APPEND);
   $data = array(
     'hwid'=>trim(shell_exec('/usr/local/bin/nems-info hwid')),
     'checkinemail'=>$checkinemail,
-    'interval'=>$checkininterval
+    'interval'=>$checkininterval,
+    'osbkey'=>$osbkey,
+    'alias'=>$alias
   );
 
   // Load existing NEMS Stats API Key, if it exists
@@ -84,4 +110,7 @@ file_put_contents('/var/log/nems/checkin.log',$output,FILE_APPEND);
 
 file_put_contents('/var/log/nems/checkin.log','--------------------' . PHP_EOL,FILE_APPEND);
 
+} else {
+  echo 'No' . PHP_EOL;
+}
 ?>
