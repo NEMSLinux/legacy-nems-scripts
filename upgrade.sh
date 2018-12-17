@@ -218,6 +218,10 @@ vm.swappiness = 10
 
    echo ""
    if [[ $beta =~ ^([yY][eE][sS]|[yY])$ ]]; then
+
+     # Make sure NEMS is at the current version with all fixes applied
+     /usr/local/bin/nems-update
+
      # Backup (to migrate to new database), only if initialized
      initialized=`/usr/local/bin/nems-info init`
      if [[ $initialized == 1 ]]; then
