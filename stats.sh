@@ -24,7 +24,6 @@ while ($socketstatus != 1) {
   if ($v == 6) die('Timed out waiting for livestatus socket to become ready (is Nagios running?)');
 }
 
-exit('working');
 $output = date('r') . PHP_EOL;
 $load = sys_getloadavg();
 $output .= 'LA: ' . $load[0] . PHP_EOL;
