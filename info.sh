@@ -21,7 +21,7 @@ elif [[ $COMMAND == "nic" ]]; then
   # NEW way (20181201) tests the route based on $host and treats that as the interface
   host=google.com
   host_ip=$(getent ahosts "$host" | awk '{print $1; exit}')
-  interface=`ip route get "$host_ip" | grep -Po '(?<=(dev )).*(?= src| proto)'`
+  interface=`ip route get "$host_ip" | grep -Po '(?<=(dev )).*(?= src| proto)' | cut -f 1 -d " "`
   echo $interface
 
 elif [[ $COMMAND == "checkport" ]]; then
