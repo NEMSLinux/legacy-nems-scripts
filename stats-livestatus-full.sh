@@ -25,6 +25,8 @@ $custom_filters = array(
   'host_name ~ ',
 );
 
+if (file_exists($socket_path)) {
+
 function _print_duration($start_time, $end_time)
 {
                 $duration = $end_time - $start_time;
@@ -251,6 +253,6 @@ EOQ;
             if (!isset($nems->unhandled)) {
 		$nems->unhandled = array();
             }
-
+} // detect socket exists
   echo json_encode($nems);
 ?>

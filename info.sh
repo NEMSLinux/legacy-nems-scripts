@@ -242,13 +242,29 @@ elif [[ $COMMAND == "socket" ]]; then
   fi
   echo $socket
 
+elif [[ $COMMAND == "socketstatus" ]]; then
+  socket=$(/usr/local/bin/nems-info socket)
+  if [[ -e $socket ]]; then
+    echo 1
+  else
+    echo 0
+  fi
+
 elif [[ $COMMAND == "hosts" ]]; then
   socket=$(/usr/local/bin/nems-info socket)
-  /usr/local/share/nems/nems-scripts/stats-livestatus.py $socket hosts
+  if [[ -e $socket ]]; then
+    /usr/local/share/nems/nems-scripts/stats-livestatus.py $socket hosts
+  else
+    echo 0
+  fi
 
 elif [[ $COMMAND == "services" ]]; then
   socket=$(/usr/local/bin/nems-info socket)
-  /usr/local/share/nems/nems-scripts/stats-livestatus.py $socket services
+  if [[ -e $socket ]]; then
+    /usr/local/share/nems/nems-scripts/stats-livestatus.py $socket services
+  else
+    echo 0
+  fi
 
 elif [[ $COMMAND == "downtimes" ]]; then
   /usr/local/share/nems/nems-scripts/info2.sh 6

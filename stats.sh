@@ -5,12 +5,26 @@
 // # Please do not deactivate this unless you absolutely have to.
 // # Again, it's completely anonymous, and nothing private is revealed.
 
-if (!file_exists('/var/log/nems/hw_model')) {
-  // Just in case this is the first boot and running at startup, let's hang tight for 30 seconds to let the data generate
-  sleep(30);
+$v=0;
+while (!file_exists('/var/log/nems/hw_model')) {
+  // Just in case this is the first boot and running at startup, let's hang tight to let the data generate
+  sleep(10);
+  $v++;
+  if ($v == 6) die('Timed out waiting for hw_model');
 }
 
+$v=0;
+$socket=shell_exec('/usr/local/bin/nems-info socket');
+$socketstatus=shell_exec('/usr/local/bin/nems-info socketstatus');
+while ($socketstatus != 1) {
+  // waiting for the Nagios livestatus socket to become ready
+  sleep(10);
+  $socketstatus=shell_exec('/usr/local/bin/nems-info socketstatus');
+  $v++;
+  if ($v == 6) die('Timed out waiting for livestatus socket to become ready (is Nagios running?)');
+}
 
+exit('working');
 $output = date('r') . PHP_EOL;
 $load = sys_getloadavg();
 $output .= 'LA: ' . $load[0] . PHP_EOL;
