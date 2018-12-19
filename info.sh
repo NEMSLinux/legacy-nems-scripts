@@ -321,6 +321,17 @@ elif [[ $COMMAND == "cloudauth" ]]; then
     echo 0
   fi
 
+elif [[ $COMMAND == "webhook" ]]; then
+  # From nems.conf
+  if [[ -f /usr/local/share/nems/nems.conf ]]; then
+    if grep -q "webhook" /usr/local/share/nems/nems.conf; then
+      webhook=`cat /usr/local/share/nems/nems.conf | grep webhook | printf '%s ' $(cut -n -d '=' -f 2)`
+    fi
+    # Remove carriage return, and trim
+    webhook=$(echo "$webhook" | tr '\n' ' ' | xargs)
+  fi
+  echo $webhook
+
 # Output usage info as no valid command line argument was provided
 else
   echo "Usage: ./$me command"
