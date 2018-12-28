@@ -266,6 +266,9 @@ systemctl start $nagios
   # Configure timezone
   dpkg-reconfigure tzdata
 
+  # Configure locale
+  dpkg-reconfigure locales
+
   # Forcibly restart cron to prevent tasks running at wrong times after timezone update
   service cron stop && service cron start
 
