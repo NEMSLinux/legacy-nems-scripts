@@ -214,18 +214,6 @@ mv /var/lib/NEMS-Sample /var/lib/mysql
 chown -R mysql:mysql /var/lib/mysql
 service mysql start
 
-# Remove the default user info from the Sample database (NEMS 1.5+)
-if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
-  # Import the live configs (sample data from dump)
-  rm /etc/nems/conf/Default_collector/advanced_services.cfg
-  mv /etc/nems/conf/Default_collector/advanced_services_sample.cfg /etc/nems/conf/Default_collector/advanced_services.cfg
-  rm /etc/nems/conf/global/service_templates.cfg
-  mv /etc/nems/conf/global/service_templates_sample.cfg /etc/nems/conf/global/service_templates.cfg
-  # Set ownership
-  chown -R www-data:www-data /etc/nems/conf/Default_collector
-  chown -R www-data:www-data /etc/nems/conf/global
-fi
-
 # Replace the Nagios cgi.cfg file with the sample and add username
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
   cp -fr /root/nems/nems-migrator/data/1.5/nagios/etc/* /usr/local/nagios/etc/
