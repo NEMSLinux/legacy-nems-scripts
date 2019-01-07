@@ -311,7 +311,8 @@ elif [[ $COMMAND == "cloudauth" ]]; then
   osbpass=$(cat /usr/local/share/nems/nems.conf | grep osbpass | printf '%s' $(cut -n -d '=' -f 2))
   osbkey=$(cat /usr/local/share/nems/nems.conf | grep osbkey | printf '%s' $(cut -n -d '=' -f 2))
   if [[ $osbpass == '' ]] || [[ $osbkey == '' ]]; then
-    echo NEMS Cloud is not currently enabled.
+#    echo NEMS Cloud is not currently enabled.
+    echo 0
     exit
   fi;
   data=$(curl -s -F "hwid=$hwid" -F "osbkey=$osbkey" -F "query=status" https://nemslinux.com/api-backend/offsite-backup-checkin.php)
