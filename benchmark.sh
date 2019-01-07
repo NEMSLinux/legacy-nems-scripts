@@ -10,6 +10,12 @@ fi
 # Set a runtime
 if [[ -f /var/log/nems/benchmarks/runtime ]]; then
   lastruntime=`cat /var/log/nems/benchmarks/runtime`
+  if [ "$lastruntime" -gt "18000" ]; then
+    # Don't run weekly benchmark on boards that take longer than 10 minutes to do so
+    echo "Benchmarks take too long on this board. Aborting."
+    echo "Stats for this board will be based on first run."
+    exit 1
+  fi
   thisruntime=$(($lastruntime+120)) # +2 minutes from the last runtime
 else
   thisruntime=18000 # 10 minutes
