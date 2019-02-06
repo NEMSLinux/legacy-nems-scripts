@@ -62,7 +62,10 @@ $output = date('r') . PHP_EOL;
 $output .= 'Checking in: ';
 file_put_contents('/var/log/nems/checkin.log',$output,FILE_APPEND);
 
-# Setup the data array
+# only proceed if Nagios is running
+$socket = trim(shell_exec('/usr/local/bin/nems-info socket'));
+if (file_exists($socket)) {
+  # Setup the data array
 
   $data = array(
     'hwid'=>trim(shell_exec('/usr/local/bin/nems-info hwid')),
@@ -82,7 +85,7 @@ file_put_contents('/var/log/nems/checkin.log',$output,FILE_APPEND);
     }
   }
 
-# Connect and checkin
+  # Connect and checkin
   $ch = curl_init('https://nemslinux.com/api/checkin/');
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
@@ -107,6 +110,10 @@ file_put_contents('/var/log/nems/checkin.log',$output,FILE_APPEND);
     file_put_contents('/usr/local/share/nems/nems.conf','apikey=' . $newkey . PHP_EOL, FILE_APPEND);
     file_put_contents('/var/log/nems/checkin.log','Assigned new API Key by server: ' . $newkey . PHP_EOL,FILE_APPEND);
   }
+} else {
+  echo 'Nagios is offline. Will not checkin.' . PHP_EOL;
+  file_put_contents('/var/log/nems/checkin.log','Nagios is offline. Will not checkin.' . PHP_EOL,FILE_APPEND);
+}
 
 file_put_contents('/var/log/nems/checkin.log','--------------------' . PHP_EOL,FILE_APPEND);
 
