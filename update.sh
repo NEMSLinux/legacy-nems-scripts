@@ -15,7 +15,18 @@ else
     ((count++))
     sleep 1
   done
-  
+
+  # Just in case nems-quickfix is running
+  quickfix=$(/usr/local/bin/nems-info quickfix)
+  if [[ $quickfix == 1 ]]; then
+    echo 'NEMS Linux is currently updating itself. Please wait...'
+    while [[ $quickfix == 1 ]]
+    do
+      sleep 1
+      quickfix=$(/usr/local/bin/nems-info quickfix)
+    done
+  fi
+
   # Update nems-migrator
   printf "Updating nems-migrator... "
   cd /root/nems/nems-migrator
