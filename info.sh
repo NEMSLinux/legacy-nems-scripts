@@ -333,6 +333,20 @@ elif [[ $COMMAND == "webhook" ]]; then
   fi
   echo $webhook
 
+elif [[ $COMMAND == "quickfix" ]]; then
+  if [[ -e /var/run/nems-quickfix.pid ]]; then
+    pid=$(cat /var/run/nems-quickfix.pid)
+    if ps -p $pid > /dev/null
+    then
+      echo 1
+    else
+      echo 0
+    fi
+  else
+    echo 0
+  fi
+
+
 # Output usage info as no valid command line argument was provided
 else
   echo "Usage: ./$me command"

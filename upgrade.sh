@@ -20,6 +20,17 @@ else
   echo "Done."
   # ----------------------------------
 
+  # Just in case nems-quickfix is running
+  quickfix=$(/usr/local/bin/nems-info quickfix)
+  if [[ $quickfix == 1 ]]; then
+    echo 'NEMS Linux is currently updating itself. Please wait...'
+    while [[ $quickfix == 1 ]]
+    do
+      sleep 1
+      quickfix=$(/usr/local/bin/nems-info quickfix)
+    done
+  fi
+
 
   # ensure /boot won't run out of space
   diskfree=$(($(stat -f --format="%a*%S" /boot)))

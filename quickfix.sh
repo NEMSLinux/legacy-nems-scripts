@@ -1,6 +1,13 @@
 #!/bin/bash
 allowupdate=`/usr/local/bin/nems-info allowupdate`
 
+quickfix=$(/usr/local/bin/nems-info quickfix)
+if [[ $quickfix == 1 ]]; then
+  echo 'Already running.'
+  exit
+fi
+echo $$ > /var/run/nems-quickfix.pid
+
 # 1 = Not allowed
 # 2 = Allowed monthly
 # 3 = Allowed semi-weekly
