@@ -17,16 +17,16 @@ else
   done
 
   # Just in case nems-quickfix is running
-  fixes=$(/usr/local/bin/nems-info fixes)
-  if [[ $fixes == 1 ]]; then
+  update=$(/usr/local/bin/nems-info update)
+  if [[ $update == 1 ]]; then
     echo 'NEMS Linux is currently updating itself. Please wait...'
-    while [[ $fixes == 1 ]]
+    while [[ $update == 1 ]]
     do
       sleep 1
-      fixes=$(/usr/local/bin/nems-info fixes)
+      update=$(/usr/local/bin/nems-info update)
     done
   fi
-  echo $$ > /var/run/nems-fixes.pid
+  echo $$ > /var/run/nems-update.pid
 
   # Update nems-migrator
   printf "Updating nems-migrator... "
@@ -180,4 +180,4 @@ else
 fi
 echo ""
 
-rm -f /var/run/nems-fixes.pid
+rm -f /var/run/nems-update.pid

@@ -10,6 +10,19 @@
    exit
  fi
 
+ # Just in case nems-quickfix is running
+ fixes=$(/usr/local/bin/nems-info fixes)
+ if [[ $fixes == 1 ]]; then
+   echo 'NEMS Linux is currently updating itself. Please wait...'
+   while [[ $fixes == 1 ]]
+   do
+     sleep 1
+     fixes=$(/usr/local/bin/nems-info fixes)
+   done
+ fi
+ echo $$ > /var/run/nems-fixes.pid
+
+
  # By default, do not reboot after update
  reboot=0
 
@@ -520,6 +533,8 @@ fi
 if [ $(dpkg-query -W -f='${Status}' memtester 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
   apt-get -y install memtester
 fi
+
+rm -f /var/run/nems-fixes.pid
 
 # If a reboot is required, do it now
 if [[ $reboot == 1 ]]; then

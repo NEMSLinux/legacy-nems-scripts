@@ -359,6 +359,19 @@ elif [[ $COMMAND == "fixes" ]]; then
     echo 0
   fi
 
+elif [[ $COMMAND == "update" ]]; then
+  if [[ -e /var/run/nems-update.pid ]]; then
+    pid=$(cat /var/run/nems-update.pid)
+    if ps -p $pid > /dev/null
+    then
+      echo 1
+    else
+      echo 0
+    fi
+  else
+    echo 0
+  fi
+
 
 # Output usage info as no valid command line argument was provided
 else
