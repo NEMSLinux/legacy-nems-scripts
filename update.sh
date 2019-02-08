@@ -28,6 +28,17 @@ else
   fi
   echo $$ > /var/run/nems-update.pid
 
+  # Don't do updates if fixes is running, since that is a sub-process of update and could conflict
+  fixes=$(/usr/local/bin/nems-info fixes)
+  if [[ $fixes == 1 ]]; then
+    echo 'NEMS Linux is currently updating itself. Please wait...'
+    while [[ $fixes == 1 ]]
+    do
+      sleep 1
+      update=$(/usr/local/bin/nems-info fixes)
+    done
+  fi
+
   # Update nems-migrator
   printf "Updating nems-migrator... "
   cd /root/nems/nems-migrator
