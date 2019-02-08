@@ -346,6 +346,19 @@ elif [[ $COMMAND == "quickfix" ]]; then
     echo 0
   fi
 
+elif [[ $COMMAND == "fixes" ]]; then
+  if [[ -e /var/run/nems-fixes.pid ]]; then
+    pid=$(cat /var/run/nems-fixes.pid)
+    if ps -p $pid > /dev/null
+    then
+      echo 1
+    else
+      echo 0
+    fi
+  else
+    echo 0
+  fi
+
 
 # Output usage info as no valid command line argument was provided
 else
