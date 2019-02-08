@@ -27,7 +27,7 @@ while ($socketstatus != 1) {
 $output = date('r') . PHP_EOL;
 $load = sys_getloadavg();
 $output .= 'LA: ' . $load[0] . PHP_EOL;
-$output .= 'Sending anonymous stats to https://nemslinux.com/stats/' . PHP_EOL;
+$output .= 'Sending anonymous stats to https://new.nemslinux.com/stats/' . PHP_EOL;
 file_put_contents('/var/log/nems/stats.log',$output,FILE_APPEND);
 
 if (file_exists('/var/log/nems/hw_model')) { // Don't run this until system is ready to report true stats
@@ -93,7 +93,7 @@ if (file_exists('/var/log/nems/hw_model')) { // Don't run this until system is r
     }
   }
 
-  $ch = curl_init('https://nemslinux.com/api/stats/');
+  $ch = curl_init('https://new.nemslinux.com/api/stats/');
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
   $retry = 0;

@@ -286,7 +286,10 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
     /usr/local/share/nems/nems-scripts/benchmark.sh
   fi
 
-# Can move all this stuff to 1.4.1 once 1.5 releases
+fi
+
+if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
+
   # Give Adagios access to socket
   /bin/sed -i -- 's,livestatus_path = None,livestatus_path = "/usr/local/nagios/var/rw/live.sock",g' /var/www/adagios/settings.py
 
@@ -315,14 +318,7 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
      chown www-data:www-data /var/www/adagios/settings.py
      adagioscache=1;
    fi
-# DISABLED and REVERSED. If user renamed admin user in NConf, Adagios would be empty.
-#   if ! grep -q "NEMS00000" /etc/adagios/adagios.conf; then
-#     echo "
-## NEMS00000 A hacky way of disabling the admin portions of Adagios
-#enable_authorization=True
-#administrators=\"nobodyisadmin\"
-#" >> /etc/adagios/adagios.conf
-#   fi
+
    if ! grep -q "NEMS00000" /var/www/adagios/templates/403.html; then
      cp -f /root/nems/nems-migrator/data/1.4/adagios/templates/403.html /var/www/adagios/templates/
      adagioscache=1;
@@ -340,7 +336,15 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
      /bin/systemctl restart apache2
    fi
 
+  # Move bootscreen to TTY7 and disable TTY1
+    if ! grep -q "NEMS00001" /etc/rc.local; then
+      /root/nems/nems-admin/build/010-tty
+    fi
+
 fi
+
+
+
 
 if (( $(awk 'BEGIN {print ("'$ver'" <= "'1.3.1'")}') )); then
   /usr/local/share/nems/nems-scripts/fixes-legacy.sh
