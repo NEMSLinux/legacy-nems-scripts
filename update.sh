@@ -26,6 +26,7 @@ else
       quickfix=$(/usr/local/bin/nems-info quickfix)
     done
   fi
+  echo $$ > /var/run/nems-quickfix.pid
 
   # Update nems-migrator
   printf "Updating nems-migrator... "
@@ -178,3 +179,5 @@ else
 
 fi
 echo ""
+
+rm -f /var/run/nems-quickfix.pid

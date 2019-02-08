@@ -1,12 +1,18 @@
 #!/bin/bash
 allowupdate=`/usr/local/bin/nems-info allowupdate`
 
-quickfix=$(/usr/local/bin/nems-info quickfix)
-if [[ $quickfix == 1 ]]; then
-  echo 'Already running.'
-  exit
-fi
-echo $$ > /var/run/nems-quickfix.pid
+
+  # Just in case nems-quickfix is running
+  quickfix=$(/usr/local/bin/nems-info quickfix)
+  if [[ $quickfix == 1 ]]; then
+    echo 'NEMS Linux is currently updating itself. Please wait...'
+    while [[ $quickfix == 1 ]]
+    do
+      sleep 1
+      quickfix=$(/usr/local/bin/nems-info quickfix)
+    done
+  fi
+  echo $$ > /var/run/nems-quickfix.pid
 
 # 1 = Not allowed
 # 2 = Allowed monthly
@@ -63,3 +69,5 @@ if [[ $proceed == 1 ]]; then
 else
   echo "Update Skipped based on settings in NEMS SST."
 fi
+
+rm -f /var/run/nems-quickfix.pid
