@@ -78,7 +78,22 @@ else
     echo "initialize, and then run nems-restore."
     echo "Press CTRL-C to abort."
     echo ""
+    sleep 5
   fi
+
+# Localization
+
+  # Configure timezone
+  dpkg-reconfigure tzdata
+
+  # Configure locale
+  dpkg-reconfigure locales
+
+  # Configure the keyboard locale (will be skipped if keyboard is not connected)
+  dpkg-reconfigure keyboard-configuration && service keyboard-setup restart
+
+# /Localization
+
 
   isValidUsername() {
     local re='^[[:lower:]_][[:lower:][:digit:]_-]{2,15}$'
@@ -249,26 +264,8 @@ fi
 
 systemctl start $nagios
 
-# Localization
-
-  # Configure timezone
-  dpkg-reconfigure tzdata
-
-  # Configure locale
-  dpkg-reconfigure locales
-
   # Forcibly restart cron to prevent tasks running at wrong times after timezone update
   service cron stop && service cron start
-
-  # Configure the keyboard locale
-#  echo ""
-#  echo "Let's configure your keyboard."
-#  echo "NOTE: If you do not have a keyboard plugged into your NEMS server, this will be skipped."
-#  echo ""
-#  read -n 1 -s -p "Press any key to continue"
-#  dpkg-reconfigure keyboard-configuration && service keyboard-setup restart
-
-# /Localization
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.3'")}') )); then
 
