@@ -341,6 +341,11 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
       /root/nems/nems-admin/build/010-tty
     fi
 
+  # Don't output kernel messages -- such as firewall blocks -- to TTY
+    if ! grep -q "NEMS00002" /etc/rc.local; then
+      /root/nems/nems-admin/build/012-tty
+    fi
+
 fi
 
 
