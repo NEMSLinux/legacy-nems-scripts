@@ -12,7 +12,7 @@ me=`basename "$0"`
 # Output local IP address
 if [[ $COMMAND == "ip" ]]; then
   # Work with any NIC
-  /sbin/ip -f inet addr show $($0 nic) | grep -Po 'inet \K[\d.]+'
+  /sbin/ip -f inet addr show $($0 nic) | grep -Po 'inet \K[\d.]+' | head -n 1
 
 elif [[ $COMMAND == "nic" ]]; then
   # Show the active NIC
