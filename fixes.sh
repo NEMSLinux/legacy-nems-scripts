@@ -293,6 +293,9 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
   # Give Adagios access to socket
   /bin/sed -i -- 's,livestatus_path = None,livestatus_path = "/usr/local/nagios/var/rw/live.sock",g' /var/www/adagios/settings.py
 
+  # Ensure ownership of nems-www is set to the apache2 user
+  chown -R www-data:www-data /var/www/html
+
   # Fix logs for Nagios (in particular, this fixes Adagios history)
   if [[ ! -d /var/log/nagios/archives ]]; then
     mkdir /var/log/nagios/archives
