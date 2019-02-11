@@ -306,12 +306,16 @@ service.rpi-monitor=0
   fi
 
     reboot=0
+
+  # Only do this for anything LESS THAN 1.5 (that is to say, 1.4.1, etc).
+  if (( $(awk 'BEGIN {print ("'$ver'" < "'1.5'")}') )); then
     # Raspberry Pi
     if (( $platform >= 0 )) && (( $platform <= 9 )); then
       /usr/bin/raspi-config --expand-rootfs > /dev/null 2>&1
       reboot=1
     fi
   echo "Done."
+  fi
 
   # Disable the initial admin account
   if [[ -d /home/$username ]] && [[ -d /home/nemsadmin ]]; then
