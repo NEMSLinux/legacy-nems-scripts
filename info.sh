@@ -372,6 +372,18 @@ elif [[ $COMMAND == "update" ]]; then
     echo 0
   fi
 
+elif [[ $COMMAND == "piwatcher" ]]; then
+  if [[ -e /var/log/nems/piwatcher ]]; then
+    piwatcher=$(cat /var/log/nems/piwatcher)
+    if [[ $piwatcher == "1" ]]; then
+      echo 1
+    else
+      echo 0
+    fi
+  else
+    echo 0
+  fi
+
 
 # Output usage info as no valid command line argument was provided
 else
