@@ -20,13 +20,15 @@ ver=$(/usr/local/bin/nems-info nemsver)
 
  # All Platforms
 
+   socket=$(/usr/local/bin/nems-info socket)
+
    # nagios-api
    if grep -q "service.nagios-api=0" "$conf"; then
      sleep 1
    else
      sleep 15 # Need to wait a bit so Nagios has time to load first
      if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
-       /root/nems/nagios-api/nagios-api -p 8090 -c /var/lib/nagios3/rw/live.sock -s /var/cache/nagios/status.dat -l /var/log/nagios/nagios.log >> /var/log/nagios-api.log 2>&1 &
+       /root/nems/nagios-api/nagios-api -p 8090 -c $socket -s /var/cache/nagios/status.dat -l /var/log/nagios/nagios.log >> /var/log/nagios-api.log 2>&1 &
      else
        /root/nems/nagios-api/nagios-api -p 8090 -c /var/lib/nagios3/rw/live.sock -s /var/cache/nagios3/status.dat -l /var/log/nagios3/nagios.log >> /var/log/nagios-api.log 2>&1 &
      fi
