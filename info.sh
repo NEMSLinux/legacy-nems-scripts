@@ -12,7 +12,16 @@ me=`basename "$0"`
 # Output local IP address
 if [[ $COMMAND == "ip" ]]; then
   # Work with any NIC
-  /sbin/ip -f inet addr show $($0 nic) | grep -Po 'inet \K[\d.]+' | head -n 1
+  ip=$(/sbin/ip -f inet addr show $($0 nic) | grep -Po 'inet \K[\d.]+' | head -n 1)
+  if [[ $ip == "" ]]; then
+    # Never reply with a blank string - instead, use localhost if no IP is found
+    # This would be the case if no network connection is non-existent
+    echo "127.0.0.1"
+  else
+    # Reply with the real IP of the first network interface.
+    # If multiple networks, only the first will report.
+    echo $ip
+  fi
 
 elif [[ $COMMAND == "nic" ]]; then
   # Show the active NIC
