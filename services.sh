@@ -6,17 +6,26 @@ conf='/usr/local/share/nems/nems.conf'
 platform=$(/usr/local/bin/nems-info platform) 
 ver=$(/usr/local/bin/nems-info nemsver)
 
- # Raspberry Pi Only
- if [[ $platform == 0 ]] || [[ $platform == 1 ]] || [[ $platform == 2 ]] || [[ $platform == 3 ]]; then
 
-   # RPi-Monitor
-   if grep -q "service.rpi-monitor=0" "$conf"; then
-     /etc/init.d/rpimonitor stop
-   else
-     /etc/init.d/rpimonitor start
+ # Set defaults if nothing is set
+
+   # Pi Zero / 1
+   if (( $platform < '2' )); then
+
+     if ! grep -q "service.rpi-monitor" "$conf"; then
+       echo "service.rpi-monitor=0" >> "$conf"
+     fi
+
+     if ! grep -q "service.nagios-api" "$conf"; then
+       echo "service.nagios-api=0" >> "$conf"
+     fi
+
+     if ! grep -q "service.monitorix" "$conf"; then
+       echo "service.monitorix=0" >> "$conf"
+     fi
+
    fi
 
- fi
 
  # All Platforms
 
@@ -34,15 +43,6 @@ ver=$(/usr/local/bin/nems-info nemsver)
      fi
    fi
 
-   # webmin
-   if grep -q "service.webmin=0" "$conf"; then
-     systemctl stop webmin
-     systemctl disable webmin
-   else
-     systemctl enable webmin
-     systemctl start webmin
-   fi
-
    # monitorix
    if grep -q "service.monitorix=0" "$conf"; then
      systemctl stop monitorix
@@ -52,11 +52,18 @@ ver=$(/usr/local/bin/nems-info nemsver)
      systemctl start monitorix
    fi
 
-   # cockpit
-   if grep -q "service.cockpit=0" "$conf"; then
-     systemctl stop cockpit.socket
-     systemctl disable cockpit.socket
+
+ # Raspberry Pi Only
+ if (( $platform < '10' )); then
+
+   # RPi-Monitor
+   if grep -q "service.rpi-monitor=0" "$conf"; then
+     sleep 30
+     /etc/init.d/rpimonitor stop
+     systemctl stop rpimonitor
    else
-     systemctl enable cockpit.socket
-     systemctl start cockpit.socket
+     /etc/init.d/rpimonitor start
    fi
+
+ fi
+
