@@ -45,11 +45,11 @@ ver=$(/usr/local/bin/nems-info nemsver)
 
    # monitorix
    if grep -q "service.monitorix=0" "$conf"; then
-     systemctl stop monitorix
-     systemctl disable monitorix
+     /bin/systemctl stop monitorix
+     /bin/systemctl disable monitorix
    else
-     systemctl enable monitorix
-     systemctl start monitorix
+     /bin/systemctl enable monitorix
+     /bin/systemctl start monitorix
    fi
 
 
@@ -60,7 +60,7 @@ ver=$(/usr/local/bin/nems-info nemsver)
    if grep -q "service.rpi-monitor=0" "$conf"; then
      sleep 30
      /etc/init.d/rpimonitor stop
-     systemctl stop rpimonitor
+     /bin/systemctl stop rpimonitor
    else
      /etc/init.d/rpimonitor start
    fi
