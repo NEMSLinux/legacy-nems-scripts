@@ -292,16 +292,20 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
 
 # Increase upload size for background images
   if [[ -e /etc/php/7.3/phpdbg/php.ini ]]; then
+   reloadapache=0
    if ! grep -q "NEMS00001" /etc/php/7.3/phpdbg/php.ini; then
     /bin/sed -i '/post_max_size =/c\; NEMS00001\npost_max_size = 20M' /etc/php/7.3/phpdbg/php.ini
     /bin/sed -i '/upload_max_filesize =/c\upload_max_filesize = 16M' /etc/php/7.3/phpdbg/php.ini
-    /bin/systemctl reload apache2
+    reloadapache=1
    fi
   fi
   if [[ -e /etc/php/7.2/phpdbg/php.ini ]]; then
    if ! grep -q "NEMS00001" /etc/php/7.2/phpdbg/php.ini; then
     /bin/sed -i '/post_max_size =/c\; NEMS00001\npost_max_size = 20M' /etc/php/7.2/phpdbg/php.ini
     /bin/sed -i '/upload_max_filesize =/c\upload_max_filesize = 16M' /etc/php/7.2/phpdbg/php.ini
+    reloadapache=1
+   fi
+   if [[ $reloadapache == 1 ]]; then
     /bin/systemctl reload apache2
    fi
   fi
