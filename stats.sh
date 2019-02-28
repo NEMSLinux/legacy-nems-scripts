@@ -93,7 +93,7 @@ if (file_exists('/var/log/nems/hw_model')) { // Don't run this until system is r
     }
   }
 
-  $ch = curl_init('https://new.nemslinux.com/api/stats/');
+  $ch = curl_init('https://nemslinux.com/api/stats/');
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
   $retry = 0;
