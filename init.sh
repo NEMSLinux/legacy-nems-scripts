@@ -37,10 +37,31 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 else
 
+  # Ensure user changed their MAC address.
+  # DO NOT continue if you have not! Using the stock MAC means
+  # you'd have the same HWID as other users! That, as you can imagine
+  # can cause all kinds of problems, including security issues.
+  if [[ $platform == 20 ]]; then
+    hwid=$(/usr/local/bin/nems-info hwid)
+    # Bad HWID for MAC 080027C75EC1
+    if [[ $hwid == *'4f6c6d8a4d2670e87004329b99bf517d'* ]]; then
+      echo "You need to initialize a unique MAC address for your"
+      echo "virtual Network Interface. Shut down your NEMS appliance"
+      echo "and modify the Network Interface in your hypervisor."
+      echo ""
+      echo "CANNOT CONTINUE"
+      echo ""
+      exit 1
+    fi
+  fi
+
   online=$(/usr/local/share/nems/nems-scripts/info.sh online)
   if [[ $online == 0 ]]; then
     echo "I am not able to connect with Github."
-    echo "This could be due to a lack of Internet connectivity, or a firewall issue."
+    echo "MAKE SURE your system clock is set correctly."
+    date
+    echo ""
+    echo "This could also be due to a lack of Internet connectivity, or a firewall issue."
     echo "We'll proceed with initialization, however please note you need to fix this."
     echo "NEMS updates come in via Github, and these patches ensure everything works well."
     echo "Please resolve this issue, and confirm by pinging github.com from your NEMS server."
