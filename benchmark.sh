@@ -28,7 +28,7 @@ plannedend=$(($start + $thisruntime))
 echo "NEMS System Benchmark... Please Wait (may take a while)."
 
 if [[ ! -f /usr/bin/sysbench ]]; then
-  apt install sysbench
+  apt -y install sysbench
 fi
 
 echo "NEMS System Benchmark" > /tmp/nems-benchmark.log
