@@ -1,0 +1,16 @@
+aspect = 0
+separate_widget = ""
+tab_len = 0
+visit_items = OFF
+use_shadow = OFF
+use_colors = ON
+screen_color = (WHITE,RED,OFF)
+shadow_color = (WHITE,WHITE,OFF)
+dialog_color = (WHITE,BLACK,OFF)
+title_color = (GREEN,BLACK,OFF)
+border_color = (WHITE,BLACK,OFF)
+button_active_color = (BLACK,YELLOW,OFF)
+button_inactive_color = (WHITE,BLACK,OFF)
+button_key_active_color = (BLACK,GREEN,OFF)
+button_key_inactive_color = (RED,BLACK,OFF)
+button_label_active_color = (BLACK,YELLOW,OFF)
