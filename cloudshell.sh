@@ -42,7 +42,7 @@
 	CPU_CORES=$(nproc --all)
 
 	#Version
-	DIETPI_CLOUDSHELL_VERSION=$(/usr/local/bin/nems-info nemsver)
+	NEMSVER=$(/usr/local/bin/nems-info nemsver)
 
 	#/tmp/.* files used throughout this script.
 	FP_TEMP="/tmp/nems-cloudshell"
@@ -887,7 +887,7 @@
 			echo -e ""
 			echo -e ""
 			echo -e "$C_RESET${aCOLOUR[$USER_COLOUR_INDEX]}${aAnimation[$i]}"
-			echo -e "$C_RESET          v$DIETPI_CLOUDSHELL_VERSION"
+			echo -e "$C_RESET          v$NEMSVER"
 			echo -e ""
 			echo -e "       Loading..."
 			echo -e "$C_RESET${aCOLOUR[$USER_COLOUR_INDEX]}$C_REVERSE${aBar[$i]}"
@@ -910,7 +910,7 @@
 
 		#Banner Modes
 		if (( $BANNER_MODE == 0 )); then
-			BANNER_PRINT="NEMS Linux $DIETPI_CLOUDSHELL_VERSION"
+			BANNER_PRINT="NEMS Linux $NEMSVER"
 		elif (( $BANNER_MODE == 1 )); then
 			Obtain_DATE_TIME
 			BANNER_PRINT=$DATE_TIME
@@ -1317,7 +1317,7 @@ _EOF_
 	Menu_Main(){
 
 		TARGETMENUID=0
-		WHIP_BACKTITLE="- $PROGRAM_NAME v$DIETPI_CLOUDSHELL_VERSION -"
+		WHIP_BACKTITLE="- $PROGRAM_NAME v$NEMSVER -"
 		WHIP_TITLE="- $PROGRAM_NAME -"
 
 		local temp_output_text="Fahrenheit"
