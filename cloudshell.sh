@@ -38,7 +38,7 @@
 	fi
 
         # List of HW_MODEL are here: https://github.com/Fourdee/DietPi/blob/master/dietpi/dietpi-obtain_hw_model
-	HW_MODEL=$(sed -n 1p /DietPi/dietpi/.hw_model)
+	HW_MODEL=$(sed -n 1p /var/log/nems/hw_model)
 	CPU_CORES=$(nproc --all)
 
 	#Version
@@ -334,7 +334,7 @@
 
 		CPU_TOTALPROCESSES=$(( $(ps --ppid 2 -p 2 --deselect | wc -l) - 2 )) # - ps process and descriptions.
 		CPU_GOV=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
-		CPU_TEMP=$(/DietPi/dietpi/dietpi-cpuinfo 1)
+		CPU_TEMP=$(/usr/local/share/nems/nems-scripts/info/cpuinfo 1)
 
 		if [[ $CPU_TEMP =~ ^-?[0-9]+$ ]]; then
 
@@ -479,7 +479,7 @@
 
 				df_failed=1
 
-				echo -e "$(date) | df failed to respond" >> /var/log/dietpi-cloudshell.log
+				echo -e "$(date) | df failed to respond" >> /var/log/nems/cloudshell.log
 
 				break
 
@@ -518,10 +518,10 @@
 					STORAGE_PERCENT[$i]=$C_PERCENT_GRAPH
 
 					#DEBUG John:
-					echo -e "Results success:\n" >> /var/log/dietpi-cloudshell.log
-					echo -e " - Index = $i" >> /var/log/dietpi-cloudshell.log
-					echo -e " - Path  = ${STORAGE_PATH[$i]}" >> /var/log/dietpi-cloudshell.log
-					echo -e " - Total = ${STORAGE_TOTAL[$i]}" >> /var/log/dietpi-cloudshell.log
+					echo -e "Results success:\n" >> /var/log/nems/cloudshell.log
+					echo -e " - Index = $i" >> /var/log/nems/cloudshell.log
+					echo -e " - Path  = ${STORAGE_PATH[$i]}" >> /var/log/nems/cloudshell.log
+					echo -e " - Total = ${STORAGE_TOTAL[$i]}" >> /var/log/nems/cloudshell.log
 
 				else
 
@@ -529,11 +529,11 @@
 					STORAGE_FREE[$i]='Mount not active'
 
 					#DEBUG John:
-					echo -e "$(date) | Mount not found:\n" >> /var/log/dietpi-cloudshell.log
-					echo -e " - Index = $i" >> /var/log/dietpi-cloudshell.log
-					echo -e " - Path  = ${STORAGE_PATH[$i]}\n" >> /var/log/dietpi-cloudshell.log
-					cat "$FP_TEMP" >> /var/log/dietpi-cloudshell.log
-					echo -e "\n" >> /var/log/dietpi-cloudshell.log
+					echo -e "$(date) | Mount not found:\n" >> /var/log/nems/cloudshell.log
+					echo -e " - Index = $i" >> /var/log/nems/cloudshell.log
+					echo -e " - Path  = ${STORAGE_PATH[$i]}\n" >> /var/log/nems/cloudshell.log
+					cat "$FP_TEMP" >> /var/log/nems/cloudshell.log
+					echo -e "\n" >> /var/log/nems/cloudshell.log
 
 				fi
 
@@ -844,18 +844,21 @@
 
 		local aAnimation=(
 			'                          '
-			'i         -              c'
-			'P  i      -            c l'
-			't  P  i   -          c l o'
-			'e  t  P  i-        c l o u'
-			'i  e  t Pi-    c l o u d s'
-			'D  i  etPi-  c l o u d s h'
-			'  D  ietPi-c l o u d s h e'
-			'    DietPi-cl o u d s h e '
-			'    DietPi-clou d s h e l '
-			'    DietPi-clouds h e l l '
-			'    DietPi-cloudshe l l   '
-			'    DietPi-cloudshell     '
+			'                        N '
+			'                      N E '
+			'                    N E M '
+			'                  N E M S '
+			'                N E M S   '
+			'              N E M S   L '
+			'            N E M S   L i '
+			'          N E M S   L i n '
+			'        N E M S   L i n u '
+			'       NE M S   L i n u x '
+			'       NEMS   L i n u x   '
+			'       NEMS L i n u x     '
+			'       NEMS Lin u x       '
+			'       NEMS Linux         '
+			'       NEMS Linux         '
 		)
 
 		local aBar=(
@@ -907,7 +910,7 @@
 
 		#Banner Modes
 		if (( $BANNER_MODE == 0 )); then
-			BANNER_PRINT="NEMS $DIETPI_CLOUDSHELL_VERSION"
+			BANNER_PRINT="NEMS Linux $DIETPI_CLOUDSHELL_VERSION"
 		elif (( $BANNER_MODE == 1 )); then
 			Obtain_DATE_TIME
 			BANNER_PRINT=$DATE_TIME
@@ -1264,7 +1267,7 @@ _EOF_
 		#Launch in blocking mode
 		if (( $output_current_screen == 1 )); then
 
-			/DietPi/dietpi/dietpi-cloudshell 1
+			/usr/local/share/nems/nems-scripts/cloudshell.sh 1
 
 		#Launch as service on main screen
 		else
