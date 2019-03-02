@@ -16,9 +16,10 @@ display_screen() {
 }
 
 # Loading screen
-output="Loading..."
+fortune=$(/usr/games/fortune)
+output="\n\nNEMS Linux is loading..."
 display_screen "NEMS Linux $ver"
-
+sleep 10
 
 while :
 do
