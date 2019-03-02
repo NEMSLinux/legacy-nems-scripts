@@ -73,6 +73,18 @@ display_screen "NEMS Server Overview"
 
 sleep 10
 
+hosts=$(/usr/local/bin/nems-info hosts)
+services=$(/usr/local/bin/nems-info services)
+
+# General overview
+output="\
+Hosts:            $hosts\n\
+Services:         $services\n\
+"
+display_screen "NEMS Linux $ver"
+
+sleep 10
+
 # NEMS Warning Light Current State Screen
   if [[ -e /var/log/nems/nems-tools/currentstate ]]; then
     output=$(cat /var/log/nems/nems-tools/currentstate)

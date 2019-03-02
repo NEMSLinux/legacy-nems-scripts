@@ -28,8 +28,8 @@ def main():
   print result
 
   # Parse the answer into a table (a list of lists)
-  #table = [ line.split(';') for line in answer.split('\n')[:-1] ]
-  #print table
+#  table = [ line.split(';') for line in answer.split('\n')[:-1] ]
+#  print table
 
 if __name__ == '__main__':
   main()
