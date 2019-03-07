@@ -370,9 +370,9 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
     fi
 
   # Allow unauthenticated SMTP
-    if ! grep -q "NEMS00001" /usr/local/nagios/libexec/nems_sendmail_host; then
-      cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/nems_sendmail_* /usr/local/nagios/libexec/
-    fi
+#    if ! grep -q "NEMS00001" /usr/local/nagios/libexec/nems_sendmail_host; then
+#      cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/nems_sendmail_* /usr/local/nagios/libexec/
+#    fi
 
 fi
 
