@@ -7,7 +7,7 @@
   // If you're hoping to see the results, please use: nems-info loadaverage
   if (@$argv[1] != 'cron') exit('Do not run this script manually.' . PHP_EOL);
 
-  $temp = (file_get_contents('/sys/class/thermal/thermal_zone0/temp')/1000);
+  $temp = (floatval(file_get_contents('/sys/class/thermal/thermal_zone0/temp'))/1000);
 
   if ($temp > 0) {
     $thermal = array();
