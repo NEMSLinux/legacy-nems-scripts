@@ -374,6 +374,11 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
       cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/nems_sendmail_* /usr/local/nagios/libexec/
     fi
 
+  # Install NEMS WMIC if missing
+    if [[ ! -e /usr/local/nagios/libexec/check_wmi_plus.pl ]]; then
+      /root/nems/nems-admin/build/052-wmic
+    fi
+
 fi
 
 
