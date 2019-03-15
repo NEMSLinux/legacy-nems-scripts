@@ -9,6 +9,14 @@ else
   ver=$(/usr/local/bin/nems-info nemsver) 
   echo "Running NEMS $ver"
 
+  # Setup a patches.log file if one doesn't exist
+  # This ensures once a patch is run, it doesn't run again
+  # It can also be used to cross-reference the changelogs to
+  # see what patches have been added to your NEMS server.
+  if [[ ! -e /var/log/nems/patches.log ]]; then
+    touch /var/log/nems/patches.log
+  fi
+
   if [[ $COMMAND = "reset" ]]; then
    ver=$(/usr/local/bin/nems-info nemsbranch)
    echo "Forced reset to NEMS $ver"
@@ -220,13 +228,12 @@ vm.swappiness = 10
 
 # Upgrade from NEMS 1.4.1 to NEMS 1.5
   if [[ $ver = "1.4.1" ]]; then
-
+   echo "NEMS 1.5 is available now."
+   echo "Please download it from nemslinux.com"
+   exit
    echo "Upgrading from NEMS $ver to NEMS 1.5"
-
    echo "NEMS 1.5 has not yet been released."
-
    read -r -p "Do you want to install the beta version? [y/N] " beta
-
    echo ""
    if [[ $beta =~ ^([yY][eE][sS]|[yY])$ ]]; then
 
@@ -262,10 +269,26 @@ vm.swappiness = 10
    fi
   fi
 
-  
+  if [[ $ver = "1.5" ]]; then
+    echo ""
+    if ! grep -q "PATCH-000001" /var/log/nems/patches.log; then
+      echo "PATCH-000001 is available."
+      echo "This patch reinstalls all check commands, fixing many issues."
+      echo "It has to recompile each component, which takes a LONG time."
+      echo "It will also cause a LOT of false notifications as the plugins"
+      echo "are rebuilt. Alternatively you can just download a newer NEMS"
+      echo "Linux build for your platform, released after March 15, 2019."
+      read -r -p "Do you want to install this patch? [y/N] " PATCH000001
+      echo ""
+      if [[ $PATCH000001 =~ ^([yY][eE][sS]|[yY])$ ]]; then
+        /root/nems/nems-admin/nems-upgrade/patches/000001 && upgraded=1
+      fi
+    fi
+  fi
+
   # ----------------------------------
   if [[ $upgraded -ne 1 ]]; then
-    echo "There are no rolling upgrades available for NEMS $ver"
+    echo "There are no rolling upgrades to install."
     echo ""
   else
     echo "You must reboot your NEMS Linux server for the changes to take effect."

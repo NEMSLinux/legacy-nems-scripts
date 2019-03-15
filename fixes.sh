@@ -26,6 +26,14 @@
  # By default, do not reboot after update
  reboot=0
 
+ # Setup a patches.log file if one doesn't exist
+ # This ensures once a patch is run, it doesn't run again
+ # It can also be used to cross-reference the changelogs to
+ # see what patches have been added to your NEMS server.
+ if [[ ! -e /var/log/nems/patches.log ]]; then
+   touch /var/log/nems/patches.log
+ fi
+
  # Just in case apt is already doing stuff in the background, hang tight until it completes
  echo "Please wait for apt tasks to complete..."
  while fuser /var/{lib/{dpkg,apt/lists},cache/apt/archives}/lock >/dev/null 2>&1; do sleep 1; done
@@ -372,11 +380,6 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
   # Allow unauthenticated SMTP
     if ! grep -q "NEMS00002" /usr/local/nagios/libexec/nems_sendmail_host; then
       cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/nems_sendmail_* /usr/local/nagios/libexec/
-    fi
-
-  # Install NEMS WMIC if missing
-    if [[ ! -e /usr/local/nagios/libexec/check_wmi_plus.pl ]]; then
-      /root/nems/nems-admin/build/052-wmic
     fi
 
 fi
