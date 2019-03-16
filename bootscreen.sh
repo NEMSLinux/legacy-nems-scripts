@@ -75,11 +75,27 @@ sleep 10
 
 hosts=$(/usr/local/bin/nems-info hosts)
 services=$(/usr/local/bin/nems-info services)
+update=$(/usr/local/bin/nems-info update)
+fixes=$(/usr/local/bin/nems-info fixes)
+
+if [[ $update == 1 ]]; then
+  updating="Running"
+else
+  updating="Idle"
+fi
+
+if [[ $fixes == 1 ]]; then
+  fixing="Running"
+else
+  fixing="Idle"
+fi
 
 # General overview
 output="\
 Hosts:            $hosts\n\
 Services:         $services\n\
+NEMS Update:      $updating\n\
+NEMS Fixes:       $fixing\n\
 "
 display_screen "NEMS Linux $ver"
 
