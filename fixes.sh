@@ -384,6 +384,12 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
 
   # Replace NEMS branding in Cockpit in case an update removes it
     /root/nems/nems-admin/build/171-cockpit
+    /root/nems/nems-admin/build/999-cleanup
+
+  # Install glances command
+  if [[ ! -e /usr/bin/glances ]]; then
+    apt -y install glances
+  fi
 
 fi
 
