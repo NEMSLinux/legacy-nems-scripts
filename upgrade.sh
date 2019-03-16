@@ -271,6 +271,7 @@ vm.swappiness = 10
 
   if [[ $ver = "1.5" ]]; then
     echo ""
+
     if ! grep -q "PATCH-000001" /var/log/nems/patches.log; then
       echo "PATCH-000001 is available."
       echo "This patch reinstalls all check commands, fixing many issues."
@@ -280,10 +281,28 @@ vm.swappiness = 10
       echo "Linux build for your platform, released after March 15, 2019."
       read -r -p "Do you want to install this patch? [y/N] " PATCH000001
       echo ""
-      if [[ $PATCH000001 =~ ^([yY][eE][sS]|[yY])$ ]]; then
-        /root/nems/nems-admin/nems-upgrade/patches/000001 && upgraded=1
-      fi
     fi
+
+    if ! grep -q "PATCH-000003" /var/log/nems/patches.log; then
+      echo "PATCH-000003 is available."
+      echo "This patch changes your networking system to NetworkManager."
+      echo "This allows you to control your network interfaces as per the"
+      echo "instructions found at https://docs.nemslinux.com/networking"
+      echo "*** BACKUP FIRST *** You may lose access to your NEMS server."
+      echo "Alternatively you can just download a newer NEMS Linux build"
+      echo "for your platform, released after March 15, 2019."
+      read -r -p "Do you want to install this patch? [y/N] " PATCH000003
+      echo ""
+    fi
+
+    # Run the selected patches
+    if [[ $PATCH000001 =~ ^([yY][eE][sS]|[yY])$ ]]; then
+      /root/nems/nems-admin/nems-upgrade/patches/000001 && upgraded=1
+    fi
+    if [[ $PATCH000003 =~ ^([yY][eE][sS]|[yY])$ ]]; then
+      /root/nems/nems-admin/nems-upgrade/patches/000003 && upgraded=1
+    fi
+
   fi
 
   # ----------------------------------
