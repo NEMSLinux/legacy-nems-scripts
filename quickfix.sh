@@ -1,13 +1,6 @@
 #!/bin/bash
 allowupdate=`/usr/local/bin/nems-info allowupdate`
 
-  # Wait for 90 seconds if system just booted
-  suptime=$(awk '{print $1}' /proc/uptime)
-  while [[ $suptime < 120 ]]; do
-    echo "System is still loading. Please wait..."
-    sleep 90
-  done
-
   # Just in case nems-quickfix is running
   quickfix=$(/usr/local/bin/nems-info quickfix)
   if [[ $quickfix == 1 ]]; then
@@ -19,6 +12,14 @@ allowupdate=`/usr/local/bin/nems-info allowupdate`
     done
   fi
   echo $$ > /var/run/nems-quickfix.pid
+
+  # Wait for 90 seconds if system just booted
+  suptime=$(awk '{print $1}' /proc/uptime)
+  while [[ $suptime < 120 ]]; do
+    echo "System is still loading. Please wait..."
+    sleep 90
+  done
+
 
 # 1 = Not allowed
 # 2 = Allowed monthly
