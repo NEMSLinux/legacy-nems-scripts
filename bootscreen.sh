@@ -15,8 +15,17 @@ display_screen() {
     --infobox "$output" 20 72
 }
 
+if [[ ! -e /var/log/nems/patches.log ]]; then
+  touch /var/log/nems/patches.log
+fi
+
+while  ! grep -q "PATCH-000002" /var/log/nems/patches.log; do
+  output="\n\nFilesystem is being resized.\n\nNEMS will reboot. Please standby..."
+  display_screen "NEMS Linux $ver"
+  sleep 10
+done
+
 # Loading screen
-fortune=$(/usr/games/fortune)
 output="\n\nNEMS Linux is loading..."
 display_screen "NEMS Linux $ver"
 sleep 10
