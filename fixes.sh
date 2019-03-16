@@ -382,6 +382,9 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
       cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/nems_sendmail_* /usr/local/nagios/libexec/
     fi
 
+  # Replace NEMS branding in Cockpit in case an update removes it
+    /root/nems/nems-admin/build/171-cockpit
+
 fi
 
 
@@ -586,6 +589,9 @@ fi
 if [ $(dpkg-query -W -f='${Status}' memtester 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
   apt-get -y install memtester
 fi
+
+# Final cleanup
+/root/nems/nems-admin/build/999-cleanup
 
 rm -f /var/run/nems-fixes.pid
 
