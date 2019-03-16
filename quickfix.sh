@@ -3,10 +3,10 @@ allowupdate=`/usr/local/bin/nems-info allowupdate`
 
   # Wait for 90 seconds if system just booted
   suptime=$(awk '{print $1}' /proc/uptime)
-  while [[ $suptime < 120 ]]; then
+  while [[ $suptime < 120 ]]; do
     echo "System is still loading. Please wait..."
     sleep 90
-  fi
+  done
 
   # Just in case nems-quickfix is running
   quickfix=$(/usr/local/bin/nems-info quickfix)
