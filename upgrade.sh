@@ -9,6 +9,8 @@ else
   ver=$(/usr/local/bin/nems-info nemsver) 
   echo "Running NEMS $ver"
 
+  platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+
   # Setup a patches.log file if one doesn't exist
   # This ensures once a patch is run, it doesn't run again
   # It can also be used to cross-reference the changelogs to
@@ -283,16 +285,20 @@ vm.swappiness = 10
       echo ""
     fi
 
-    if ! grep -q "PATCH-000003" /var/log/nems/patches.log; then
-      echo "PATCH-000003 is available."
-      echo "This patch changes your networking system to NetworkManager."
-      echo "This allows you to control your network interfaces as per the"
-      echo "instructions found at https://docs.nemslinux.com/networking"
-      echo "*** BACKUP FIRST *** You may lose access to your NEMS server."
-      echo "Alternatively you can just download a newer NEMS Linux build"
-      echo "for your platform, released after March 15, 2019."
-      read -r -p "Do you want to install this patch? [y/N] " PATCH000003
-      echo ""
+    if (( $platform == 11 )); then
+      skip=1 # Means nothing, just skipping untested patch on XU4
+    else
+      if ! grep -q "PATCH-000003" /var/log/nems/patches.log; then
+        echo "PATCH-000003 is available."
+        echo "This patch changes your networking system to NetworkManager."
+        echo "This allows you to control your network interfaces as per the"
+        echo "instructions found at https://docs.nemslinux.com/networking"
+        echo "*** BACKUP FIRST *** You may lose access to your NEMS server."
+        echo "Alternatively you can just download a newer NEMS Linux build"
+        echo "for your platform, released after March 15, 2019."
+        read -r -p "Do you want to install this patch? [y/N] " PATCH000003
+        echo ""
+      fi
     fi
 
     # Run the selected patches
