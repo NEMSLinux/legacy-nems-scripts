@@ -1,5 +1,10 @@
 #!/usr/bin/php
 <?php
+  echo "Clearing NetworkManager config"
+  echo ""
+  echo "Your connection will be reset."
+  echo "If you lose connection, check"
+  echo "your DHCP lease to reconnect."
   # Find out which network interfaces are configured
   $uuid = array();
   $conf = preg_split('/\n+/', trim(shell_exec('nmcli con')));
@@ -24,4 +29,5 @@
       shell_exec('nmcli con delete uuid ' . $thisuuid);
     }
   }
+  echo "Done."
 ?>
