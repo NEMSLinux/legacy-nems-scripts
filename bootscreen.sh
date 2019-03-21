@@ -38,6 +38,15 @@ veravail=$(/usr/local/bin/nems-info nemsveravail)
 users=$(/usr/local/bin/nems-info users)
 cpupercent=$(/usr/local/bin/nems-info cpupercent)
 diskusage=$(/usr/local/bin/nems-info diskusage)
+temperatureF=$(/usr/local/bin/nems-info temperature)
+# There's no way a CPU with a reported temp would be 0, so assume unknown
+if (( $temperatureF == 0 )); then
+  temperatureC=0;
+  temps=''
+else
+  temperatureC=$(echo "scale=1;(5/9)*($temperatureF-32)"|bc)
+  temps="\nCPU Temperature:  $temperatureF°F / $temperatureC°C"
+fi
 
 online=$(/usr/local/bin/nems-info online)
   if [[ $online == 1 ]]; then
@@ -58,7 +67,7 @@ if [[ $init == "0" ]]; then
   output_init="Your NEMS server is not yet initialized. Please run: sudo nems-init"
 fi
 
-if (( $ver < $veravail )); then
+if (( $(echo "$veravail > $ver" |bc -l) )); then
   current="- $veravail is Available."
 else
   current=""
@@ -69,7 +78,7 @@ Server Alias:     $alias\n\
 Platform:         $platform_name\n\
 Hostname:         $host.local\n\
 IP Address:       $ip\n\
-CPU Usage:        $(LC_ALL=C /usr/bin/printf '%.*f\n' 1 $cpupercent)%\n\
+CPU Usage:        $(LC_ALL=C /usr/bin/printf '%.*f\n' 1 $cpupercent)% $temps\n\
 Disk Usage:       $(LC_ALL=C /usr/bin/printf '%.*f\n' 1 $diskusage)%\n\
 Active Sessions:  $users\n\
 Internet Status:  $internet\n\
