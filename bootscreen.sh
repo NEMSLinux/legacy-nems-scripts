@@ -69,8 +69,8 @@ Server Alias:     $alias\n\
 Platform:         $platform_name\n\
 Hostname:         $host.local\n\
 IP Address:       $ip\n\
-CPU Usage:        $cpupercent%\n\
-Disk Usage:       $diskusage%\n\
+CPU Usage:        $(printf '%.*f\n' 1 $cpupercent)%\n\
+Disk Usage:       $(printf '%.*f\n' 1 $diskusage)%\n\
 Active Sessions:  $users\n\
 Internet Status:  $internet\n\
 \n$output_init\n\
@@ -125,3 +125,4 @@ sleep 10
   fi
 
 done
+
