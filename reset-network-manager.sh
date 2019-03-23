@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-exit
+exit();
   echo 'Clearing NetworkManager config' . PHP_EOL . PHP_EOL . 'Your connection will be reset.' . PHP_EOL . 'If you lose connection, check' . PHP_EOL . 'your DHCP lease to reconnect.' . PHP_EOL;
   # Find out which network interfaces are configured
   $uuid = array();
