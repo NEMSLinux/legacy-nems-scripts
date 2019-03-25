@@ -7,6 +7,15 @@ if [[ $nemsinit == 0 ]]; then
   exit
 fi
 
+if [[ ! -f /usr/bin/sysbench ]]; then
+  apt -y install sysbench
+fi
+
+if [[ ! -f /usr/bin/sysbench ]]; then
+  echo "sysbench is not yet available on this build."
+  exit
+fi
+
 # Set a runtime
 if [[ -f /var/log/nems/benchmarks/runtime ]]; then
   lastruntime=`cat /var/log/nems/benchmarks/runtime`
@@ -26,10 +35,6 @@ plannedend=$(($start + $thisruntime))
 /usr/bin/printf "[%lu] SCHEDULE_SVC_DOWNTIME;NEMS;Current Load;$start;$plannedend;0;0;$thisruntime;NEMS Linux;Weekly Benchmarks Running\n" $start > /usr/local/nagios/var/rw/nagios.cmd
 
 echo "NEMS System Benchmark... Please Wait (may take a while)."
-
-if [[ ! -f /usr/bin/sysbench ]]; then
-  apt -y install sysbench
-fi
 
 echo "NEMS System Benchmark" > /tmp/nems-benchmark.log
 date >> /tmp/nems-benchmark.log

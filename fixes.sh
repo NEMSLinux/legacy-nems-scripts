@@ -391,6 +391,21 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
     apt -y install glances
   fi
 
+  # Rock64 - mark filesystem as resized if greater than 7.7 GB
+  # This is due to the way the resize script works on that board. Should move it to rc.local.
+  if (( $platform >= 45 )) && (( $platform <= 47 )); then
+    size=$(df --output=target,size /root | awk ' NR==2 { print $2 } ')
+    if (( $size > 7700000 )); then
+      # Log that patch (resize) has been applied to this system
+      # Activates features such as bootscreen.sh
+      if ! grep -q "PATCH-000002" /var/log/nems/patches.log; then
+        echo "PATCH-000002" >> /var/log/nems/patches.log
+      fi
+    fi
+  fi
+
+
+
 fi
 
 
