@@ -98,6 +98,37 @@ switch($argv[1]) {
     echo json_encode($wifi);
   break;
 
+  case 8: // root device
+    $fulldev=shell_exec("df /root | awk '/^\/dev/ {print $1}'");
+    $tmp = explode('p',$fulldev);
+    if (is_array($tmp)) {
+      end($tmp);
+      $lastkey = key($tmp);
+      reset($tmp);
+      foreach ($tmp as $key => $value) {
+        if ($key != $lastkey) {
+          echo trim($value);
+          if (count($tmp) > 2) echo 'p'; // actual device name contains a p in the name
+        }
+      }
+    }
+  break;
+
+  case 9: // root partition on root device
+    $fulldev=shell_exec("df /root | awk '/^\/dev/ {print $1}'");
+    $tmp = explode('p',$fulldev);
+    if (is_array($tmp)) {
+      end($tmp);
+      $partkey = key($tmp);
+      reset($tmp);
+      foreach ($tmp as $key => $value) {
+        if ($key == $partkey) {
+          echo trim($value);
+        }
+      }
+    }
+  break;
+
 }
 
 

@@ -97,6 +97,14 @@ elif [[ $COMMAND == "hwid" ]]; then
     /sbin/ifconfig enp0s3 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
   fi
 
+elif [[ $COMMAND == "rootdev" ]]; then
+# output json response of detected wifi networks
+  /usr/local/share/nems/nems-scripts/info2.sh 8
+
+elif [[ $COMMAND == "rootpart" ]]; then
+# output json response of detected wifi networks
+  /usr/local/share/nems/nems-scripts/info2.sh 9
+
 elif [[ $COMMAND == "wifi" ]]; then
 # output json response of detected wifi networks
   /usr/local/share/nems/nems-scripts/info2.sh 7
