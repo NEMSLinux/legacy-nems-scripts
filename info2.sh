@@ -107,6 +107,7 @@ switch($argv[1]) {
       reset($tmp);
       foreach ($tmp as $key => $value) {
         if ($key != $lastkey) {
+          $value = str_replace('/dev/','',$value);
           echo trim($value);
           if (count($tmp) > 2) echo 'p'; // actual device name contains a p in the name
         }
