@@ -7,7 +7,14 @@ if [[ $nemsinit == 0 ]]; then
   exit
 fi
 
+# First attempt: install from included repos
 if [[ ! -f /usr/bin/sysbench ]]; then
+  apt -y install sysbench
+fi
+
+# Second attempt: install from developer repo
+if [[ ! -f /usr/bin/sysbench ]]; then
+  curl -s https://packagecloud.io/install/repositories/akopytov/sysbench/script.deb.sh | sudo bash
   apt -y install sysbench
 fi
 
