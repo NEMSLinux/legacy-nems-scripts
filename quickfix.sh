@@ -20,6 +20,12 @@ allowupdate=`/usr/local/bin/nems-info allowupdate`
     sleep 90
   done
 
+  if [[ -f /var/www/nconf/temp/generate.lock ]]; then
+    printf "Resetting NEMS NConf generate.lock..."
+    rm -f /var/www/nconf/temp/generate.lock
+    sleep 1
+    echo " done."
+  fi
 
 # 1 = Not allowed
 # 2 = Allowed monthly
