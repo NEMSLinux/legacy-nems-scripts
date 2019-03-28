@@ -301,12 +301,26 @@ vm.swappiness = 10
       fi
     fi
 
+    if ! grep -q "PATCH-000004" /var/log/nems/patches.log; then
+      echo "PATCH-000004 is available."
+      echo "This patch upgrades the Internet speedtest check command so you"
+      echo "can have it automatically use the best available server rather"
+      echo "than the one specified in the checkcommand's arg."
+      echo "Alternatively you can just download a newer NEMS Linux build for"
+      echo "your platform, released after March 28, 2019."
+      read -r -p "Do you want to install this patch? [y/N] " PATCH000004
+      echo ""
+    fi
+
     # Run the selected patches
     if [[ $PATCH000001 =~ ^([yY][eE][sS]|[yY])$ ]]; then
       /root/nems/nems-admin/nems-upgrade/patches/000001 && upgraded=1
     fi
     if [[ $PATCH000003 =~ ^([yY][eE][sS]|[yY])$ ]]; then
       /root/nems/nems-admin/nems-upgrade/patches/000003 && upgraded=1
+    fi
+    if [[ $PATCH000004 =~ ^([yY][eE][sS]|[yY])$ ]]; then
+      /root/nems/nems-admin/nems-upgrade/patches/000004 && upgraded=1
     fi
 
   fi
