@@ -27,6 +27,25 @@ allowupdate=`/usr/local/bin/nems-info allowupdate`
     echo " done."
   fi
 
+  printf "Setting Internet speedtest server..."
+  # Detect current first since this will create the conf if missing
+  speedtestcurrent=`/usr/local/bin/nems-info speedtest`
+  # Detect the best server
+  speedtestbest=`/usr/local/bin/nems-info speedtest best`
+  # Overwrite the conf
+  if (( $speedtestcurrent != $speedtestbest )); then
+    if (( $speedtestbest > 0 )); then
+      /bin/sed -i~ '/speedtestserver/d' /usr/local/share/nems/nems.conf
+      echo "speedtestserver=$speedtestbest" >> /usr/local/share/nems/nems.conf
+      echo " done."
+    else
+      echo " couldn't detect server."
+    fi
+  else
+    echo " no change."
+  fi
+
+
 # 1 = Not allowed
 # 2 = Allowed monthly
 # 3 = Allowed semi-weekly
