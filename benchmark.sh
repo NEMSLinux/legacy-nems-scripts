@@ -3,25 +3,37 @@ start=`date +%s`
 
 nemsinit=`/usr/local/bin/nems-info init`
 if [[ $nemsinit == 0 ]]; then
-  echo "NEMS hasn't been initialized. Benchmark rejected."
+  echo "NEMS hasn't been initialized."
   exit
 fi
 
-# First attempt: install from included repos
-if [[ ! -f /usr/bin/sysbench ]]; then
-  apt -y install sysbench
-fi
+# Install sysbench if it is not found
 
-# Second attempt: install from developer repo
-if [[ ! -f /usr/bin/sysbench ]]; then
-  curl -s https://packagecloud.io/install/repositories/akopytov/sysbench/script.deb.sh | sudo bash
-  apt -y install sysbench
-fi
+  # First attempt: install from included repos
+  if [[ ! -f /usr/bin/sysbench ]]; then
+    apt -y install sysbench
 
-if [[ ! -f /usr/bin/sysbench ]]; then
-  echo "sysbench is not yet available on this build."
-  exit
-fi
+    # Didn't install from default repos
+    # Second attempt: install from developer repo
+    if [[ ! -f /usr/bin/sysbench ]]; then
+      curl -s https://packagecloud.io/install/repositories/akopytov/sysbench/script.deb.sh | sudo bash
+      apt -y install sysbench
+    fi
+
+    # Still no success, so abort
+    if [[ ! -f /usr/bin/sysbench ]]; then
+      # First, clean things up from our attempt
+      if [[ -f /etc/apt/sources.list.d/akopytov_sysbench.list ]]; then
+        rm /etc/apt/sources.list.d/akopytov_sysbench.list
+        apt update
+      fi
+      # Now, report the issue to screen and exit
+      echo "sysbench is not yet available on this build."
+      exit
+    fi
+  fi
+
+# Good to proceed, begin benchmark
 
 # Set a runtime
 if [[ -f /var/log/nems/benchmarks/runtime ]]; then
