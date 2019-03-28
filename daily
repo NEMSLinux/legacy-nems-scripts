@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# These are initiated by nems-quickfix (daily cron)
+# However they are NOT system updates, so they ignore the update settings
+# By contrast, these are just local cleanup operations not involving updates
+
+echo "Running cleanup tasks..."
+
+  if [[ -f /var/www/nconf/temp/generate.lock ]]; then
+    printf "Resetting NEMS NConf generate.lock..."
+    rm -f /var/www/nconf/temp/generate.lock
+    sleep 1
+    echo " done."
+  fi
+
+  printf "Setting Internet speedtest server..."
+  # Detect current first since this will create the conf if missing
+  speedtestcurrent=`/usr/local/bin/nems-info speedtest`
+  # Detect the best server
+  speedtestbest=`/usr/local/bin/nems-info speedtest best`
+  # Overwrite the conf
+  if (( $speedtestcurrent != $speedtestbest )); then
+    if (( $speedtestbest > 0 )); then
+      /bin/sed -i~ '/speedtestserver/d' /usr/local/share/nems/nems.conf
+      echo "speedtestserver=$speedtestbest" >> /usr/local/share/nems/nems.conf
+      echo " done."
+    else
+      echo " couldn't detect server."
+    fi
+  else
+    echo " no change."
+  fi
+

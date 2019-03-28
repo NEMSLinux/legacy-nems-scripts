@@ -15,37 +15,12 @@ allowupdate=`/usr/local/bin/nems-info allowupdate`
 
   # Wait for 90 seconds if system just booted
   suptime=$(awk '{print $1}' /proc/uptime)
+  # remove decimal place
   suptime=${suptime%.*}
   while (( $suptime < 120 )); do
     echo "System is still loading. Please wait..."
     sleep 90
   done
-
-  if [[ -f /var/www/nconf/temp/generate.lock ]]; then
-    printf "Resetting NEMS NConf generate.lock..."
-    rm -f /var/www/nconf/temp/generate.lock
-    sleep 1
-    echo " done."
-  fi
-
-  printf "Setting Internet speedtest server..."
-  # Detect current first since this will create the conf if missing
-  speedtestcurrent=`/usr/local/bin/nems-info speedtest`
-  # Detect the best server
-  speedtestbest=`/usr/local/bin/nems-info speedtest best`
-  # Overwrite the conf
-  if (( $speedtestcurrent != $speedtestbest )); then
-    if (( $speedtestbest > 0 )); then
-      /bin/sed -i~ '/speedtestserver/d' /usr/local/share/nems/nems.conf
-      echo "speedtestserver=$speedtestbest" >> /usr/local/share/nems/nems.conf
-      echo " done."
-    else
-      echo " couldn't detect server."
-    fi
-  else
-    echo " no change."
-  fi
-
 
 # 1 = Not allowed
 # 2 = Allowed monthly
@@ -102,5 +77,8 @@ if [[ $proceed == 1 ]]; then
 else
   echo "Update Skipped based on settings in NEMS SST."
 fi
+
+# Run tasks which need to run daily
+/usr/local/share/nems/nems-scripts/daily
 
 rm -f /var/run/nems-quickfix.pid
