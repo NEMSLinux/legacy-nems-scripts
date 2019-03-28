@@ -156,6 +156,21 @@ switch($argv[1]) {
       // best = most local server as detected by NEMS
       // switch = the passed server number on the check_command's arg
       if ($speedtestwhich == 0) { echo 'best'; } else { echo 'switch'; }
+    } elseif ($VARIABLE == 'location') {
+      $server = shell_exec('/usr/local/bin/nems-info speedtest');
+      exec('/usr/local/share/nems/nems-scripts/speedtest --list',$servernum_tmp);
+      if (is_array($servernum_tmp)) {
+        foreach ($servernum_tmp as $line) {
+          $tmp = explode(')',$line);
+          if (intval($tmp[0]) == $server) {
+            $speedtestservers[] = array(
+              'location'=>trim($tmp[1]) . ')',
+            );
+            break; // we only need one
+          }
+        }
+      }
+      echo $speedtestservers[0]['location'];
     } else {
       $speedtestserver = intval(trim(shell_exec("cat /usr/local/share/nems/nems.conf | grep speedtestserver |  printf '%s' $(cut -n -d '=' -f 2)")));
       if ($speedtestserver > 0) {
