@@ -101,6 +101,9 @@ elif [[ $COMMAND == "speedtest" ]]; then
 # output json response of detected wifi networks
   /usr/local/share/nems/nems-scripts/info2.sh 10 $VARIABLE
 
+elif [[ $COMMAND == "rootfulldev" ]]; then
+  /bin/mount | /bin/sed -n 's|^/dev/\(.*\) on / .*|\1|p'
+
 elif [[ $COMMAND == "rootdev" ]]; then
 # output json response of detected wifi networks
   /usr/local/share/nems/nems-scripts/info2.sh 8

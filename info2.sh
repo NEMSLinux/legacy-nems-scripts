@@ -105,7 +105,8 @@ switch($argv[1]) {
   break;
 
   case 8: // root device
-    $fulldev=shell_exec("df /root | awk '/^\/dev/ {print $1}'");
+//    $fulldev=shell_exec("df /root | awk '/^\/dev/ {print $1}'");
+    $fulldev=trim(shell_exec("/usr/local/bin/nems-info rootfulldev"));
     $tmp = explode('p',$fulldev);
     if (is_array($tmp)) {
       end($tmp);
@@ -122,7 +123,8 @@ switch($argv[1]) {
   break;
 
   case 9: // root partition on root device
-    $fulldev=shell_exec("df /root | awk '/^\/dev/ {print $1}'");
+//    $fulldev=shell_exec("df /root | awk '/^\/dev/ {print $1}'");
+    $fulldev=trim(shell_exec("/usr/local/bin/nems-info rootfulldev"));
     $tmp = explode('p',$fulldev);
     if (is_array($tmp)) {
       end($tmp);
