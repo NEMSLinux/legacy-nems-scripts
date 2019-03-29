@@ -20,6 +20,8 @@ allowupdate=`/usr/local/bin/nems-info allowupdate`
   while (( $suptime < 120 )); do
     echo "System is still loading. Please wait..."
     sleep 90
+    suptime=$(awk '{print $1}' /proc/uptime)
+    suptime=${suptime%.*}
   done
 
 # 1 = Not allowed
