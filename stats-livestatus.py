@@ -23,8 +23,10 @@ def main():
 
   # Now read the answer
   answer = s.recv(100000000)
-
   result = answer.count('\n')
+
+  # Subtract one to accommodate the header output on line 1
+  result = (result-1)
   print result
 
   # Parse the answer into a table (a list of lists)
