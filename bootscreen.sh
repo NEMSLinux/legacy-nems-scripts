@@ -38,13 +38,13 @@ veravail=$(/usr/local/bin/nems-info nemsveravail)
 users=$(/usr/local/bin/nems-info users)
 cpupercent=$(/usr/local/bin/nems-info cpupercent)
 diskusage=$(/usr/local/bin/nems-info diskusage)
-temperatureF=$(/usr/local/bin/nems-info temperature)
+temperatureC=$(/usr/local/bin/nems-info temperature)
 # There's no way a CPU with a reported temp would be 0, so assume unknown
-if (( $temperatureF == 0 )); then
-  temperatureC=0;
+if (( $temperatureC == 0 )); then
+  temperatureF=0;
   temps=''
 else
-  temperatureC=$(echo "scale=1;(5/9)*($temperatureF-32)"|bc)
+  temperatureF=$(echo "scale=1;((9/5) * $temperatureC) + 32" |bc)
   temps="\nCPU Temperature:  $temperatureF°F / $temperatureC°C"
 fi
 
