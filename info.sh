@@ -9,6 +9,25 @@ export VARIABLE=$2
 
 me=`basename "$0"`
 
+# Some functions
+
+  function SecondsToDaysHoursMinutesSeconds() {
+    local seconds=$1
+    local days=$(($seconds/86400))
+    seconds=$(($seconds-($days*86400) ))
+    local hours=$(($seconds/3600))
+    seconds=$((seconds-($hours*3600) ))
+    local minutes=$(($seconds/60))
+    seconds=$(( $seconds-($minutes*60) ))
+    echo -n "${days}D ${hours}H ${minutes}M ${seconds}S"
+  }
+
+  function FileAge() {
+    echo $((`date +%s` - `stat -c %Z $1`))
+  }
+
+# End of functions
+
 # Output local IP address
 if [[ $COMMAND == "ip" ]]; then
   # Work with any NIC
@@ -33,6 +52,12 @@ elif [[ $COMMAND == "nic" ]]; then
   interface=`ip route get "$host_ip" | grep -Po '(?<=(dev )).*(?= src| proto)' | cut -f 1 -d " "`
   echo $interface
 
+elif [[ $COMMAND == "fileage" ]]; then
+  if [[ -e $VARIABLE ]]; then
+     echo $(SecondsToDaysHoursMinutesSeconds $(FileAge $VARIABLE) )
+  else
+    echo "ERROR: File not found $VARIABLE"
+  fi
 elif [[ $COMMAND == "checkport" ]]; then
   response=`/bin/nc -v -z -w2 127.0.0.1 $VARIABLE 2>&1`
   if echo "$response" | grep -q 'refused'; then

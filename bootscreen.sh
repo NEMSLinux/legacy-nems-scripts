@@ -97,13 +97,15 @@ update=$(/usr/local/bin/nems-info update)
 fixes=$(/usr/local/bin/nems-info fixes)
 
 if [[ $update == 1 ]]; then
-  updating="Running"
+  timertmp=$(/usr/local/bin/nems-info fileage /var/run/nems-update.pid)
+  updating="Running ($timertmp)"
 else
   updating="Idle"
 fi
 
 if [[ $fixes == 1 ]]; then
-  fixing="Running"
+  timertmp=$(/usr/local/bin/nems-info fileage /var/run/nems-fixes.pid)
+  fixing="Running ($timertmp)"
 else
   fixing="Idle"
 fi
