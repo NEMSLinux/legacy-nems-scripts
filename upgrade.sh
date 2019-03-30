@@ -312,6 +312,18 @@ vm.swappiness = 10
       echo ""
     fi
 
+    if ! grep -q "PATCH-000005" /var/log/nems/patches.log; then
+      echo "PATCH-000005 is available."
+      echo "This patch upgrades the thermal testing capabilities of"
+      echo "check_sbc_temperature to use the improved thermal data from"
+      echo "nems-info, which fixes some issues with boards that post thermal"
+      echo "data in Celsius rather than millidegree Celsius."
+      echo "Alternatively you can just download a newer NEMS Linux build for"
+      echo "your platform, released after March 29, 2019."
+      read -r -p "Do you want to install this patch? [y/N] " PATCH000005
+      echo ""
+    fi
+
     # Run the selected patches
     if [[ $PATCH000001 =~ ^([yY][eE][sS]|[yY])$ ]]; then
       /root/nems/nems-admin/nems-upgrade/patches/000001 && upgraded=1
@@ -321,6 +333,9 @@ vm.swappiness = 10
     fi
     if [[ $PATCH000004 =~ ^([yY][eE][sS]|[yY])$ ]]; then
       /root/nems/nems-admin/nems-upgrade/patches/000004 && upgraded=1
+    fi
+    if [[ $PATCH000005 =~ ^([yY][eE][sS]|[yY])$ ]]; then
+      /root/nems/nems-admin/nems-upgrade/patches/000005 && upgraded=1
     fi
 
   fi
