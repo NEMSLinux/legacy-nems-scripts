@@ -401,6 +401,12 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
       fi
     fi
 
+  # enable rc.local service if not enabled (ie., Rock64)
+    if [[ ! -e /etc/systemd/system/rc-local.service ]]; then
+      /root/nems/nems-admin/build/013-rc.local
+      /root/nems/nems-admin/build/999-cleanup
+    fi
+
 
 
 fi
