@@ -6,11 +6,12 @@
   fi
 
 	#////////////////////////////////////
-	# hw_model from DietPi
 	#
-	#////////////////////////////////////
-	# Created by Daniel Knight / daniel.knight@dietpi.com / dietpi.com
+	# Originally Created by Daniel Knight
+	# daniel.knight@dietpi.com / dietpi.com
+	#
         # Adapted for NEMS by Robbie Ferguson
+	#
 	#////////////////////////////////////
 	#
 	# Info:
@@ -36,6 +37,8 @@
 	# HW_MODEL 60 NanoPi Neo
 	# HW_MODEL 51 BananaPi Pro (Lemaker)
 	# HW_MODEL 50 BananaPi M2+ (sinovoip)
+	# HW_MODEL 49 RockPro64 4GB
+	# HW_MODEL 48 RockPro64 2GB
 	# HW_MODEL 47 Rock64 4GB
 	# HW_MODEL 46 Rock64 2GB
 	# HW_MODEL 45 Rock64 1GB
@@ -516,6 +519,24 @@
 
                                         HW_MODEL_DESCRIPTION='Rock64 1GB'
                                         HW_MODEL=45
+
+                                fi
+				
+			#RockPro64
+			elif  (( $HW_MODEL >= 48 && $HW_MODEL <= 49 )); then
+
+				IMAGE_ADDITIONAL_CREDITS='Longsleep, Ayufan'
+
+                                MEMTOTAL=$(free | awk '/^Mem:/{print $2}')
+                                if (( $MEMTOTAL > 4000000 )); then
+
+                                        HW_MODEL_DESCRIPTION='RockPro64 4GB'
+                                        HW_MODEL=49
+
+                                else
+
+                                        HW_MODEL_DESCRIPTION='RockPro64 2GB'
+                                        HW_MODEL=48
 
                                 fi
 
