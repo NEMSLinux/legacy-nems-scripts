@@ -4,6 +4,11 @@
 ver=$(/usr/local/bin/nems-info nemsver)
 host=$(/bin/hostname)
 
+
+# Don't allow TTY to go blank
+/usr/bin/setterm -blank 0
+# See the blank timout (seconds): cat /sys/module/kernel/parameters/consoleblank
+
 display_screen() {
   if [[ $2 == 'warning' ]]; then
     conf=/usr/local/share/nems/nems-scripts/settings/dialog.warning
