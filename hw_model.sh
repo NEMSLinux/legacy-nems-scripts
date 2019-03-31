@@ -57,7 +57,8 @@
 	# HW_MODEL 30 OrangePi PC
 	# HW_MODEL 21 x86_64 native (PC)
 	# HW_MODEL 20 VM x64 (VMware VirtualBox)
-	# HW_MODEL 15 ODROID-N2
+	# HW_MODEL 16 ODROID-N2 (4 GB)
+	# HW_MODEL 15 ODROID-N2 (2 GB)
 	# HW_MODEL 13 oDroid U3
 	# HW_MODEL 12 oDroid C2
 	# HW_MODEL 11 oDroid XU3/XU4/HC1/HC2
@@ -656,9 +657,17 @@
 
 			#ODROID-N2
 			elif (( $HW_MODEL == 15 )); then
+				if (( $MEMTOTAL > 3800000 )); then
 
-				HW_MODEL_DESCRIPTION='ODROID-N2'
-				IMAGE_ADDITIONAL_CREDITS='Meveric'
+					HW_MODEL_DESCRIPTION='ODROID-N2 (4 GB)'
+					HW_MODEL=16
+					
+				else
+				
+					HW_MODEL_DESCRIPTION='ODROID-N2 (2 GB)'
+					IMAGE_ADDITIONAL_CREDITS='Meveric'
+					
+				fi
 
 			# Logic Supply CL100
 			elif (( $HW_MODEL >= 98010 && $HW_MODEL <= 98019 )); then
