@@ -45,7 +45,7 @@ cpupercent=$(/usr/local/bin/nems-info cpupercent)
 diskusage=$(/usr/local/bin/nems-info diskusage)
 temperatureC=$(/usr/local/bin/nems-info temperature)
 # There's no way a CPU with a reported temp would be 0, so assume unknown
-if (( $temperatureC == 0 )); then
+if (( ${temperatureC%.*} == 0 )); then
   temperatureF=0;
   temps=''
 else
