@@ -657,6 +657,8 @@
 
 			#ODROID-N2
 			elif (( $HW_MODEL == 15 )); then
+
+				MEMTOTAL=$(free | awk '/^Mem:/{print $2}')
 				if (( $MEMTOTAL > 3800000 )); then
 
 					HW_MODEL_DESCRIPTION='ODROID-N2 (4 GB)'
