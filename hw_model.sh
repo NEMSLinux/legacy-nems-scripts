@@ -57,6 +57,7 @@
 	# HW_MODEL 30 OrangePi PC
 	# HW_MODEL 21 x86_64 native (PC)
 	# HW_MODEL 20 VM x64 (VMware VirtualBox)
+	# HW_MODEL 15 ODROID-N2
 	# HW_MODEL 13 oDroid U3
 	# HW_MODEL 12 oDroid C2
 	# HW_MODEL 11 oDroid XU3/XU4/HC1/HC2
@@ -651,6 +652,12 @@
 			elif (( $HW_MODEL == 11 )); then
 
 				HW_MODEL_DESCRIPTION='ODROID XU3/XU4/HC1/HC2'
+				IMAGE_ADDITIONAL_CREDITS='Meveric'
+
+			#ODROID-N2
+			elif (( $HW_MODEL == 15 )); then
+
+				HW_MODEL_DESCRIPTION='ODROID-N2'
 				IMAGE_ADDITIONAL_CREDITS='Meveric'
 
 			# Logic Supply CL100
