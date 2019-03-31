@@ -528,7 +528,7 @@
 				IMAGE_ADDITIONAL_CREDITS='Longsleep, Ayufan'
 
                                 MEMTOTAL=$(free | awk '/^Mem:/{print $2}')
-                                if (( $MEMTOTAL > 39000000 )); then
+                                if (( $MEMTOTAL > 3900000 )); then
 
                                         HW_MODEL_DESCRIPTION='RockPro64 4GB'
                                         HW_MODEL=49
