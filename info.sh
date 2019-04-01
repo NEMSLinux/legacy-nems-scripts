@@ -120,6 +120,9 @@ elif [[ $COMMAND == "hwid" ]]; then
   # Virtual Appliance
   elif (( $platform >= 20 )); then 
     /sbin/ifconfig enp0s3 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
+  # ODROID-N2
+  elif (( $platform >= 15 )) && (( $platform <= 16 )); then
+    cat /proc/cpuinfo | grep Serial |  printf '%s' $(cut -n -d ' ' -f 2) | md5sum | cut -d"-" -f1 -
   fi
 
 elif [[ $COMMAND == "speedtest" ]]; then
