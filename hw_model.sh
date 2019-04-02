@@ -28,6 +28,7 @@
 	# HW_MODEL 90 A20-OLinuXino-MICRO
 	# HW_MODEL 80 Cubieboard 3
 	# HW_MODEL 70 Sparky SBC
+	# HW_MODEL 67 NanoPi M4
 	# HW_MODEL 66 NanoPi M1 Plus
 	# HW_MODEL 65 NanoPi NEO 2
 	# HW_MODEL 64 NanoPi NEO Air
@@ -436,6 +437,14 @@
 			elif (( $HW_MODEL == 70 )); then
 
 				HW_MODEL_DESCRIPTION='Sparky SBC'
+
+
+			#NanoPi M4
+			elif (( $HW_MODEL == 67 )); then
+
+				HW_MODEL_DESCRIPTION='NanoPi M4'
+				IMAGE_ADDITIONAL_CREDITS='ARMbian'
+				HW_CPUID=1
 
 			#NanoPi M1 Plus
 			elif (( $HW_MODEL == 66 )); then
