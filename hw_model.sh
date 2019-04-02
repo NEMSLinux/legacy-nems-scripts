@@ -449,12 +449,14 @@
 					HW_MODEL_DESCRIPTION='NanoPi M4 (4 GB)'
 					IMAGE_ADDITIONAL_CREDITS='ARMbian'
 					HW_CPUID=1
+                                        HW_MODEL=68
 
                                 else
 
 					HW_MODEL_DESCRIPTION='NanoPi M4 (2 GB)'
 					IMAGE_ADDITIONAL_CREDITS='ARMbian'
 					HW_CPUID=1
+                                        HW_MODEL=67
 
 				fi
 
