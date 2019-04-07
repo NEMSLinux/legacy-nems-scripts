@@ -16,7 +16,12 @@ if (isset($argv[2]) && strlen($argv[2]) > 0) {
 switch($argv[1]) {
 
   case 1: // temperature
-    $temp = (floatval(file_get_contents('/sys/class/thermal/thermal_zone0/temp')));
+    if (!file_exists('/sys/class/thermal/thermal_zone0/temp')) {
+      echo 0;
+      break;
+    }
+    $temp = file_get_contents('/sys/class/thermal/thermal_zone0/temp');
+    $temp = (floatval($temp));
     if ($temp > 1000) $temp = ($temp/1000); // this board logs microunits
     if ($temp > 0) {
       echo trim($temp) . PHP_EOL;

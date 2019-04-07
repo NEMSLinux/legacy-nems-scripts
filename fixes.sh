@@ -407,6 +407,11 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
       /root/nems/nems-admin/build/999-cleanup
     fi
 
+  # Patch check_rpi_temperature to include error handling for when the thermal sensor doesn't exist (ie., VM)
+    if ! grep -q "PATCH-000006" /var/log/nems/patches.log; then
+      cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/check_rpi_temperature /usr/lib/nagios/plugins/
+      echo "PATCH-000006" >> /var/log/nems/patches.log
+    fi
 
 
 fi

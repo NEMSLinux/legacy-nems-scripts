@@ -324,6 +324,7 @@ vm.swappiness = 10
       echo ""
     fi
 
+
     # Run the selected patches
     if [[ $PATCH000001 =~ ^([yY][eE][sS]|[yY])$ ]]; then
       /root/nems/nems-admin/nems-upgrade/patches/000001 && upgraded=1
