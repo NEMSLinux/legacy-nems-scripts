@@ -24,7 +24,7 @@
 	#
 	# - Line1 -
 	# HW_MODEL 110 RoseapplePi
-	# HW_MODEL 100 Asus Tinker Board
+	# HW_MODEL 100 ASUS Tinker Board
 	# HW_MODEL 90 A20-OLinuXino-MICRO
 	# HW_MODEL 80 Cubieboard 3
 	# HW_MODEL 70 Sparky SBC
@@ -417,10 +417,10 @@
 				HW_MODEL_DESCRIPTION='RoseapplePi'
 				IMAGE_ADDITIONAL_CREDITS='ARMbian'
 
-			#Asus Tinker Board
+			#ASUS Tinker Board
 			elif (( $HW_MODEL == 100 )); then
 
-				HW_MODEL_DESCRIPTION='Asus Tinker Board'
+				HW_MODEL_DESCRIPTION='ASUS Tinker Board'
 
 			#A20-OLinuXino-MICRO
 			elif (( $HW_MODEL == 90 )); then
