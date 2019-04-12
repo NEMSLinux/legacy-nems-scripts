@@ -414,10 +414,10 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
     fi
 
   # Add some error handling if nems-mailtest was run as a non-root user
-    if ! grep -q "if (!file_put_contents('/var/log/nagios/nagios.log'" /usr/local/nagios/libexec/nems_sendmail_service; then
+    if ! grep -q "if (!@file_put_contents('/var/log/nagios/nagios.log'" /usr/local/nagios/libexec/nems_sendmail_service; then
       cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/nems_sendmail_service /usr/local/nagios/libexec/
     fi
-    if ! grep -q "if (!file_put_contents('/var/log/nagios/nagios.log'" /usr/local/nagios/libexec/nems_sendmail_host; then
+    if ! grep -q "if (!@file_put_contents('/var/log/nagios/nagios.log'" /usr/local/nagios/libexec/nems_sendmail_host; then
       cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/nems_sendmail_host /usr/local/nagios/libexec/
     fi
 
