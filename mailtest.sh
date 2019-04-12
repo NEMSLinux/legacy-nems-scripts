@@ -45,6 +45,10 @@
 
 
 */
+
+$user=trim(shell_exec('whoami'));
+if ($user != 'root') die('You cannot run this program as ' . $user . '. Please use sudo.' . PHP_EOL);
+
 $CONTACTEMAIL=@trim(@$argv[1]);
 if (!filter_var($CONTACTEMAIL, FILTER_VALIDATE_EMAIL)) {
   echo 'Usage: ./mailtest.sh youremail@yourdomain.com' . PHP_EOL;
