@@ -126,6 +126,9 @@ elif [[ $COMMAND == "hwid" ]]; then
   # NANOPI M4
   elif (( $platform >= 68 )) && (( $platform <= 69 )); then
     cat /proc/cpuinfo | grep Serial |  printf '%s' $(cut -n -d ' ' -f 2) | md5sum | cut -d"-" -f1 -
+  # Tinker Board / S
+  elif (( $platform == 100 )); then 
+    /sbin/ifconfig $(/usr/local/bin/nems-info nic) | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
   fi
 
 elif [[ $COMMAND == "speedtest" ]]; then
