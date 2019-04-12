@@ -24,6 +24,7 @@
 	#
 	# - Line1 -
 	# HW_MODEL 110 RoseapplePi
+	# HW_MODEL 101 ASUS Tinker Board S
 	# HW_MODEL 100 ASUS Tinker Board
 	# HW_MODEL 90 A20-OLinuXino-MICRO
 	# HW_MODEL 80 Cubieboard 3
@@ -421,6 +422,14 @@
 			elif (( $HW_MODEL == 100 )); then
 
 				HW_MODEL_DESCRIPTION='ASUS Tinker Board'
+
+                                # See if this happens to be an S model
+                                # Do so by seeing if eMMC drive exists (since it is built in to the S)
+# Work in progress. Won't work like this because Tinker Board treats SD card as mmcblk. Need to test on an S to figure out a means of distinguishing between them.
+#                                for f in /dev/mmcblk*; do
+#                                  [ -e "$f" ] && HW_MODEL_DESCRIPTION='ASUS Tinker Board S' && HW_MODEL=101
+#                                  break
+#                                done
 
 			#A20-OLinuXino-MICRO
 			elif (( $HW_MODEL == 90 )); then
