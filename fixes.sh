@@ -421,6 +421,14 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
       cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/nems_sendmail_host /usr/local/nagios/libexec/
     fi
 
+  # Forcibly disable TLS if disabled in NEMS SST
+    if ! grep -q "SMTPAutoTLS" /usr/local/nagios/libexec/nems_sendmail_service; then
+      cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/nems_sendmail_service /usr/local/nagios/libexec/
+    fi
+    if ! grep -q "SMTPAutoTLS" /usr/local/nagios/libexec/nems_sendmail_host; then
+      cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/nems_sendmail_host /usr/local/nagios/libexec/
+    fi
+
 fi
 
 
