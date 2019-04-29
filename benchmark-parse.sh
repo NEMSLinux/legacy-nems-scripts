@@ -19,7 +19,7 @@
     case 'io':
       foreach ($data as $line) {
         // The time it took to run the test
-        if (substr($line,0,11) == 'total time:') {
+        if ( (substr($line,0,11) == 'total time:') || (substr($line,0,13) == 'time elapsed:') ) {
           $tmp = explode(':',$line);
           $time = floatval($tmp[1]);
         }

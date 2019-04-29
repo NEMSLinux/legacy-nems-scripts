@@ -10,30 +10,67 @@ fi
 # Install sysbench if it is not found
 
   # First attempt: install from included repos
-  if [[ ! -f /usr/bin/sysbench ]]; then
+  if [[ ! -f /usr/bin/sysbench ]] && [[ ! -f /usr/local/bin/sysbench ]]; then
     apt -y install sysbench
 
     # Didn't install from default repos
     # Second attempt: install from developer repo
-    if [[ ! -f /usr/bin/sysbench ]]; then
+    if [[ ! -f /usr/bin/sysbench ]] && [[ ! -f /usr/local/bin/sysbench ]]; then
       curl -s https://packagecloud.io/install/repositories/akopytov/sysbench/script.deb.sh | sudo bash
       apt -y install sysbench
     fi
 
-    # Still no success, so abort
-    if [[ ! -f /usr/bin/sysbench ]]; then
+    # Still no success, compile from source
+    if [[ ! -f /usr/bin/sysbench ]] && [[ ! -f /usr/local/bin/sysbench ]]; then
       # First, clean things up from our attempt
       if [[ -f /etc/apt/sources.list.d/akopytov_sysbench.list ]]; then
         rm /etc/apt/sources.list.d/akopytov_sysbench.list
         apt update
       fi
-      # Now, report the issue to screen and exit
-      echo "sysbench is not yet available on this build."
-      exit
+
+      # Install dependencies to compile from source
+        apt -y install make
+        apt -y install automake
+        apt -y install libtool
+        apt -y install pkg-config
+        apt -y install libaio-dev
+        # MySQL Compatibility
+        apt -y install libmariadb-dev-compat
+        apt -y install libmariadb-dev
+        apt -y install libssl-dev
+
+      # Download and compile from source
+        cd /tmp
+        mkdir sysbench-working
+        cd sysbench-working
+        git clone https://github.com/akopytov/sysbench
+        cd sysbench
+        ./autogen.sh
+        ./configure
+        make -j
+        make install
+
+      # Clean up
+        cd /tmp
+        rm -rf sysbench-working
+
+      if [[ ! -f /usr/bin/sysbench ]] && [[ ! -f /usr/local/bin/sysbench ]]; then
+        # I tried every possible means of installing, but failed.
+        # Now, report the issue to screen and exit
+        echo "sysbench is not yet available on this build."
+        exit
+      fi
     fi
   fi
 
 # Good to proceed, begin benchmark
+
+# Determine the location of sysbench
+if [[ -f /usr/local/bin/sysbench ]]; then
+  sysbench=/usr/local/bin/sysbench
+elif [[ -f /usr/bin/sysbench ]]; then
+  sysbench=/usr/bin/sysbench
+fi
 
 # Set a runtime
 if [[ -f /var/log/nems/benchmarks/runtime ]]; then
@@ -85,23 +122,40 @@ echo "Number of threads: $cores" >> /tmp/nems-benchmark.log
 
 cd /tmp
 
+# Determine if we're on an old version of SysBench requiring --test=
+help=`$sysbench --help`
+if [[ $help == *"--test="* ]]; then
+  # Old version
+  command="$sysbench --test="
+else
+  # Modern version
+  command="$sysbench "
+fi
+if [[ $help == *"--num-threads="* ]]; then
+  # Old version
+  threadsswitch="--num-threads"
+else
+  # Modern version
+  threadsswitch="--threads"
+fi
+
 printf "Performing CPU Benchmark: " >> /tmp/nems-benchmark.log
-cpu=`/usr/bin/sysbench --test=cpu --cpu-max-prime=20000 --num-threads=$cores run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh cpu`
+cpu=`${command}cpu --cpu-max-prime=20000 $threadsswitch=$cores run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh cpu`
 echo $cpu > /var/log/nems/benchmarks/cpu
 echo "CPU Score $cpu" >> /tmp/nems-benchmark.log
 
 printf "Performing RAM Benchmark: " >> /tmp/nems-benchmark.log
-ram=`/usr/bin/sysbench --test=memory --num-threads=$cores --memory-total-size=10G run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh ram`
+ram=`${command}memory $threadsswitch=$cores --memory-total-size=10G run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh ram`
 echo $ram > /var/log/nems/benchmarks/ram
 echo "RAM Score $ram" >> /tmp/nems-benchmark.log
 
 printf "Performing Mutex Benchmark: " >> /tmp/nems-benchmark.log
-mutex=`/usr/bin/sysbench --test=mutex --num-threads=64 run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh mutex`
+mutex=`${command}mutex $threadsswitch=64 run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh mutex`
 echo $mutex > /var/log/nems/benchmarks/mutex
 echo "Mutex Score $mutex" >> /tmp/nems-benchmark.log
 
 printf "Performing I/O Benchmark: " >> /tmp/nems-benchmark.log
-io=`/usr/bin/sysbench --test=fileio --file-test-mode=seqwr run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh io`
+io=`${command}fileio --file-test-mode=seqwr run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh io`
 echo $io > /var/log/nems/benchmarks/io
 echo "I/O Score $io" >> /tmp/nems-benchmark.log
 
