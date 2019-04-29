@@ -132,6 +132,9 @@ elif [[ $COMMAND == "hwid" ]]; then
   # ODROID-C2
   elif (( $platform == 12 )); then 
     /sbin/ifconfig $(/usr/local/bin/nems-info nic) | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
+  # Orange Pi Zero
+  elif (( $platform >= 32 )); then
+    cat /proc/cpuinfo | grep Serial |  printf '%s' $(cut -n -d ' ' -f 2) | md5sum | cut -d"-" -f1 -
   fi
 
 elif [[ $COMMAND == "speedtest" ]]; then
