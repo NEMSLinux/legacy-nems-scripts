@@ -639,10 +639,10 @@
 				IMAGE_ADDITIONAL_CREDITS='ARMbian'
 				HW_CPUID=1
 
-			#OrangePi Zero
+			#Orange Pi Zero
 			elif (( $HW_MODEL == 32 )); then
 
-				HW_MODEL_DESCRIPTION='OrangePi Zero'
+				HW_MODEL_DESCRIPTION='Orange Pi Zero'
 				IMAGE_ADDITIONAL_CREDITS='ARMbian'
 				#HW_CPUID=1 #H2+
 
