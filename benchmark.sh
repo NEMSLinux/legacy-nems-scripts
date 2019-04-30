@@ -6,12 +6,6 @@ if [[ ! -e /usr/local/bin/nems-info ]]; then
   exit 1
 fi
 
-nemsinit=`/usr/local/bin/nems-info init`
-if [[ $nemsinit == 0 ]]; then
-  echo "NEMS hasn't been initialized."
-  exit 1
-fi
-
 # Install sysbench if it is not found
 
   # Set the version of sysbench so all match
@@ -55,13 +49,20 @@ fi
       # Clean up
         cd /tmp && rm -rf $tmpdir
 
-      if [[ ! -f /usr/local/bin/sysbench-$ver ]]; then
+      if [[ ! -f /usr/local/bin/sysbench-$ver/bin/sysbench ]]; then
         # I tried and failed
         # Now, report the issue to screen and exit
         echo "sysbench could not be installed."
         exit 1
       fi
 
+  fi
+
+# Check if NEMS has been initialized, don't benchmark if not
+  nemsinit=`/usr/local/bin/nems-info init`
+  if [[ $nemsinit == 0 ]]; then
+    echo "NEMS hasn't been initialized."
+    exit 1
   fi
 
 # Good to proceed, begin benchmark
