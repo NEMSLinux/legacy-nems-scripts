@@ -1,76 +1,72 @@
 #!/bin/bash
 start=`date +%s`
 
+if [[ ! -e /usr/local/bin/nems-info ]]; then
+  echo "Requires NEMS Linux."
+  exit 1
+fi
+
 nemsinit=`/usr/local/bin/nems-info init`
 if [[ $nemsinit == 0 ]]; then
   echo "NEMS hasn't been initialized."
-  exit
+  exit 1
 fi
 
 # Install sysbench if it is not found
 
-  # First attempt: install from included repos
-  if [[ ! -f /usr/bin/sysbench ]] && [[ ! -f /usr/local/bin/sysbench ]]; then
-    apt -y install sysbench
+  # Set the version of sysbench so all match
+  # Needs to match a release found at https://github.com/akopytov/sysbench/releases
+    ver='1.0.17'
 
-    # Didn't install from default repos
-    # Second attempt: install from developer repo
-    if [[ ! -f /usr/bin/sysbench ]] && [[ ! -f /usr/local/bin/sysbench ]]; then
-      curl -s https://packagecloud.io/install/repositories/akopytov/sysbench/script.deb.sh | sudo bash
-      apt -y install sysbench
-    fi
+  # Compile if not exist
+  if [[ ! -f /usr/local/bin/sysbench-$ver/bin/sysbench ]]; then
 
-    # Still no success, compile from source
-    if [[ ! -f /usr/bin/sysbench ]] && [[ ! -f /usr/local/bin/sysbench ]]; then
-      # First, clean things up from our attempt
-      if [[ -f /etc/apt/sources.list.d/akopytov_sysbench.list ]]; then
-        rm /etc/apt/sources.list.d/akopytov_sysbench.list
+      # Warn and give chance to abort installation
+        echo "sysbench-$ver not found. I will install it (along with dependencies) now."
+        echo 'CTRL-C to abort'
+        sleep 5
+
+      # Update apt repositories
         apt update
-      fi
 
       # Install dependencies to compile from source
-        apt -y install make
-        apt -y install automake
-        apt -y install libtool
-        apt -y install pkg-config
-        apt -y install libaio-dev
+        yes | apt install make
+        yes | apt install automake
+        yes | apt install libtool
+        yes | apt install libz-dev
+        yes | apt install pkg-config
+        yes | apt install libaio-dev
         # MySQL Compatibility
-        apt -y install libmariadb-dev-compat
-        apt -y install libmariadb-dev
-        apt -y install libssl-dev
+        yes | apt install libmariadb-dev-compat
+        yes | apt install libmariadb-dev
+        yes | apt install libssl-dev
 
       # Download and compile from source
-        cd /tmp
-        mkdir sysbench-working
-        cd sysbench-working
-        git clone https://github.com/akopytov/sysbench
-        cd sysbench
+        tmpdir=`mktemp -d -p /tmp/`
+        echo "Working in $tmpdir"
+        cd $tmpdir
+        wget https://github.com/akopytov/sysbench/archive/$ver.zip
+        unzip $ver.zip
+        cd sysbench-$ver
         ./autogen.sh
-        ./configure
-        make -j
-        make install
+        ./configure --prefix=/usr/local/bin/sysbench-$ver/
+        make -j && make install
 
       # Clean up
-        cd /tmp
-        rm -rf sysbench-working
+        cd /tmp && rm -rf $tmpdir
 
-      if [[ ! -f /usr/bin/sysbench ]] && [[ ! -f /usr/local/bin/sysbench ]]; then
-        # I tried every possible means of installing, but failed.
+      if [[ ! -f /usr/local/bin/sysbench-$ver ]]; then
+        # I tried and failed
         # Now, report the issue to screen and exit
-        echo "sysbench is not yet available on this build."
-        exit
+        echo "sysbench could not be installed."
+        exit 1
       fi
-    fi
+
   fi
 
 # Good to proceed, begin benchmark
 
-# Determine the location of sysbench
-if [[ -f /usr/local/bin/sysbench ]]; then
-  sysbench=/usr/local/bin/sysbench
-elif [[ -f /usr/bin/sysbench ]]; then
-  sysbench=/usr/bin/sysbench
-fi
+sysbench=/usr/local/bin/sysbench-$ver/bin/sysbench
 
 # Set a runtime
 if [[ -f /var/log/nems/benchmarks/runtime ]]; then
@@ -92,24 +88,26 @@ plannedend=$(($start + $thisruntime))
 
 echo "NEMS System Benchmark... Please Wait (may take a while)."
 
-echo "NEMS System Benchmark" > /tmp/nems-benchmark.log
-date >> /tmp/nems-benchmark.log
-printf "NEMS Version: " >> /tmp/nems-benchmark.log
+tmpdir=`mktemp -d -p /tmp/`
+
+echo "NEMS System Benchmark" > $tmpdir/nems-benchmark.log
+date >> $tmpdir/nems-benchmark.log
+printf "NEMS Version: " >> $tmpdir/nems-benchmark.log
 ver=$(/usr/local/bin/nems-info nemsver)
-echo $ver >> /tmp/nems-benchmark.log
+echo $ver >> $tmpdir/nems-benchmark.log
 
-printf "\nHardware Revision: " >> /tmp/nems-benchmark.log
-/usr/local/bin/nems-info hwver >> /tmp/nems-benchmark.log
-printf "NEMS ID: " >> /tmp/nems-benchmark.log
-/usr/local/bin/nems-info hwid >> /tmp/nems-benchmark.log
+printf "\nHardware Revision: " >> $tmpdir/nems-benchmark.log
+/usr/local/bin/nems-info hwver >> $tmpdir/nems-benchmark.log
+printf "NEMS ID: " >> $tmpdir/nems-benchmark.log
+/usr/local/bin/nems-info hwid >> $tmpdir/nems-benchmark.log
 
-printf "System Uptime: " >> /tmp/nems-benchmark.log
-/usr/bin/uptime >> /tmp/nems-benchmark.log
+printf "System Uptime: " >> $tmpdir/nems-benchmark.log
+/usr/bin/uptime >> $tmpdir/nems-benchmark.log
 
-printf "LAN IP: " >> /tmp/nems-benchmark.log
-/usr/local/bin/nems-info ip >> /tmp/nems-benchmark.log
+printf "LAN IP: " >> $tmpdir/nems-benchmark.log
+/usr/local/bin/nems-info ip >> $tmpdir/nems-benchmark.log
 
-echo "---------------------------------" >> /tmp/nems-benchmark.log
+echo "---------------------------------" >> $tmpdir/nems-benchmark.log
 
 if [[ ! -d /var/log/nems/benchmarks ]]; then
   mkdir -p /var/log/nems/benchmarks
@@ -118,9 +116,9 @@ fi
 # Run the tests
 cores=$(nproc --all)
 
-echo "Number of threads: $cores" >> /tmp/nems-benchmark.log
+echo "Number of threads: $cores" >> $tmpdir/nems-benchmark.log
 
-cd /tmp
+cd $tmpdir
 
 # Determine if we're on an old version of SysBench requiring --test=
 help=`$sysbench --help`
@@ -139,54 +137,55 @@ else
   threadsswitch="--threads"
 fi
 
-printf "Performing CPU Benchmark: " >> /tmp/nems-benchmark.log
+printf "Performing CPU Benchmark: " >> $tmpdir/nems-benchmark.log
 cpu=`${command}cpu --cpu-max-prime=20000 $threadsswitch=$cores run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh cpu`
 echo $cpu > /var/log/nems/benchmarks/cpu
-echo "CPU Score $cpu" >> /tmp/nems-benchmark.log
+echo "CPU Score $cpu" >> $tmpdir/nems-benchmark.log
 
-printf "Performing RAM Benchmark: " >> /tmp/nems-benchmark.log
+printf "Performing RAM Benchmark: " >> $tmpdir/nems-benchmark.log
 ram=`${command}memory $threadsswitch=$cores --memory-total-size=10G run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh ram`
 echo $ram > /var/log/nems/benchmarks/ram
-echo "RAM Score $ram" >> /tmp/nems-benchmark.log
+echo "RAM Score $ram" >> $tmpdir/nems-benchmark.log
 
-printf "Performing Mutex Benchmark: " >> /tmp/nems-benchmark.log
+printf "Performing Mutex Benchmark: " >> $tmpdir/nems-benchmark.log
 mutex=`${command}mutex $threadsswitch=64 run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh mutex`
 echo $mutex > /var/log/nems/benchmarks/mutex
-echo "Mutex Score $mutex" >> /tmp/nems-benchmark.log
+echo "Mutex Score $mutex" >> $tmpdir/nems-benchmark.log
 
-printf "Performing I/O Benchmark: " >> /tmp/nems-benchmark.log
+printf "Performing I/O Benchmark: " >> $tmpdir/nems-benchmark.log
 io=`${command}fileio --file-test-mode=seqwr run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh io`
 echo $io > /var/log/nems/benchmarks/io
-echo "I/O Score $io" >> /tmp/nems-benchmark.log
+echo "I/O Score $io" >> $tmpdir/nems-benchmark.log
 
 # Clear the test files
-rm -f /tmp/test_file.*
+rm -f $tmpdir/test_file.*
 
-echo "---------------------------------" >> /tmp/nems-benchmark.log
+echo "---------------------------------" >> $tmpdir/nems-benchmark.log
 
-echo "Filesystem:" >> /tmp/nems-benchmark.log
-/bin/df -h >> /tmp/nems-benchmark.log
+echo "Filesystem:" >> $tmpdir/nems-benchmark.log
+/bin/df -h >> $tmpdir/nems-benchmark.log
 
-echo "---------------------------------" >> /tmp/nems-benchmark.log
+echo "---------------------------------" >> $tmpdir/nems-benchmark.log
 
-echo "Memory:" >> /tmp/nems-benchmark.log
-/usr/bin/free -h >> /tmp/nems-benchmark.log
+echo "Memory:" >> $tmpdir/nems-benchmark.log
+/usr/bin/free -h >> $tmpdir/nems-benchmark.log
 
-echo "---------------------------------" >> /tmp/nems-benchmark.log
+echo "---------------------------------" >> $tmpdir/nems-benchmark.log
 
-echo "Internet Speed:" >> /tmp/nems-benchmark.log
-/usr/local/share/nems/nems-scripts/speedtest --simple >> /tmp/nems-benchmark.log
+echo "Internet Speed:" >> $tmpdir/nems-benchmark.log
+/usr/local/share/nems/nems-scripts/speedtest --simple >> $tmpdir/nems-benchmark.log
 
-echo "---------------------------------" >> /tmp/nems-benchmark.log
+echo "---------------------------------" >> $tmpdir/nems-benchmark.log
 
 end=`date +%s`
 runtime=$((end-start))
-echo "Benchmark of this benchmark: "$runtime" seconds" >> /tmp/nems-benchmark.log
+echo "Benchmark of this benchmark: "$runtime" seconds" >> $tmpdir/nems-benchmark.log
 
 echo $runtime > /var/log/nems/benchmarks/runtime
 
-cat /tmp/nems-benchmark.log
-rm  /tmp/nems-benchmark.log
+cat $tmpdir/nems-benchmark.log
+cd /tmp
+rm -rf $tmpdir
 
 # sometime in future, get the downtime ID from livestatus and output it in place of the '1'
 #/usr/bin/printf "[%lu] DEL_SVC_DOWNTIME;1\n" $end > /usr/local/nagios/var/rw/nagios.cmd
