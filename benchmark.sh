@@ -186,6 +186,9 @@ else
 fi
 echo "---------------------------------" >> $tmpdir/nems-benchmark.log
 
+# Ensure only root can write to the benchmark result files
+chmod 644 -R /var/log/nems/benchmarks/
+
 echo "Filesystem:" >> $tmpdir/nems-benchmark.log
 /bin/df -h >> $tmpdir/nems-benchmark.log
 

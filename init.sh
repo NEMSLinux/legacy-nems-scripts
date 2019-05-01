@@ -43,8 +43,8 @@ else
   # can cause all kinds of problems, including security issues.
   if [[ $platform == 20 ]]; then
     hwid=$(/usr/local/bin/nems-info hwid)
-    # Bad HWID for MAC 080027C75EC1
-    if [[ $hwid == *'4f6c6d8a4d2670e87004329b99bf517d'* ]]; then
+    # Bad HWID for MAC 080027C75EC1 (Development HWID for VM)
+    if [[ $hwid == *'4f6c6d8a4d2670e87004329b99bf517d'* ]] || [[ $hwid == *'d41d8cd98f00b204e9800998ecf8427e'* ]]; then
       echo "You need to initialize a unique MAC address for your"
       echo "virtual Network Interface. Shut down your NEMS appliance"
       echo "and modify the Network Interface in your hypervisor."
@@ -54,6 +54,18 @@ else
       exit 1
     fi
   fi
+  # Also bad for HWID d41d8cd98f00b204e9800998ecf8427e (NULL Response)
+    hwid=$(/usr/local/bin/nems-info hwid)
+    if [[ $hwid == *'4f6c6d8a4d2670e87004329b99bf517d'* ]] || [[ $hwid == *'d41d8cd98f00b204e9800998ecf8427e'* ]]; then
+      echo "Invalid hardware ID for this NEMS server."
+      printf "Please report this error: "
+      four=$(echo $hwid | cut -c1-4)
+      echo ${platform}-${four}-init
+      echo ""
+      echo "CANNOT CONTINUE"
+      echo ""
+      exit 1
+    fi
 
   online=$(/usr/local/share/nems/nems-scripts/info.sh online)
   if [[ $online == 0 ]]; then
