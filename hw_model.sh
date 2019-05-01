@@ -28,8 +28,9 @@
 	# HW_MODEL 100 ASUS Tinker Board
 	# HW_MODEL 90 A20-OLinuXino-MICRO
 	# HW_MODEL 80 Cubieboard 3
-	# HW_MODEL 70 Sparky SBC
-	# HW_MODEL 69 NanoPi NEO Plus2
+	# HW_MODEL 79 Sparky SBC
+	# HW_MODEL 70 NanoPi NEO Plus2 (1 GB)
+	# HW_MODEL 69 NanoPi NEO Plus2 (512 MB)
 	# HW_MODEL 68 NanoPi M4 (4 GB)
 	# HW_MODEL 67 NanoPi M4 (2 GB)
 	# HW_MODEL 66 NanoPi M1 Plus
@@ -445,7 +446,7 @@
 				IMAGE_ADDITIONAL_CREDITS='ARMbian'
 
 			#Sparky SBC
-			elif (( $HW_MODEL == 70 )); then
+			elif (( $HW_MODEL == 79 )); then
 
 				HW_MODEL_DESCRIPTION='Sparky SBC'
 
@@ -453,7 +454,21 @@
 			# NanoPi NEO Plus2
 			elif (( $HW_MODEL == 69 )); then
 
-				HW_MODEL_DESCRIPTION='NanoPi NEO Plus2'
+                                MEMTOTAL=$(free | awk '/^Mem:/{print $2}')
+                                if (( $MEMTOTAL > 1000000 )); then
+
+					HW_MODEL_DESCRIPTION='NanoPi NEO Plus2 (1 GB)'
+                                        IMAGE_ADDITIONAL_CREDITS='ARMbian'
+                                        HW_MODEL=69
+
+                                else
+
+					HW_MODEL_DESCRIPTION='NanoPi NEO Plus2 (512 MB)'
+                                        IMAGE_ADDITIONAL_CREDITS='ARMbian'
+                                        HW_MODEL=70
+
+                                fi
+
 
 			#NanoPi M4
 			elif (( $HW_MODEL == 67 )); then
