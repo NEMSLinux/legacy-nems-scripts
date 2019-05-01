@@ -292,12 +292,18 @@ elif [[ $COMMAND == "init" ]]; then
 
 elif [[ $COMMAND == "online" ]]; then
   # Check if Github responds
-  online=$(ping -q -w 1 -c 1 github.com > /dev/null 2>&1 && echo 1 || echo 0)
-  if [[ $online == 1 ]]; then
+#  online=$(ping -q -w 1 -c 1 github.com > /dev/null 2>&1 && echo 1 || echo 0)
+#  if [[ $online == 1 ]]; then
+#    echo 1
+#  else
+    # Try a second time as failsafe
+#    ping -q -w 1 -c 1 github.com > /dev/null 2>&1 && echo 1 || echo 0
+#  fi
+  wget -q --spider http://google.com
+  if [ $? -eq 0 ]; then
     echo 1
   else
-    # Try a second time as failsafe
-    ping -q -w 1 -c 1 github.com > /dev/null 2>&1 && echo 1 || echo 0
+    echo 0
   fi
 
 elif [[ $COMMAND == "socket" ]]; then
