@@ -165,12 +165,25 @@ echo "---------------------------------" >> $tmpdir/nems-benchmark.log
 
 printf "Performing 7z Benchmark: " >> $tmpdir/nems-benchmark.log
 prog=$(which 7za || which 7zr)
-taskset -c 0 "$prog" b > $tmpdir/7z.log
-if (( $cores > 4 )); then
-  taskset -c $(( $cores - 1 )) "$prog" b >> $tmpdir/7z.log
+if [[ -z $prog ]]; then
+  apt update && apt -y install p7zip
+  prog=$(which 7za || which 7zr)
 fi
-echo " Done." >> $tmpdir/nems-benchmark.log
 
+if [[ ! -z $prog ]]; then
+  # Get the total result from first CPU core
+  taskset -c 0 "$prog" b > $tmpdir/7z.log
+  result1=$(awk -F" " '/^Tot:/ {print $4}' <$tmpdir/7z.log | tr '\n' ', ' | sed 's/,$//')
+  # Get the total result from last CPU core (might be big.LITTLE, or could be same core)
+  taskset -c $(( $cores - 1 )) "$prog" b > $tmpdir/7z.log
+  result2=$(awk -F" " '/^Tot:/ {print $4}' <$tmpdir/7z.log | tr '\n' ', ' | sed 's/,$//')
+  average7z=$(( ($result1 + $result2) / 2 ))
+  echo "Done." >> $tmpdir/nems-benchmark.log
+  echo "7z Benchmark Result:     $average7z" >> $tmpdir/nems-benchmark.log
+  echo $average7z > /var/log/nems/benchmarks/7z
+else
+  echo "Can't find or install p7zip. 7z benchmark skipped." >> $tmpdir/nems-benchmark.log
+fi
 echo "---------------------------------" >> $tmpdir/nems-benchmark.log
 
 echo "Filesystem:" >> $tmpdir/nems-benchmark.log
