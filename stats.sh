@@ -61,7 +61,7 @@ if (file_exists('/var/log/nems/hw_model')) { // Don't run this until system is r
   $benchmarks['ram'] = shell_exec('/usr/local/bin/nems-info benchmark ram');
   $benchmarks['io'] = shell_exec('/usr/local/bin/nems-info benchmark io');
   $benchmarks['mutex'] = shell_exec('/usr/local/bin/nems-info benchmark mutex');
-  $benchmarks['7z'] = shell_exec('/usr/local/bin/nems-info benchmark 7z');
+  $benchmarks['sevenzip'] = shell_exec('/usr/local/bin/nems-info benchmark 7z');
 
   // Put it together to send to the server
   $data = array(
