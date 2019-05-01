@@ -349,6 +349,13 @@ elif [[ $COMMAND == "benchmark" ]]; then
   if [[ $VARIABLE == 'ram' ]]; then
     cat /var/log/nems/benchmarks/ram
   fi
+  if [[ $VARIABLE == '7z' ]]; then
+    if [[ -f /var/log/nems/benchmarks/7z ]]; then
+      cat /var/log/nems/benchmarks/7z
+    else
+      echo 0
+    fi
+  fi
 
 
 elif [[ $COMMAND == "alias" ]]; then
