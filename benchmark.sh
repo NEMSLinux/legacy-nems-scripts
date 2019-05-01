@@ -164,11 +164,12 @@ rm -f $tmpdir/test_file.*
 echo "---------------------------------" >> $tmpdir/nems-benchmark.log
 
 printf "Performing 7z Benchmark: " >> $tmpdir/nems-benchmark.log
-7z=$(which 7za || which 7zr)
-taskset -c 0 "$7z" b
+prog=$(which 7za || which 7zr)
+taskset -c 0 "$prog" b > $tmpdir/7z.log
 if (( $cores > 4 )); then
-  taskset -c $(( $cores - 1 )) "$7z" b
+  taskset -c $(( $cores - 1 )) "$prog" b >> $tmpdir/7z.log
 fi
+echo " Done." >> $tmpdir/nems-benchmark.log
 
 echo "---------------------------------" >> $tmpdir/nems-benchmark.log
 
