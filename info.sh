@@ -344,16 +344,32 @@ elif [[ $COMMAND == "downtimes" ]]; then
 
 elif [[ $COMMAND == "benchmark" ]]; then
   if [[ $VARIABLE == 'cpu' ]]; then
-    cat /var/log/nems/benchmarks/cpu
+    if [[ -f /var/log/nems/benchmarks/cpu ]]; then
+      cat /var/log/nems/benchmarks/cpu
+    else
+      echo 0
+    fi
   fi
   if [[ $VARIABLE == 'mutex' ]]; then
-    cat /var/log/nems/benchmarks/mutex
+    if [[ -f /var/log/nems/benchmarks/mutex ]]; then
+      cat /var/log/nems/benchmarks/mutex
+    else
+      echo 0
+    fi
   fi
   if [[ $VARIABLE == 'io' ]]; then
-    cat /var/log/nems/benchmarks/io
+    if [[ -f /var/log/nems/benchmarks/io ]]; then
+      cat /var/log/nems/benchmarks/io
+    else
+      echo 0
+    fi
   fi
   if [[ $VARIABLE == 'ram' ]]; then
-    cat /var/log/nems/benchmarks/ram
+    if [[ -f /var/log/nems/benchmarks/ram ]]; then
+      cat /var/log/nems/benchmarks/ram
+    else
+      echo 0
+    fi
   fi
   if [[ $VARIABLE == '7z' ]]; then
     if [[ -f /var/log/nems/benchmarks/7z ]]; then
