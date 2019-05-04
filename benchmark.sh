@@ -6,58 +6,6 @@ if [[ ! -e /usr/local/bin/nems-info ]]; then
   exit 1
 fi
 
-# Install sysbench if it is not found
-
-  # Set the version of sysbench so all match
-  # Needs to match a release found at https://github.com/akopytov/sysbench/releases
-    ver='1.0.17'
-
-  # Compile if not exist
-  if [[ ! -f /usr/local/bin/sysbench-$ver/bin/sysbench ]]; then
-
-      # Warn and give chance to abort installation
-        echo "sysbench-$ver not found. I will install it (along with dependencies) now."
-        echo 'CTRL-C to abort'
-        sleep 5
-
-      # Update apt repositories
-        apt update
-
-      # Install dependencies to compile from source
-        yes | apt install make
-        yes | apt install automake
-        yes | apt install libtool
-        yes | apt install libz-dev
-        yes | apt install pkg-config
-        yes | apt install libaio-dev
-        # MySQL Compatibility
-        yes | apt install libmariadb-dev-compat
-        yes | apt install libmariadb-dev
-        yes | apt install libssl-dev
-
-      # Download and compile from source
-        tmpdir=`mktemp -d -p /tmp/`
-        echo "Working in $tmpdir"
-        cd $tmpdir
-        wget https://github.com/akopytov/sysbench/archive/$ver.zip
-        unzip $ver.zip
-        cd sysbench-$ver
-        ./autogen.sh
-        ./configure --prefix=/usr/local/bin/sysbench-$ver/
-        make -j && make install
-
-      # Clean up
-        cd /tmp && rm -rf $tmpdir
-
-      if [[ ! -f /usr/local/bin/sysbench-$ver/bin/sysbench ]]; then
-        # I tried and failed
-        # Now, report the issue to screen and exit
-        echo "sysbench could not be installed."
-        exit 1
-      fi
-
-  fi
-
 # Check if NEMS has been initialized, don't benchmark if not
   nemsinit=`/usr/local/bin/nems-info init`
   if [[ $nemsinit == 0 ]]; then
@@ -66,8 +14,6 @@ fi
   fi
 
 # Good to proceed, begin benchmark
-
-sysbench=/usr/local/bin/sysbench-$ver/bin/sysbench
 
 # Set a runtime
 if [[ -f /var/log/nems/benchmarks/runtime ]]; then
@@ -97,6 +43,10 @@ printf "NEMS Version: " >> $tmpdir/nems-benchmark.log
 ver=$(/usr/local/bin/nems-info nemsver)
 echo $ver >> $tmpdir/nems-benchmark.log
 
+printf "Platform: " >> $tmpdir/nems-benchmark.log
+platform=$(/usr/local/bin/nems-info platform-name)
+echo $platform >> $tmpdir/nems-benchmark.log
+
 printf "\nHardware Revision: " >> $tmpdir/nems-benchmark.log
 /usr/local/bin/nems-info hwver >> $tmpdir/nems-benchmark.log
 printf "NEMS ID: " >> $tmpdir/nems-benchmark.log
@@ -120,48 +70,6 @@ cores=$(nproc --all)
 echo "Number of threads: $cores" >> $tmpdir/nems-benchmark.log
 
 cd $tmpdir
-
-# Determine if we're on an old version of SysBench requiring --test=
-help=`$sysbench --help`
-if [[ $help == *"--test="* ]]; then
-  # Old version
-  command="$sysbench --test="
-else
-  # Modern version
-  command="$sysbench "
-fi
-if [[ $help == *"--num-threads="* ]]; then
-  # Old version
-  threadsswitch="--num-threads"
-else
-  # Modern version
-  threadsswitch="--threads"
-fi
-
-printf "Performing CPU Benchmark: " >> $tmpdir/nems-benchmark.log
-cpu=`${command}cpu --cpu-max-prime=20000 $threadsswitch=$cores run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh cpu`
-echo $cpu > /var/log/nems/benchmarks/cpu
-echo "CPU Score $cpu" >> $tmpdir/nems-benchmark.log
-
-printf "Performing RAM Benchmark: " >> $tmpdir/nems-benchmark.log
-ram=`${command}memory $threadsswitch=$cores --memory-total-size=10G run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh ram`
-echo $ram > /var/log/nems/benchmarks/ram
-echo "RAM Score $ram" >> $tmpdir/nems-benchmark.log
-
-printf "Performing Mutex Benchmark: " >> $tmpdir/nems-benchmark.log
-mutex=`${command}mutex $threadsswitch=64 run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh mutex`
-echo $mutex > /var/log/nems/benchmarks/mutex
-echo "Mutex Score $mutex" >> $tmpdir/nems-benchmark.log
-
-printf "Performing I/O Benchmark: " >> $tmpdir/nems-benchmark.log
-io=`${command}fileio --file-test-mode=seqwr run | /usr/local/share/nems/nems-scripts/benchmark-parse.sh io`
-echo $io > /var/log/nems/benchmarks/io
-echo "I/O Score $io" >> $tmpdir/nems-benchmark.log
-
-# Clear the test files
-rm -f $tmpdir/test_file.*
-
-echo "---------------------------------" >> $tmpdir/nems-benchmark.log
 
 printf "Performing 7z Benchmark: " >> $tmpdir/nems-benchmark.log
 prog=$(which 7za || which 7zr)
