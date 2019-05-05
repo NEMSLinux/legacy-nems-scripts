@@ -429,6 +429,37 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
       cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/nems_sendmail_host /usr/local/nagios/libexec/
     fi
 
+
+  # Fix issues from early Armbian-based Build Bases
+    if [[ -d /usr/lib/armbian ]]; then
+
+      # Stop /tmp and /var/log from being loaded in zram
+      sed -i '/\/tmp/d' /etc/fstab
+      umount /tmp 2>&1
+
+      systemctl stop armbian-zram-config
+      systemctl disable armbian-zram-config
+
+      systemctl stop armbian-ramlog
+      systemctl disable armbian-ramlog
+
+      # Delete the services
+      rm -f /etc/systemd/system/sysinit.target.wants/armbian-*
+
+      # Remove Armbian-specific stuff
+      rm -rf /usr/lib/armbian
+      rm -rf /usr/share/armbian
+      rm -f /boot/armbian_first_run*
+      apt -y remove --purge armbian-config
+
+      # Change name of armbianEnv file to bootEnv
+      mv /boot/armbianEnv.txt /boot/bootEnv.txt
+      sed -i 's/armbianEnv/bootEnv/g' /boot/boot.cmd
+    
+      reboot=1
+      
+    fi
+
 fi
 
 
