@@ -372,8 +372,8 @@ elif [[ $COMMAND == "benchmark" ]]; then
     fi
   fi
   if [[ $VARIABLE == '7z' ]]; then
-    if [[ -f /var/log/nems/benchmarks/7z ]]; then
-      cat /var/log/nems/benchmarks/7z
+    if [[ -f /var/log/nems/benchmarks/7z-multithread ]]; then
+      cat /var/log/nems/benchmarks/7z-multithread
     else
       echo 0
     fi

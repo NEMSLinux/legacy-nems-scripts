@@ -79,16 +79,14 @@ if [[ -z $prog ]]; then
 fi
 
 if [[ ! -z $prog ]]; then
-  # Get the total result from first CPU core
-  taskset -c 0 "$prog" b > $tmpdir/7z.log
-  result1=$(awk -F" " '/^Tot:/ {print $4}' <$tmpdir/7z.log | tr '\n' ', ' | sed 's/,$//')
-  # Get the total result from last CPU core (might be big.LITTLE, or could be same core)
-  taskset -c $(( $cores - 1 )) "$prog" b > $tmpdir/7z.log
-  result2=$(awk -F" " '/^Tot:/ {print $4}' <$tmpdir/7z.log | tr '\n' ', ' | sed 's/,$//')
-  average7z=$(( ($result1 + $result2) / 2 ))
+
+  # Multithreaded test
+  "$prog" b > $tmpdir/7z.log
+  result7z=$(awk -F" " '/^Tot:/ {print $4}' <$tmpdir/7z.log | tr '\n' ', ' | sed 's/,$//')
   echo "Done." >> $tmpdir/nems-benchmark.log
-  echo "7z Benchmark Result:     $average7z" >> $tmpdir/nems-benchmark.log
-  echo $average7z > /var/log/nems/benchmarks/7z
+  echo "7z Benchmark Result:     $result7z" >> $tmpdir/nems-benchmark.log
+  echo $result7z > /var/log/nems/benchmarks/7z-multithread
+
 else
   echo "Can't find or install p7zip. 7z benchmark skipped." >> $tmpdir/nems-benchmark.log
 fi
