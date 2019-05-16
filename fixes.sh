@@ -290,7 +290,7 @@ fi
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
 
   # Benchmarks have not been run yet. Force the first-run (will also run every Sunday on Cron)
-  if [[ ! -d /var/log/nems/benchmarks ]]; then
+  if [[ ! -d /var/log/nems/benchmarks ]] || [[ ! -f /var/log/nems/benchmarks/7z-multithread ]]; then
     /usr/local/share/nems/nems-scripts/benchmark.sh
   fi
 
@@ -455,11 +455,12 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
       # Change name of armbianEnv file to bootEnv
       mv /boot/armbianEnv.txt /boot/bootEnv.txt
       sed -i 's/armbianEnv/bootEnv/g' /boot/boot.cmd
-    
+
       reboot=1
-      
+
     fi
 
+  #asdf
 fi
 
 
