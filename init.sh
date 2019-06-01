@@ -49,6 +49,13 @@ else
       echo "virtual Network Interface. Shut down your NEMS appliance"
       echo "and modify the Network Interface in your hypervisor."
       echo ""
+      tmpdir=`mktemp -d -p /tmp/`
+      wget -q -O $tmpdir/mac https://nemslinux.com/mac
+      mac=`cat $tmpdir/mac`
+      echo "Here is a MAC address you can use in your VM Config: $mac"
+      echo ""
+      echo "Visit https://nemslinux.com/mac to generate a MAC address you can use."
+      echo ""
       echo "CANNOT CONTINUE"
       echo ""
       exit 1
