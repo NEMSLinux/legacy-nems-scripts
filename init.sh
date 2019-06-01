@@ -54,8 +54,6 @@ else
       mac=`cat $tmpdir/mac`
       echo "Here is a MAC address you can use in your VM Config: $mac"
       echo ""
-      echo "Visit https://nemslinux.com/mac to generate a MAC address you can use."
-      echo ""
       echo "CANNOT CONTINUE"
       echo ""
       exit 1
