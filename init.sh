@@ -50,7 +50,7 @@ else
       echo "and modify the Network Interface in your hypervisor."
       echo ""
       tmpdir=`mktemp -d -p /tmp/`
-      wget -q -O $tmpdir/mac https://nemslinux.com/mac
+      wget -q -O $tmpdir/mac https://nemslinux.com/api/mac
       mac=`cat $tmpdir/mac`
       echo "Here is a MAC address you can use in your VM Config: $mac"
       echo ""
