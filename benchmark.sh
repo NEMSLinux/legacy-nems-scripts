@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# Version of cat5tv-sbctest this is based upon
+c5ver="2.2"
+
 start=`date +%s`
 
 if [[ ! -e /usr/local/bin/nems-info ]]; then
@@ -43,6 +47,13 @@ printf "NEMS Version: " >> $tmpdir/nems-benchmark.log
 ver=$(/usr/local/bin/nems-info nemsver)
 echo $ver >> $tmpdir/nems-benchmark.log
 
+echo "Using algorithms from cat5tv-sbctest v$c5ver" >> $tmpdir/nems-benchmark.log
+prog=$(which 7za || which 7zr)
+echo "" >> $tmpdir/nems-benchmark.log
+printf "LZMA Benchmarks Provided By: " >> $tmpdir/nems-benchmark.log
+$prog 2>&1 | head -n3 >> $tmpdir/nems-benchmark.log
+echo "" >> $tmpdir/nems-benchmark.log
+
 printf "Platform: " >> $tmpdir/nems-benchmark.log
 platform=$(/usr/local/bin/nems-info platform-name)
 echo $platform >> $tmpdir/nems-benchmark.log
@@ -71,8 +82,7 @@ echo "Number of threads: $cores" >> $tmpdir/nems-benchmark.log
 
 cd $tmpdir
 
-printf "Performing 7z Benchmark: " >> $tmpdir/nems-benchmark.log
-prog=$(which 7za || which 7zr)
+printf "Performing LZMA Benchmark: " >> $tmpdir/nems-benchmark.log
 if [[ -z $prog ]]; then
   apt update && apt -y install p7zip
   prog=$(which 7za || which 7zr)
@@ -84,8 +94,36 @@ if [[ ! -z $prog ]]; then
   "$prog" b > $tmpdir/7z.log
   result7z=$(awk -F" " '/^Tot:/ {print $4}' <$tmpdir/7z.log | tr '\n' ', ' | sed 's/,$//')
   echo "Done." >> $tmpdir/nems-benchmark.log
-  echo "7z Benchmark Result:     $result7z" >> $tmpdir/nems-benchmark.log
+  echo "Multi-Threaded Benchmark Result:     $result7z" >> $tmpdir/nems-benchmark.log
   echo $result7z > /var/log/nems/benchmarks/7z-multithread
+
+
+  # Average Single Thread benchmark
+    # Get the total result from first CPU core
+      taskset -c 0 "$prog" b > $tmpdir/7z.log
+      result1=$(awk -F" " '/^Tot:/ {print $4}' <$tmpdir/7z.log | tr '\n' ', ' | sed 's/,$//')
+      cores1=$(/usr/local/share/nems/nems-scripts/benchmark-parsecores.sh 0)
+    # Get the total result from last CPU core (might be big.LITTLE, or could be same core)
+      lastcore=$(( $cores - 1 ))
+      cores2=0
+      if (( $lastcore > 0 )) && (( $cores1 < $cores )); then
+        taskset -c $lastcore "$prog" b > $tmpdir/7z.log
+        result2=$(awk -F" " '/^Tot:/ {print $4}' <$tmpdir/7z.log | tr '\n' ', ' | sed 's/,$//')
+        cores2=$(/usr/local/share/nems/nems-scripts/benchmark-parsecores.sh $lastcore)
+      else
+        result2=$result1 # Single-core processor or all cores are on same chip
+      fi
+      # Multiply our first and last result by the number of cores on that processor
+      # This assumes each core of the same processor will clock roughly the same
+      # which is not literally accurate, but gives us a reasonable approximation without
+      # having to benchmark each and every core.
+      if (( $cores2 > 0 )); then
+        average7z=$(( ( ($result1*$cores1) + ($result2*$cores2) ) / 2 ))
+      else
+        average7z=$(( ($result1*$cores1) ))
+      fi
+      echo "Single-Threaded Benchmark Result:     $average7z" >> $tmpdir/nems-benchmark.log
+      echo $average7z > /var/log/nems/benchmarks/7z-singlethread
 
 else
   echo "Can't find or install p7zip. 7z benchmark skipped." >> $tmpdir/nems-benchmark.log
