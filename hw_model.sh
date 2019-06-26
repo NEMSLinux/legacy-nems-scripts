@@ -68,7 +68,12 @@
 	# HW_MODEL 12 oDroid C2
 	# HW_MODEL 11 oDroid XU3/XU4/HC1/HC2
 	# HW_MODEL 10 oDroid C1
-	# HW_MODEL 3 Raspberry Pi 3/3 B+
+	# HW_MODEL 8 Raspberry Pi 4 (4GB)
+	# HW_MODEL 7 Raspberry Pi 4 (2GB)
+	# HW_MODEL 6 Raspberry Pi 4 (1GB)
+	# HW_MODEL 5 Raspberry Pi 3 Model A+
+	# HW_MODEL 4 Raspberry Pi 3 Model B+
+	# HW_MODEL 3 Raspberry Pi 3
 	# HW_MODEL 2 Raspberry Pi 2
 	# HW_MODEL 1 Raspberry Pi 1/Zero (512mb)
 	# HW_MODEL 0 Raspberry Pi 1 (256mb)
@@ -326,8 +331,9 @@
 
 		elif [[ "$HW_REVISION_CODE" = *"a02082" ]]; then
 
+			# This is a Model B board
 			HW_RELEASE_DATE='Q1 2016'
-			HW_MODEL_DESCRIPTION+='3 Model B'
+			HW_MODEL_DESCRIPTION+='3'
 			HW_PCB_REVISION_CODE='1.2'
 			HW_MEMORY_SIZE=1024
 			HW_MANUFACTURER_NAME='Sony'
@@ -336,8 +342,9 @@
 
 		elif [[ "$HW_REVISION_CODE" = *"a22082" ]]; then
 
+			# This is a Model B board
 			HW_RELEASE_DATE='Q1 2016'
-			HW_MODEL_DESCRIPTION+='3 Model B'
+			HW_MODEL_DESCRIPTION+='3'
 			HW_PCB_REVISION_CODE='1.2'
 			HW_MEMORY_SIZE=1024
 			HW_MANUFACTURER_NAME='Embest, China'
@@ -346,8 +353,9 @@
 
 		elif [[ "$HW_REVISION_CODE" = *"a32082" ]]; then
 
+			# This is a Model B board
 			HW_RELEASE_DATE='Q4 2016'
-			HW_MODEL_DESCRIPTION+='3 Model B'
+			HW_MODEL_DESCRIPTION+='3'
 			HW_PCB_REVISION_CODE='1.2'
 			HW_MEMORY_SIZE=1024
 			HW_MANUFACTURER_NAME='Sony'
@@ -385,7 +393,7 @@
 		elif [[ "$HW_REVISION_CODE" = *"a020d3" ]]; then
 
 			HW_RELEASE_DATE='Q1 2018'
-			HW_MODEL_DESCRIPTION+='3 Model B+'
+			HW_MODEL_DESCRIPTION+='3 B+'
 			HW_PCB_REVISION_CODE='n/a'
 			HW_MEMORY_SIZE=1024
 			HW_MANUFACTURER_NAME='Sony'
@@ -396,7 +404,7 @@
 		elif [[ "$HW_REVISION_CODE" == *"9020e0" ]]; then
 
 			HW_RELEASE_DATE='Q3 2018'
-			HW_MODEL_DESCRIPTION+='3 Model A+'
+			HW_MODEL_DESCRIPTION+='3 A+'
 			HW_PCB_REVISION_CODE='1.0'
 			HW_MEMORY_SIZE=512
 			HW_MANUFACTURER_NAME='Sony UK'
@@ -404,9 +412,10 @@
 			HW_ONBOARD_WIFI=1
 
 		elif [[ "$HW_REVISION_CODE" == *"a03111" ]]; then
-
+		
+			# This is a Model B board
 			HW_RELEASE_DATE='Q2 2019'
-			HW_MODEL_DESCRIPTION+='4 Model B (1GB)'
+			HW_MODEL_DESCRIPTION+='4'
 			HW_PCB_REVISION_CODE='1.1'
 			HW_MEMORY_SIZE=1024
 			HW_MANUFACTURER_NAME='Sony UK'
@@ -414,21 +423,23 @@
 			HW_ONBOARD_WIFI=1
 
 		elif [[ "$HW_REVISION_CODE" == *"b03111" ]]; then
-
+		
+			# This is a Model B board
 			HW_RELEASE_DATE='Q2 2019'
-			HW_MODEL_DESCRIPTION+='4 Model B (2GB)'
+			HW_MODEL_DESCRIPTION+='4'
 			HW_PCB_REVISION_CODE='1.1'
-			HW_MEMORY_SIZE=1024
+			HW_MEMORY_SIZE=2048
 			HW_MANUFACTURER_NAME='Sony UK'
 			HW_MODEL=7
 			HW_ONBOARD_WIFI=1
 
 		elif [[ "$HW_REVISION_CODE" == *"c03111" ]]; then
 
+			# This is a Model B board
 			HW_RELEASE_DATE='Q2 2019'
-			HW_MODEL_DESCRIPTION+='4 Model B (4GB)'
+			HW_MODEL_DESCRIPTION+='4'
 			HW_PCB_REVISION_CODE='1.1'
-			HW_MEMORY_SIZE=1024
+			HW_MEMORY_SIZE=4096
 			HW_MANUFACTURER_NAME='Sony UK'
 			HW_MODEL=8
 			HW_ONBOARD_WIFI=1
