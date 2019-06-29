@@ -155,7 +155,7 @@
 		# *" because 10000002 then it indicates that your Raspberry Pi has been over-volted
 		HW_REVISION_CODE=$(cat /proc/cpuinfo | grep 'Revision' | awk '{print $3}')
 
-		HW_MODEL_DESCRIPTION='RPi '
+		HW_MODEL_DESCRIPTION='Raspberry Pi '
 
 		if [[ "$HW_REVISION_CODE" = *"Beta" ]]; then
 
