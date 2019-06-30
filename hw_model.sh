@@ -23,6 +23,8 @@
 	#	MAX_HW_ARCH=10		#This needs to match highest HW_ARCH value in dietpi-obtain_hw_model
 	#
 	# - Line1 -
+	# HW_MODEL 121 Khadas VIM3 Pro
+	# HW_MODEL 120 Khadas VIM3 Basic
 	# HW_MODEL 110 RoseapplePi
 	# HW_MODEL 101 ASUS Tinker Board S
 	# HW_MODEL 100 ASUS Tinker Board
@@ -460,6 +462,20 @@
 
 				HW_MODEL_DESCRIPTION='RoseapplePi'
 				IMAGE_ADDITIONAL_CREDITS='ARMbian'
+
+
+			# Khadas VIM3 Basic / Pro
+			elif (( $HW_MODEL == 120 )); then
+				HW_MODEL_DESCRIPTION='Khadas VIM3 '
+				IMAGE_ADDITIONAL_CREDITS='balbes150'
+
+                                MEMTOTAL=$(free | awk '/^Mem:/{print $2}')
+                                if (( $MEMTOTAL > 3000000 )); then
+					HW_MODEL_DESCRIPTION+='Pro'
+                                        HW_MODEL=121
+                                else
+					HW_MODEL_DESCRIPTION+='Basic'
+                                fi
 
 			#ASUS Tinker Board
 			elif (( $HW_MODEL == 100 )); then
