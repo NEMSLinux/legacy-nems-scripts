@@ -298,6 +298,12 @@ fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
 
+  # Add nems-install command
+ if [[ ! -e /usr/local/bin/nems-install ]]; then
+   ln -s /usr/local/share/nems/nems-scripts/installers/install-vim3.sh /usr/local/bin/nems-install
+ fi
+
+
 # Increase upload size for background images
   if [[ -e /etc/php/7.3/phpdbg/php.ini ]]; then
    reloadapache=0
