@@ -138,6 +138,9 @@ elif [[ $COMMAND == "hwid" ]]; then
   # NanoPi NEO Plus2
   elif (( $platform == 69 )) || (( $platform == 70 )); then
     /sbin/ifconfig $(/usr/local/bin/nems-info nic) | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
+  # Khadas VIM3
+  elif (( $platform == 120 )) || (( $platform == 121 )); then
+    /sbin/ifconfig $(/usr/local/bin/nems-info nic) | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
   fi
 
 elif [[ $COMMAND == "speedtest" ]]; then
