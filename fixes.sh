@@ -236,6 +236,8 @@ check process 9590 with pidfile /run/9590.pid
     /bin/sed -i~ '/Parameter must be an array or an object that implements Countable/d' /var/log/nems/nems-tools/warninglight
     restartwarninglight=1
   fi
+
+  # Restart warninglight if needed
   if (( $restartwarninglight == 1 )); then
     kill `cat /var/run/warninglight.pid` && sleep 1
     /root/nems/nems-tools/warninglight >> /var/log/nems/nems-tools/warninglight 2>&1 &
@@ -612,6 +614,15 @@ fi
       printf "\n# piWatcher NEMS0015\n@reboot /root/nems/nems-tools/piwatcher > /dev/null 2>&1\n" >> /tmp/cron.tmp
       cronupdate=1
     fi
+  fi
+
+  # Install the NEMS Tools GPIO Extender daemon.
+  if ! grep -q "NEMS0016" /tmp/cron.tmp; then
+    printf "\n# NEMS Tools GPIO Extender Server NEMS0016\n@reboot /root/nems/nems-tools/gpio-extender/gpioe-server > /dev/null 2>&1\n" >> /tmp/cron.tmp
+    cronupdate=1
+    # Run it
+    restartwarninglight=1
+    /root/nems/nems-tools/gpio-extender/gpioe-server > /dev/null 2>&1 &
   fi
 
 
