@@ -40,6 +40,7 @@
  echo "Done."
 
  # Update apt here so we don't have to do it below
+ apt clean
  apt update --allow-releaseinfo-change
 
  # using hard file location rather than symlink as symlink may not exist yet on older versions
@@ -416,7 +417,7 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
 
   # enable rc.local service if not enabled (ie., Rock64)
     if [[ ! -e /etc/systemd/system/rc-local.service ]]; then
-      /root/nems/nems-admin/build/013-rc.local
+      /root/nems/nems-admin/build/009-rc_local
       /root/nems/nems-admin/build/999-cleanup
     fi
 
