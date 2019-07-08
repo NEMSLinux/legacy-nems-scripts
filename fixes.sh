@@ -40,7 +40,7 @@
  echo "Done."
 
  # Update apt here so we don't have to do it below
- apt update
+ apt update --allow-releaseinfo-change
 
  # using hard file location rather than symlink as symlink may not exist yet on older versions
  platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
@@ -300,7 +300,12 @@ fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
 
-  # Add nems-install command
+ # Upgrade check_speedtest
+ if ! grep -q "NEMS00001" /usr/local/nagios/libexec/check_speedtest-cli.sh; then
+   cp /root/nems/nems-migrator/data/1.5/nagios/plugins/check_speedtest-cli.sh /usr/local/nagios/libexec/
+ fi
+
+ # Add nems-install command
  if [[ ! -e /usr/local/bin/nems-install ]]; then
    ln -s /usr/local/share/nems/nems-scripts/installers/install-vim3.sh /usr/local/bin/nems-install
  fi
