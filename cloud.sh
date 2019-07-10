@@ -20,6 +20,7 @@
 
   $nems->osbkey = '';
   $nems->osbpass = '';
+  $nems->cloudenc = '';
   if (is_array($tmp)) {
     foreach($tmp as $line) {
       if (strstr($line,'=')) {
@@ -34,15 +35,28 @@
         if ($tmp2[0] == 'osbpass') {
           $nems->osbpass = $tmp2[1];
         }
+        if ($tmp2[0] == 'cloudenc') {
+          $nems->cloudenc = $tmp2[1];
+        }
         unset($tmp,$tmp2);
       }
     }
+  }
+  if (strlen($nems->cloudenc) == 0) {
+    die('Cloud Access Password Not Set.' . PHP_EOL);
+  } else if (strlen($nems->cloudenc) < 8) {
+    die('Cloud Access Password Too Short.' . PHP_EOL);
   }
   if (isset($nems->state->raw) && isset($nems->hwid) && isset($nems->osbkey) && isset($nems->osbpass)) {
     echo 'Done.' . PHP_EOL;
     echo 'Encrypting data for transmission... ';
     if (strlen($nems->hwid) > 0 && strlen($nems->osbkey) > 0 && strlen($nems->osbpass) > 0) {
-      $nems->state->encrypted = safeEncrypt($nems->state->raw,getKeyFromPassword($nems->osbpass,'::'.$nems->hwid.'::'.$nems->osbkey.'::',32));
+      $fp = fopen('/dev/urandom', 'r');
+      $randomString = fread($fp, 32);
+      fclose($fp);
+                                                // using 256-bit key file, generated via genKeyFile() - must match server
+      $key = getKeyFromPassword($nems->cloudenc,file_get_contents('/root/nems/nems-admin/keys/osb.key'),32);
+      $nems->state->encrypted = safeEncrypt($nems->state->raw,$key);
     }
   }
 
@@ -151,5 +165,21 @@ function getKeyFromPassword($password, $salt, $keysize = 16)
         true
     );
 }
+
+// Generate a key file in nems-admin
+// Never run this unless you are sure. This will kill all connections and require importing new key to server.
+function genKeyFile() {
+      $fp = fopen('/dev/urandom', 'r');
+      $rand1 = fread($fp, 256);
+      fclose($fp);
+      $fp = fopen('/dev/urandom', 'r');
+      $rand2 = fread($fp, 256);
+      fclose($fp);
+      $key = getKeyFromPassword($rand1,$rand2,256);
+      file_put_contents('/root/nems/nems-admin/keys/osb.key',$key);
+}
+// Not for users. This is a server key for the cloud server.
+// If you change this, your salt will no longer match the server, so you'll no longer be able to access your NEMS Cloud Services Dashboard
+//genKeyFile();
 
 ?>
