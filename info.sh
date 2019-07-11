@@ -70,6 +70,24 @@ elif [[ $COMMAND == "checkport" ]]; then
 elif [[ $COMMAND == "nemsver" ]]; then
   cat /usr/local/share/nems/nems.conf | grep version |  printf '%s' $(cut -n -d '=' -f 2)
 
+elif [[ $COMMAND == "tv_require_notify" ]]; then
+  tv_require_notify=`cat /usr/local/share/nems/nems.conf | grep tv_require_notify |  printf '%s' $(cut -n -d '=' -f 2)`
+  if [[ $tv_require_notify == 2 ]]; then
+    echo 2 # Show notifications immediately
+  else
+    echo 1 # Show notices only when host/service enters notification period (default)
+  fi
+
+elif [[ $COMMAND == "tv_24h" ]]; then
+  tv_24h=`cat /usr/local/share/nems/nems.conf | grep tv_24h |  printf '%s' $(cut -n -d '=' -f 2)`
+  if [[ $tv_24h == 1 ]]; then
+    echo 1 # Set TV Dashboard to 24 hour clock
+  elif [[ $tv_24h == 2 ]]; then
+    echo 2 # Leave TV Dashboard as 12 hour clock but include AM/PM
+  else
+    echo 0 # Leave TV Dashboard as standard 12 hour clock
+  fi
+
 # Output the current available NEMS version (update.sh generates this every day at midnight and at reboot)
 elif [[ $COMMAND == "nemsveravail" ]]; then
   if [[ -f /root/nems/nems-migrator/data/nems/ver-current.txt ]]; then
