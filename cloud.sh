@@ -20,7 +20,6 @@
 
   $nems->osbkey = '';
   $nems->osbpass = '';
-  $nems->cloudenc = '';
   if (is_array($tmp)) {
     foreach($tmp as $line) {
       if (strstr($line,'=')) {
@@ -35,17 +34,9 @@
         if ($tmp2[0] == 'osbpass') {
           $nems->osbpass = $tmp2[1];
         }
-        if ($tmp2[0] == 'cloudenc') {
-          $nems->cloudenc = $tmp2[1];
-        }
         unset($tmp,$tmp2);
       }
     }
-  }
-  if (strlen($nems->cloudenc) == 0) {
-    die('Cloud Access Password Not Set.' . PHP_EOL);
-  } else if (strlen($nems->cloudenc) < 8) {
-    die('Cloud Access Password Too Short.' . PHP_EOL);
   }
   if (isset($nems->state->raw) && isset($nems->hwid) && isset($nems->osbkey) && isset($nems->osbpass)) {
     echo 'Done.' . PHP_EOL;
@@ -55,7 +46,7 @@
       $randomString = fread($fp, 32);
       fclose($fp);
                                                 // using 256-bit key file, generated via genKeyFile() - must match server
-      $key = getKeyFromPassword($nems->cloudenc,file_get_contents('/root/nems/nems-admin/keys/osb.key'),32);
+      $key = getKeyFromPassword($nems->osbpass,file_get_contents('/root/nems/nems-admin/keys/osb.key'),32);
       $nems->state->encrypted = safeEncrypt($nems->state->raw,$key);
     }
   }
