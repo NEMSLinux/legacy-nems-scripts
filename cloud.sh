@@ -1,6 +1,7 @@
 #!/usr/bin/php
 <?php
   declare(strict_types=1);
+
   echo 'Checking NEMS Version... ';
   $nemsver = shell_exec('/usr/local/bin/nems-info nemsver');
   echo $nemsver . PHP_EOL;
@@ -11,8 +12,32 @@
   $cloudauth = shell_exec('/usr/local/bin/nems-info cloudauth');
   if ($cloudauth == 1) {
   echo 'Yes.' . PHP_EOL;
-  echo 'Loading NEMS state information... ';
+
   $nems = new stdClass();
+
+  echo 'Loading NEMS GPIO Extender... ';
+  $nems->GPIO = '';
+  $curl = curl_init();
+    curl_setopt($curl, CURLOPT_URL, '127.0.0.1:9595');
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curl, CURLOPT_HEADER, false);
+    $data = curl_exec($curl);
+    curl_close($curl);
+    if (is_string($data) && strlen($data) > 0){
+      $GPIO = json_decode($data);
+      if (json_last_error() === 0) {
+        $nems->GPIO = json_encode($GPIO);
+        echo 'Success. GPIO will be extended to NEMS Cloud Services.';
+      } else {
+        echo 'Failed. Continuing without GPIO Extender.';
+      }
+    } else {
+      echo 'Failed. Continuing without GPIO Extender.';
+    }
+
+    echo PHP_EOL;
+
+  echo 'Loading NEMS state information... ';
   $nems->state = new stdClass();
   $nems->state->raw = trim(shell_exec('/usr/local/bin/nems-info state'));
   $nems->hwid = trim(shell_exec('/usr/local/bin/nems-info hwid'));
@@ -59,6 +84,7 @@
     // creating a new payload to avoid there EVER being a possibility of accidentally transmitting the raw data
     $datatransfer = array(
       'state'=>$nems->state->encrypted,
+      'GPIO'=>$nems->GPIO,
       'hwid'=>$nems->hwid,
       'osbkey'=>$nems->osbkey // notice, I am NOT sending the osbpass - that is for you only
     );
