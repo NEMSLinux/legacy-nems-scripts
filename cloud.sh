@@ -11,6 +11,7 @@
   echo 'Checking if this NEMS server is authorized to use NEMS Cloud... ';
   $cloudauth = shell_exec('/usr/local/bin/nems-info cloudauth');
   if ($cloudauth == 1) {
+  file_put_contents('/var/log/nems/cloudauth.log','1');
   echo 'Yes.' . PHP_EOL;
 
   $nems = new stdClass();
@@ -106,6 +107,7 @@
 
 
 } else {
+  file_put_contents('/var/log/nems/cloudauth.log','0');
   echo 'No.';
 }
 echo PHP_EOL;

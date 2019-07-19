@@ -430,6 +430,16 @@ elif [[ $COMMAND == "alias" ]]; then
 elif [[ $COMMAND == "state" ]]; then
   /usr/local/share/nems/nems-scripts/stats-livestatus-full.sh
 
+elif [[ $COMMAND == "cloudauthcache" ]]; then
+  # A fast load of the cached cloudauth response rather than realtime connect
+  # The cache file is generated every time NEMS Cloud Services connects
+  if [[ -f /var/log/nems/cloudauth.log ]]; then
+    cat /var/log/nems/cloudauth.log
+  else
+    # Fall back on the live version
+    /usr/local/bin/nems-info clouadauth
+  fi
+
 elif [[ $COMMAND == "cloudauth" ]]; then
   hwid=`/usr/local/bin/nems-info hwid`
   osbpass=$(cat /usr/local/share/nems/nems.conf | grep osbpass | printf '%s' $(cut -n -d '=' -f 2))
