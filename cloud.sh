@@ -16,6 +16,18 @@
 
   $nems = new stdClass();
 
+  echo 'Checking system uptime... ';
+  $nems->uptime = intval(shell_exec("echo $(awk '{print $1}' /proc/uptime) / 1 | bc"));
+  echo 'Done.' . PHP_EOL;
+
+  echo 'Checking load average... ';
+  $nems->loadaverage = trim(shell_exec('/usr/local/bin/nems-info loadaverage'));
+  echo 'Done.' . PHP_EOL;
+
+  echo 'Checking temperature... ';
+  $nems->temperature = trim(shell_exec('/usr/local/bin/nems-info temperature'));
+  echo 'Done.' . PHP_EOL;
+
   echo 'Loading NEMS GPIO Extender... ';
   $nems->GPIO = '';
   $curl = curl_init();
@@ -86,6 +98,9 @@
     $datatransfer = array(
       'state'=>$nems->state->encrypted,
       'GPIO'=>$nems->GPIO,
+      'uptime'=>$nems->uptime,
+      'loadaverage'=>$nems->loadaverage,
+      'temperature'=>$nems->temperature,
       'hwid'=>$nems->hwid,
       'osbkey'=>$nems->osbkey // notice, I am NOT sending the osbpass - that is for you only
     );
