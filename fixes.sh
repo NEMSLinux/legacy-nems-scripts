@@ -39,6 +39,13 @@
  while fuser /var/{lib/{dpkg,apt/lists},cache/apt/archives}/lock >/dev/null 2>&1; do sleep 1; done
  echo "Done."
 
+ # Make sure /bin/systemctl resolves
+ if [[ ! -e /bin/systemctl ]]; then
+   if [[ -e /usr/bin/systemctl ]]; then
+     ln -s /usr/bin/systemctl /bin/systemctl
+   fi
+ fi
+
  # Update apt here so we don't have to do it below
  apt clean
  apt update --allow-releaseinfo-change
@@ -317,9 +324,9 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
      cd /var/www/html
      git pull
      # Enable nems-tv
-     a2enconf nems-tv
+     /usr/sbin/a2enconf nems-tv
      # Reload apache2
-     /usr/bin/systemctl reload apache2
+     /bin/systemctl reload apache2
    fi
  fi
 
