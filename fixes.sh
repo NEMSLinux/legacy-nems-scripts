@@ -301,6 +301,28 @@ fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
 
+ # Move NEMS TV Dashboard out of nems-www
+ if [[ ! -d /var/www/nems-tv ]]; then
+   cd /var/www
+   # Obtain nems-tv
+   git clone https://github.com/Cat5TV/nems-tv
+   # If the clone was successful, enable nems-tv
+   if [[ -d /var/www/nems-tv ]]; then
+     # Add the apache2 conf
+     cp -f /var/www/nems-tv/nems-tv.conf /etc/apache2/conf-available/
+     # Set permissions
+     chown -R www-data:www-data /var/www/nems-tv
+     chown root:root /etc/apache2/conf-available/nems-tv.conf
+     # Update nems-www to remove the /tv folder
+     cd /var/www/html
+     git pull
+     # Enable nems-tv
+     a2enconf nems-tv
+     # Reload apache2
+     /usr/bin/systemctl reload apache2
+   fi
+ fi
+
  # Upgrade check_speedtest
  if ! grep -q "NEMS00001" /usr/local/nagios/libexec/check_speedtest-cli.sh; then
    cp /root/nems/nems-migrator/data/1.5/nagios/plugins/check_speedtest-cli.sh /usr/local/nagios/libexec/

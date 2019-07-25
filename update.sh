@@ -98,6 +98,35 @@ else
     echo "   New Commit: $commit"
   fi
 
+  # Update nems-tv
+  echo " - nems-tv... "
+  cd /var/www/nems-tv
+  commit=`git rev-parse HEAD`
+  echo "   Commit: $commit"
+  printf "   "
+  result=`git pull`
+  echo $result
+  if [[ $result =~ 'error:' ]]; then
+    echo 'Error detected. Reinstalling...';
+    mv /var/www/nems-tv /var/www/nems-tv~
+    cd /var/www
+    git clone https://github.com/Cat5TV/nems-tv
+    if [[ -d /var/www/nems-tv ]]; then
+      chown -R www-data:www-data nems-tv
+      echo 'Successfully reinstalled.'
+      rm -rf /var/www/nems-tv~
+    else
+      echo 'Reinstall failed. Please copy your backup.nems file and re-image your device.'
+      mv /var/www/nems-tv~ /var/www/nems-tv
+    fi
+  fi
+  commitnew=`git rev-parse HEAD`
+  if [[ $commit == $commitnew ]]; then
+    echo "   No changes."
+  else
+    echo "   New Commit: $commit"
+  fi
+
   # Update nems-admin
   echo " - nems-admin... "
   cd /root/nems/nems-admin
