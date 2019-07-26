@@ -329,6 +329,13 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
      /bin/systemctl reload apache2
    fi
  fi
+ # ensure, outside of the download, that the installation was successful
+ if [[ ! -e /etc/apache2/conf-enabled/nems-tv.conf ]]; then
+     # Enable nems-tv
+     /usr/sbin/a2enconf nems-tv
+     # Reload apache2
+     /bin/systemctl reload apache2
+ fi
 
  # Upgrade check_speedtest
  if ! grep -q "NEMS00001" /usr/local/nagios/libexec/check_speedtest-cli.sh; then
