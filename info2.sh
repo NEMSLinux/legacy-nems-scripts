@@ -323,9 +323,9 @@ EOQ;
   $nems->livestatus->unhandled->hosts = $hosts;
 
             #### HOSTS
-            $nems->livestatus->hosts->hosts_down = 0;
-            $nems->livestatus->hosts->hosts_unreach = 0;
-            $nems->livestatus->hosts->total_hosts = 0;
+            $nems->livestatus->hosts->down = 0;
+            $nems->livestatus->hosts->unreach = 0;
+            $nems->livestatus->hosts->total = 0;
 
             reset($custom_filters);
             while ( list(, $filter) = each($custom_filters) ) {
@@ -344,25 +344,25 @@ EOQ;
                $json=queryLivestatus($query);
                $stats = json_decode($json, true);
 
-               $nems->livestatus->hosts->hosts_down += $stats[0][0];
-               $nems->livestatus->hosts->hosts_unreach += $stats[0][1];
-               $nems->livestatus->hosts->total_hosts += $stats[0][4];
+               $nems->livestatus->hosts->down += $stats[0][0];
+               $nems->livestatus->hosts->unreach += $stats[0][1];
+               $nems->livestatus->hosts->total += $stats[0][4];
             }
 
-            $nems->livestatus->hosts->hosts_down_pct = round($nems->livestatus->hosts->hosts_down / $nems->livestatus->hosts->total_hosts * 100, 2);
-            $nems->livestatus->hosts->hosts_unreach_pct = round($nems->livestatus->hosts->hosts_unreach / $nems->livestatus->hosts->total_hosts * 100, 2);
-            $nems->livestatus->hosts->hosts_up = $nems->livestatus->hosts->total_hosts - ($nems->livestatus->hosts->hosts_down + $nems->livestatus->hosts->hosts_unreach);
-            $nems->livestatus->hosts->hosts_up_pct = round($nems->livestatus->hosts->hosts_up / $nems->livestatus->hosts->total_hosts * 100, 2);
+            $nems->livestatus->hosts->down_pct = round($nems->livestatus->hosts->down / $nems->livestatus->hosts->total * 100, 2);
+            $nems->livestatus->hosts->unreach_pct = round($nems->livestatus->hosts->unreach / $nems->livestatus->hosts->total * 100, 2);
+            $nems->livestatus->hosts->up = $nems->livestatus->hosts->total - ($nems->livestatus->hosts->down + $nems->livestatus->hosts->unreach);
+            $nems->livestatus->hosts->up_pct = round($nems->livestatus->hosts->up / $nems->livestatus->hosts->total * 100, 2);
 
 
             #### SERVICES
 
-            $nems->livestatus->services->services_ok = 0;
-            $nems->livestatus->services->services_critical = 0;
-            $nems->livestatus->services->services_warning = 0;
-            $nems->livestatus->services->services_unknown = 0;
-            $nems->livestatus->services->services_not_ok = 0;
-            $nems->livestatus->services->total_services = 0;
+            $nems->livestatus->services->ok = 0;
+            $nems->livestatus->services->critical = 0;
+            $nems->livestatus->services->warning = 0;
+            $nems->livestatus->services->unknown = 0;
+            $nems->livestatus->services->not_ok = 0;
+            $nems->livestatus->services->total = 0;
 
             reset($custom_filters);
             while ( list(, $filter) = each($custom_filters) ) {
@@ -383,18 +383,18 @@ EOQ;
                $json=queryLivestatus($query);
                $stats = json_decode($json, true);
 
-               $nems->livestatus->services->services_ok += $stats[0][0];
-               $nems->livestatus->services->services_warning += $stats[0][1];
-               $nems->livestatus->services->services_critical += $stats[0][2];
-               $nems->livestatus->services->services_unknown += $stats[0][3];
-               $nems->livestatus->services->services_not_ok += $stats[0][4];
-               $nems->livestatus->services->total_services += $stats[0][5];
+               $nems->livestatus->services->ok += $stats[0][0];
+               $nems->livestatus->services->warning += $stats[0][1];
+               $nems->livestatus->services->critical += $stats[0][2];
+               $nems->livestatus->services->unknown += $stats[0][3];
+               $nems->livestatus->services->not_ok += $stats[0][4];
+               $nems->livestatus->services->total += $stats[0][5];
             }
 
-            $nems->livestatus->services->services_critical_pct = round($nems->livestatus->services->services_critical / $nems->livestatus->services->total_services * 100, 2);
-            $nems->livestatus->services->services_warning_pct = round($nems->livestatus->services->services_warning / $nems->livestatus->services->total_services * 100, 2);
-            $nems->livestatus->services->services_unknown_pct = round($nems->livestatus->services->services_unknown / $nems->livestatus->services->total_services * 100, 2);
-            $nems->livestatus->services->services_ok_pct = round($nems->livestatus->services->services_ok / $nems->livestatus->services->total_services * 100, 2);
+            $nems->livestatus->services->critical_pct = round($nems->livestatus->services->critical / $nems->livestatus->services->total * 100, 2);
+            $nems->livestatus->services->warning_pct = round($nems->livestatus->services->warning / $nems->livestatus->services->total * 100, 2);
+            $nems->livestatus->services->unknown_pct = round($nems->livestatus->services->unknown / $nems->livestatus->services->total * 100, 2);
+            $nems->livestatus->services->ok_pct = round($nems->livestatus->services->ok / $nems->livestatus->services->total * 100, 2);
 
             reset($custom_filters);
             $services = array();
