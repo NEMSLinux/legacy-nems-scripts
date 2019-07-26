@@ -28,6 +28,24 @@
   $nems->temperature = trim(shell_exec('/usr/local/bin/nems-info temperature'));
   echo 'Done.' . PHP_EOL;
 
+  echo 'Syncing your NEMS Dashboard configuration...';
+  $nems->settings = new stdClass();
+  $nems->settings->tv_24h = intval(trim(shell_exec('/usr/local/bin/nems-info tv_24h')));
+    $conftmp = file('/usr/local/share/nems/nems.conf');
+    if (is_array($conftmp) && count($conftmp) > 0) {
+      foreach ($conftmp as $line) {
+        $tmp = explode('=',$line);
+        if (trim($tmp[0]) == 'background') {
+          $nems->settings->background=trim($tmp[1]);
+          // for now, I won't allow custom backgrounds on NCS
+          if ($nems->settings->background == 8) $nems->settings->background = 6;
+        } elseif (trim($tmp[0]) == 'backgroundColor') {
+          $nems->settings->backgroundColor=trim($tmp[1]);
+        }
+      }
+    }
+  echo 'Done.' . PHP_EOL;
+
   echo 'Loading NEMS GPIO Extender... ';
   $nems->GPIO = '';
   $curl = curl_init();
@@ -96,6 +114,7 @@
 
     // creating a new payload to avoid there EVER being a possibility of accidentally transmitting the raw data
     $datatransfer = array(
+      'settings'=>json_encode($nems->settings),
       'state'=>$nems->state->encrypted,
       'GPIO'=>$nems->GPIO,
       'uptime'=>$nems->uptime,
@@ -104,7 +123,7 @@
       'hwid'=>$nems->hwid,
       'osbkey'=>$nems->osbkey // notice, I am NOT sending the osbpass - that is for you only
     );
-
+print_r($datatransfer);
     $ch = curl_init('https://nemslinux.com/api/cloud/');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLINFO_HEADER_OUT, true);
