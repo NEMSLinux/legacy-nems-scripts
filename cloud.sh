@@ -68,6 +68,10 @@
 
     echo PHP_EOL;
 
+  echo 'Loading livestatus...';
+  $livestatus = trim(shell_exec('/usr/local/bin/nems-info livestatus'));
+  echo 'Done.' . PHP_EOL;
+
   echo 'Loading NEMS state information... ';
   $nems->state = new stdClass();
   $nems->state->raw = trim(shell_exec('/usr/local/bin/nems-info state'));
@@ -104,6 +108,7 @@
                                                 // using 256-bit key file, generated via genKeyFile() - must match server
       $key = getKeyFromPassword($nems->osbpass,file_get_contents('/root/nems/nems-admin/keys/osb.key'),32);
       $nems->state->encrypted = safeEncrypt($nems->state->raw,$key);
+      $nems->livestatus = safeEncrypt($livestatus,$key);
     }
   }
 
@@ -116,6 +121,7 @@
     $datatransfer = array(
       'settings'=>json_encode($nems->settings),
       'state'=>$nems->state->encrypted,
+      'livestatus'=>$nems->livestatus,
       'GPIO'=>$nems->GPIO,
       'uptime'=>$nems->uptime,
       'loadaverage'=>$nems->loadaverage,
@@ -123,7 +129,6 @@
       'hwid'=>$nems->hwid,
       'osbkey'=>$nems->osbkey // notice, I am NOT sending the osbpass - that is for you only
     );
-print_r($datatransfer);
     $ch = curl_init('https://nemslinux.com/api/cloud/');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLINFO_HEADER_OUT, true);

@@ -192,6 +192,259 @@ switch($argv[1]) {
     }
   break;
 
+  case 11: // output JSON livestatus
+  $socket_path = "/usr/local/nagios/var/rw/live.sock";
+
+  $in_notification_period = shell_exec('/usr/local/bin/nems-info tv_require_notify');
+  if ($in_notification_period != 1 && $in_notification_period != 2) $in_notification_period = 1; // use default setting if for some reason nems-info didn't provide the setting
+
+  $custom_filters = array(
+    'host_name ~ ',
+  );
+
+  $nems = new stdClass();
+  $nems->livestatus = new stdClass();
+  $nems->livestatus->hosts = new stdClass();
+  $nems->livestatus->services = new stdClass();
+  $nems->livestatus->unhandled = new stdClass();
+
+function readSocket($len) {
+    global $sock;
+    $offset = 0;
+    $socketData = '';
+    
+    while($offset < $len) {
+        if(($data = @socket_read($sock, $len - $offset)) === false)
+            return false;
+    
+        $dataLen = strlen ($data);
+        $offset += $dataLen;
+        $socketData .= $data;
+        
+        if($dataLen == 0)
+            break;
+    }
+    
+    return $socketData;
+}
+
+function queryLivestatus($query) {
+    global $sock;
+        global $socket_path;
+
+    $sock = socket_create(AF_UNIX, SOCK_STREAM, 0);
+    socket_set_option($sock, SOL_SOCKET, SO_RCVTIMEO, array('sec' => 10, 'usec' => 0));
+    socket_set_option($sock, SOL_SOCKET, SO_SNDTIMEO, array('sec' => 10, 'usec' => 0));
+    $result = socket_connect($sock, $socket_path);
+
+    socket_write($sock, $query . "\n\n");
+
+    $read = readSocket(16);
+
+    $status = substr($read, 0, 3);
+    $len = intval(trim(substr($read, 4, 11)));
+
+    $read = readSocket($len);
+
+    
+    if($read === false)
+        die("Livestatus error: ".socket_strerror(socket_last_error($sock)));
+        
+    if($status != "200")
+        die("Livestatus error: ".$read);
+    
+    if(socket_last_error($sock) == 104)
+        die("Livestatus error: ".socket_strerror(socket_last_error($sock)));
+
+    $result = socket_close($sock);
+    
+    return $read;
+
+}
+
+
+function sort_by_state($a, $b) {
+   if ( $a[2] == $b[2] ) {
+      if ( $a[0] > $b[0] ) {
+         return 1;
+      }
+      else if ( $a[0] < $b[0] ) {
+         return -1;
+      }
+      else {
+         return 0;
+      }
+   }
+   else if ( $a[2] > $b[2] ) {
+      return -1;
+   }
+   else {
+      return 1;
+   }
+}
+
+
+            $hosts = array();
+            while ( list(, $filter) = each($custom_filters) ) {
+
+if ($in_notification_period == 1) {
+$query = <<<"EOQ"
+GET hosts
+Columns: host_name alias
+Filter: $filter
+Filter: scheduled_downtime_depth = 0
+Filter: in_notification_period = 1
+Filter: acknowledged = 0
+Filter: host_acknowledged = 0
+Filter: hard_state != 0
+OutputFormat: json
+ResponseHeader: fixed16
+EOQ;
+} else {
+$query = <<<"EOQ"
+GET hosts
+Columns: host_name alias
+Filter: $filter
+Filter: scheduled_downtime_depth = 0
+Filter: acknowledged = 0
+Filter: host_acknowledged = 0
+Filter: hard_state != 0
+OutputFormat: json
+ResponseHeader: fixed16
+EOQ;
+}
+               $json=queryLivestatus($query);
+               $tmp = json_decode($json, true);
+               if ( count($tmp) ) {
+                  $hosts = array_merge($hosts, $tmp);
+               }
+            }
+            asort($hosts);
+  $nems->livestatus->unhandled->hosts = $hosts;
+
+            #### HOSTS
+            $nems->livestatus->hosts->hosts_down = 0;
+            $nems->livestatus->hosts->hosts_unreach = 0;
+            $nems->livestatus->hosts->total_hosts = 0;
+
+            reset($custom_filters);
+            while ( list(, $filter) = each($custom_filters) ) {
+$query = <<<"EOQ"
+GET hosts
+Filter: $filter
+Stats: hard_state = 1
+Stats: hard_state = 2
+Stats: hard_state = 3
+Stats: hard_state != 0
+Stats: hard_state >= 0
+OutputFormat: json
+ResponseHeader: fixed16
+EOQ;
+
+               $json=queryLivestatus($query);
+               $stats = json_decode($json, true);
+
+               $nems->livestatus->hosts->hosts_down += $stats[0][0];
+               $nems->livestatus->hosts->hosts_unreach += $stats[0][1];
+               $nems->livestatus->hosts->total_hosts += $stats[0][4];
+            }
+
+            $nems->livestatus->hosts->hosts_down_pct = round($nems->livestatus->hosts->hosts_down / $nems->livestatus->hosts->total_hosts * 100, 2);
+            $nems->livestatus->hosts->hosts_unreach_pct = round($nems->livestatus->hosts->hosts_unreach / $nems->livestatus->hosts->total_hosts * 100, 2);
+            $nems->livestatus->hosts->hosts_up = $nems->livestatus->hosts->total_hosts - ($nems->livestatus->hosts->hosts_down + $nems->livestatus->hosts->hosts_unreach);
+            $nems->livestatus->hosts->hosts_up_pct = round($nems->livestatus->hosts->hosts_up / $nems->livestatus->hosts->total_hosts * 100, 2);
+
+
+            #### SERVICES
+
+            $nems->livestatus->services->services_ok = 0;
+            $nems->livestatus->services->services_critical = 0;
+            $nems->livestatus->services->services_warning = 0;
+            $nems->livestatus->services->services_unknown = 0;
+            $nems->livestatus->services->services_not_ok = 0;
+            $nems->livestatus->services->total_services = 0;
+
+            reset($custom_filters);
+            while ( list(, $filter) = each($custom_filters) ) {
+$query = <<<"EOQ"
+GET services
+Filter: $filter
+Filter: state_type = 1
+Stats: state = 0
+Stats: state = 1
+Stats: state = 2
+Stats: state = 3
+Stats: state >= 1
+Stats: state >= 0
+OutputFormat: json
+ResponseHeader: fixed16
+EOQ;
+
+               $json=queryLivestatus($query);
+               $stats = json_decode($json, true);
+
+               $nems->livestatus->services->services_ok += $stats[0][0];
+               $nems->livestatus->services->services_warning += $stats[0][1];
+               $nems->livestatus->services->services_critical += $stats[0][2];
+               $nems->livestatus->services->services_unknown += $stats[0][3];
+               $nems->livestatus->services->services_not_ok += $stats[0][4];
+               $nems->livestatus->services->total_services += $stats[0][5];
+            }
+
+            $nems->livestatus->services->services_critical_pct = round($nems->livestatus->services->services_critical / $nems->livestatus->services->total_services * 100, 2);
+            $nems->livestatus->services->services_warning_pct = round($nems->livestatus->services->services_warning / $nems->livestatus->services->total_services * 100, 2);
+            $nems->livestatus->services->services_unknown_pct = round($nems->livestatus->services->services_unknown / $nems->livestatus->services->total_services * 100, 2);
+            $nems->livestatus->services->services_ok_pct = round($nems->livestatus->services->services_ok / $nems->livestatus->services->total_services * 100, 2);
+
+            reset($custom_filters);
+            $services = array();
+            while ( list(, $filter) = each($custom_filters) ) {
+
+if ($in_notification_period == 1) {
+$query = <<<"EOQ"
+GET services
+Columns: host_name description state plugin_output last_hard_state_change last_check
+Filter: $filter
+Filter: scheduled_downtime_depth = 0
+Filter: host_scheduled_downtime_depth = 0
+Filter: service_scheduled_downtime_depth = 0
+Filter: in_notification_period = 1
+Filter: host_acknowledged = 0
+Filter: acknowledged = 0
+Filter: state != 0
+Filter: state_type = 1
+OutputFormat: json
+ResponseHeader: fixed16
+EOQ;
+} else {
+$query = <<<"EOQ"
+GET services
+Columns: host_name description state plugin_output last_hard_state_change last_check
+Filter: $filter
+Filter: scheduled_downtime_depth = 0
+Filter: host_scheduled_downtime_depth = 0
+Filter: service_scheduled_downtime_depth = 0
+Filter: host_acknowledged = 0
+Filter: acknowledged = 0
+Filter: state != 0
+Filter: state_type = 1
+OutputFormat: json
+ResponseHeader: fixed16
+EOQ;
+}
+               $json=queryLivestatus($query);
+               $tmp = json_decode($json, true);
+               if ( count($tmp) ) {
+                  $services = array_merge($services, $tmp);
+               }
+            }
+            usort($services, "sort_by_state");
+  $nems->livestatus->unhandled->services = $services;
+  echo json_encode($nems->livestatus);
+
+  break;
+
+
 }
 
 
@@ -232,8 +485,6 @@ function monitorix($db) {
   }
 
 }
-
-
 
 
 ?>
