@@ -308,6 +308,11 @@ fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
 
+ # Install nems-webhooktest command if not already
+ if [ ! -f /usr/local/bin/nems-webhooktest ]; then
+   ln -s /usr/local/share/nems/nems-scripts/webhooktest.sh /usr/local/bin/nems-webhooktest
+ fi
+
  # Move NEMS TV Dashboard out of nems-www
  if [[ ! -d /var/www/nems-tv ]]; then
    cd /var/www
