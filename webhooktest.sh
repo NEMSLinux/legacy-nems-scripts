@@ -1,4 +1,4 @@
-#!/bin/env php
+#!/usr/bin/env php
 <?php
 $user=trim(shell_exec('whoami'));
 if ($user != 'root') die('You cannot run this program as ' . $user . '. Please use sudo.' . PHP_EOL);
