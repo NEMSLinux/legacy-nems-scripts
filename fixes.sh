@@ -308,20 +308,16 @@ fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
 
-<<<<<<< HEAD
  # Install TEMPer Support
  if [ $(dpkg-query -W -f='${Status}' python3-serial 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
    /root/nems/nems-admin/build/500-temper
  fi
 
-
-=======
  # Install nems-webhooktest command if not already
  if [ ! -f /usr/local/bin/nems-webhooktest ]; then
    ln -s /usr/local/share/nems/nems-scripts/webhooktest.sh /usr/local/bin/nems-webhooktest
  fi
 
->>>>>>> 0ba038738ba33e33ca95cec6dc57e7a20f7cbfe3
  # Move NEMS TV Dashboard out of nems-www
  if [[ ! -d /var/www/nems-tv ]]; then
    cd /var/www
