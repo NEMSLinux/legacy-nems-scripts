@@ -308,6 +308,12 @@ fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
 
+ # Install TEMPer Support
+ if [ $(dpkg-query -W -f='${Status}' python3-serial 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+   /root/nems/nems-admin/build/500-temper
+ fi
+
+
  # Move NEMS TV Dashboard out of nems-www
  if [[ ! -d /var/www/nems-tv ]]; then
    cd /var/www

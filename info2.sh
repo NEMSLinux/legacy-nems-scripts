@@ -444,6 +444,12 @@ EOQ;
 
   break;
 
+  case 12:
+    while (stristr($temper = shell_exec('/usr/local/share/nems/nems-scripts/temper.py --json'),'error')) {
+    }
+    print_r($temper);
+
+  break;
 
 }
 

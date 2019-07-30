@@ -169,6 +169,10 @@ elif [[ $COMMAND == "livestatus" ]]; then
 # output json response of livestatus query
   /usr/local/share/nems/nems-scripts/info2.sh 11
 
+elif [[ $COMMAND == "temper" ]]; then
+# output JSON output of TEMPer devices
+  /usr/local/share/nems/nems-scripts/info2.sh 12
+
 elif [[ $COMMAND == "rootfulldev" ]]; then
   /bin/mount | /bin/sed -n 's|^/dev/\(.*\) on / .*|\1|p'
 
