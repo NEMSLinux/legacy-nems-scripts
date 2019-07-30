@@ -444,6 +444,7 @@ EOQ;
 
   break;
 
+<<<<<<< HEAD
   case 12:
     while (stristr($temper = shell_exec('/usr/local/share/nems/nems-scripts/temper.py --json'),'error')) {
     }
@@ -451,6 +452,8 @@ EOQ;
 
   break;
 
+=======
+>>>>>>> 0ba038738ba33e33ca95cec6dc57e7a20f7cbfe3
 }
 
 
