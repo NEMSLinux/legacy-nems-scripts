@@ -320,7 +320,7 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
    echo 'KERNEL=="hidraw1", MODE="0666"' > /etc/udev/rules.d/temper.rules
  fi
  # Upgrade chech_temper from to current version
- temperver=1.2 # Current version of Temper script
+ temperver=1.3 # Current version of Temper script
  if ! grep -q "Version $temperver" /usr/local/nagios/libexec/check_temper; then
    cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/check_temper /usr/lib/nagios/plugins/check_temper
  fi
