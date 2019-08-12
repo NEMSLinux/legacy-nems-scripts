@@ -324,6 +324,16 @@ vm.swappiness = 10
       echo ""
     fi
 
+    if ! grep -q "PATCH-000007" /var/log/nems/patches.log; then
+      echo "PATCH-000007 is available."
+      echo "This patch removes the package maintainer's version of the"
+      echo "nrpe plugin, which has been orphaned. This version has crippled"
+      echo "functionality, and will be replaced with a custom compiled"
+      echo "version on your NEMS Server."
+      read -r -p "Do you want to install this patch? [y/N] " PATCH000007
+      echo ""
+    fi
+
 
     # Run the selected patches
     if [[ $PATCH000001 =~ ^([yY][eE][sS]|[yY])$ ]]; then
@@ -337,6 +347,9 @@ vm.swappiness = 10
     fi
     if [[ $PATCH000005 =~ ^([yY][eE][sS]|[yY])$ ]]; then
       /root/nems/nems-admin/nems-upgrade/patches/000005 && upgraded=1
+    fi
+    if [[ $PATCH000007 =~ ^([yY][eE][sS]|[yY])$ ]]; then
+      /root/nems/nems-admin/nems-upgrade/patches/000007 && upgraded=1
     fi
 
   fi
