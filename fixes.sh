@@ -309,9 +309,10 @@ fi
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
 
  # Add custom_check_mem
- if [[ ! -e /usr/lib/nagios/plugins ]]; then
+ if [[ ! -e /usr/lib/nagios/plugins/custom_check_mem ]]; then
    cp /root/nems/nems-migrator/data/1.5/nagios/plugins/custom_check_mem /usr/lib/nagios/plugins
-   printf -- "\e[37mImporting:\e[97m custom_check_mem to NEMS NConf\033[0m\n" && /var/www/nconf/bin/add_items_from_nagios.pl -c checkcommand -f /root/nems/nems-migrator/data/1.5/nagios/nconf_patches/custom_check_mem.cfg 2>&1 | grep -E "ERROR"
+   printf -- "\e[37mImporting:\e[97m custom_check_mem checkcommand to NEMS NConf\033[0m\n" && /var/www/nconf/bin/add_items_from_nagios.pl -c checkcommand -f /root/nems/nems-migrator/data/1.5/nagios/nconf_patches/custom_check_mem-checkcommand.cfg 2>&1 | grep -E "ERROR"
+   printf -- "\e[37mImporting:\e[97m custom_check_mem advanced service to NEMS NConf\033[0m\n" && /var/www/nconf/bin/add_items_from_nagios.pl -c advanced-service -f /root/nems/nems-migrator/data/1.5/nagios/nconf_patches/custom_check_mem-advanced-service.cfg 2>&1 | grep -E "ERROR"
  fi
 
  # Install TEMPer Support
