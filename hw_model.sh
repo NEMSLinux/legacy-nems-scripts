@@ -62,7 +62,8 @@
 	# HW_MODEL 32 OrangePi Zero (H2+)
 	# HW_MODEL 31 OrangePi One
 	# HW_MODEL 30 OrangePi PC
-	# HW_MODEL 21 x86_64 native (PC)
+	# HW_MODEL 29 x86_64 native (PC)
+	# HW_MODEL 21 Docker Container
 	# HW_MODEL 20 VM x64 (VMware VirtualBox)
 	# HW_MODEL 16 ODROID-N2 (4 GB)
 	# HW_MODEL 15 ODROID-N2 (2 GB)
