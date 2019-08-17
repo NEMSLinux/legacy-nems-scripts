@@ -740,9 +740,15 @@
 				HW_CPUID=1
 
 			#x86_64 native PC
-			elif (( $HW_MODEL == 21 )); then
+			elif (( $HW_MODEL == 29 )); then
 
 				HW_MODEL_DESCRIPTION='Native PC'
+
+
+			#Docker Container
+			elif (( $HW_MODEL == 21 )); then
+
+				HW_MODEL_DESCRIPTION='Docker'
 
 			#VM
 			elif (( $HW_MODEL == 20 )); then
