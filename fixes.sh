@@ -332,6 +332,11 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
    cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/check_temper /usr/lib/nagios/plugins/check_temper
  fi
 
+ # Upgrade Telegram
+ telegramver=1.5.1 # Current version of Temper script
+ if ! grep -q "VERSION $telegramver" /usr/lib/nagios/plugins/notify-by-telegram.lua; then
+   cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/notify-by-telegram.lua /usr/lib/nagios/plugins/notify-by-telegram.lua
+ fi
 
  # Install nems-webhooktest command if not already
  if [ ! -f /usr/local/bin/nems-webhooktest ]; then
