@@ -27,6 +27,9 @@ $custom_filters = array(
 
 if (file_exists($socket_path)) {
 
+$in_notification_period = shell_exec('/usr/local/bin/nems-info tv_require_notify');
+if ($in_notification_period != 1 && $in_notification_period != 2) $in_notification_period = 1; // use default setting if for some reason nems-info didn't provide the setting
+
 function _print_duration($start_time, $end_time)
 {
                 $duration = $end_time - $start_time;
@@ -123,6 +126,7 @@ function queryLivestatus($query) {
             $hosts = array();
             while ( list(, $filter) = each($custom_filters) ) {
 
+if ($in_notification_period == 1) {
 $query = <<<"EOQ"
 GET hosts
 Columns: host_name alias
@@ -135,6 +139,19 @@ Filter: hard_state != 0
 OutputFormat: json
 ResponseHeader: fixed16
 EOQ;
+} else {
+$query = <<<"EOQ"
+GET hosts
+Columns: host_name alias
+Filter: $filter
+Filter: scheduled_downtime_depth = 0
+Filter: acknowledged = 0
+Filter: host_acknowledged = 0
+Filter: hard_state != 0
+OutputFormat: json
+ResponseHeader: fixed16
+EOQ;
+}
 
                $json=queryLivestatus($query);
                $tmp = json_decode($json, true);
@@ -212,6 +229,7 @@ EOQ;
             $services = array();
             while ( list(, $filter) = each($custom_filters) ) {
 
+if ($in_notification_period == 1) {
 $query = <<<"EOQ"
 GET services
 Columns: host_name description state plugin_output last_hard_state_change last_check
@@ -227,6 +245,22 @@ Filter: state_type = 1
 OutputFormat: json
 ResponseHeader: fixed16
 EOQ;
+} else {
+$query = <<<"EOQ"
+GET services
+Columns: host_name description state plugin_output last_hard_state_change last_check
+Filter: $filter
+Filter: scheduled_downtime_depth = 0
+Filter: host_scheduled_downtime_depth = 0
+Filter: service_scheduled_downtime_depth = 0
+Filter: host_acknowledged = 0
+Filter: acknowledged = 0
+Filter: state != 0
+Filter: state_type = 1
+OutputFormat: json
+ResponseHeader: fixed16
+EOQ;
+}
 
                $json=queryLivestatus($query);
                $tmp = json_decode($json, true);
