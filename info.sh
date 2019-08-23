@@ -436,7 +436,11 @@ elif [[ $COMMAND == "alias" ]]; then
   echo $alias
 
 elif [[ $COMMAND == "state" ]]; then
-  /usr/local/share/nems/nems-scripts/stats-livestatus-full.sh
+  if [[ $VARIABLE == "all" ]]; then
+    /usr/local/share/nems/nems-scripts/stats-livestatus-all.sh
+  else
+    /usr/local/share/nems/nems-scripts/stats-livestatus-full.sh
+  fi
 
 elif [[ $COMMAND == "cloudauthcache" ]]; then
   # A fast load of the cached cloudauth response rather than realtime connect
