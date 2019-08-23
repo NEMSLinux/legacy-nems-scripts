@@ -26,12 +26,22 @@ me=`basename "$0"`
     echo $((`date +%s` - `stat -c %Z $1`))
   }
 
+  function getPlatform() {
+    platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+  }
+
 # End of functions
 
 # Output local IP address
 if [[ $COMMAND == "ip" ]]; then
-  # Work with any NIC
-  ip=$(/sbin/ip -f inet addr show $($0 nic) | grep -Po 'inet \K[\d.]+' | head -n 1)
+  getPlatform
+  if (( $platform == 22 )); then
+    # AWS will return the internal IP on the NIC, so instead, use the instance metadata service to obtain the public IP
+    ip=$(/usr/bin/curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
+  else
+    # Work with any NIC
+    ip=$(/sbin/ip -f inet addr show $($0 nic) | grep -Po 'inet \K[\d.]+' | head -n 1)
+  fi
   if [[ $ip == "" ]]; then
     # Never reply with a blank string - instead, use localhost if no IP is found
     # This would be the case if no network connection is non-existent
@@ -125,7 +135,7 @@ elif [[ $COMMAND == "hwver" ]]; then
 
 # Output an MD5 of the Pi board serial number - we'll call this the NEMS Pi ID
 elif [[ $COMMAND == "hwid" ]]; then
-  platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+  getPlatform
   # Raspberry Pi
   if (( $platform >= 0 )) && (( $platform <= 9 )); then
     cat /proc/cpuinfo | grep Serial |  printf '%s' $(cut -n -d ' ' -f 2) | md5sum | cut -d"-" -f1 -
