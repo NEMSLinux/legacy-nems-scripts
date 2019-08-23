@@ -63,6 +63,7 @@
 	# HW_MODEL 31 OrangePi One
 	# HW_MODEL 30 OrangePi PC
 	# HW_MODEL 29 x86_64 native (PC)
+        # HW_MODEL 22 Amazon Web Services
 	# HW_MODEL 21 Docker Container
 	# HW_MODEL 20 VM x64 (VMware VirtualBox)
 	# HW_MODEL 16 ODROID-N2 (4 GB)
@@ -744,6 +745,11 @@
 
 				HW_MODEL_DESCRIPTION='Native PC'
 
+
+			#Amazon Web Services
+			elif (( $HW_MODEL == 22 )); then
+
+				HW_MODEL_DESCRIPTION='Amazon Web Services'
 
 			#Docker Container
 			elif (( $HW_MODEL == 21 )); then
