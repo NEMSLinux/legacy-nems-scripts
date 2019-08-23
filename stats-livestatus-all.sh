@@ -126,7 +126,7 @@ function queryLivestatus($query) {
 
 $query = <<<"EOQ"
 GET hosts
-Columns: host_name alias
+Columns: host_name alias address check_command display_name hard_state is_flapping last_check state services_with_info
 Filter: $filter
 OutputFormat: json
 ResponseHeader: fixed16
@@ -141,96 +141,32 @@ EOQ;
             asort($hosts);
 
             while ( list(, $row) = each($hosts) ) {
-		$nems->down[] = array('hostname'=>$row[0],'alias'=>$row[1]);
+                // services with info
+                if (is_array($row[9])) foreach ($row[9] as $service) {
+                  $services[] = array(
+                    'service'=>$service[0],
+                    'state'=>$service[1],
+                    'output'=>$service[3]
+                  );
+           }
+		$nems->hosts[] = array(
+'host_name'=>$row[0],
+'alias'=>$row[1],
+'address'=>$row[2],
+'check_command'=>$row[3],
+'display_name'=>$row[4],
+'hard_state'=>$row[5],
+'is_flapping'=>$row[6],
+'last_check'=>$row[7],
+'state'=>$row[8],
+'services'=>$services,
+
+);
             }
 
-            if (!isset($nems->down)) {
-		$nems->down = array();
+            if (!isset($nems->hosts)) {
+		$nems->hosts = array();
             }
-
-            #### HOSTS
-
-            reset($custom_filters);
-            while ( list(, $filter) = each($custom_filters) ) {
-
-$query = <<<"EOQ"
-GET hosts
-Filter: $filter
-OutputFormat: json
-ResponseHeader: fixed16
-EOQ;
-
-               $json=queryLivestatus($query);
-               $stats = json_decode($json, true);
-
-               $nems->stats['hosts']['down'] = $stats[0][0];
-               $nems->stats['hosts']['unreach'] = $stats[0][1];
-               $nems->stats['hosts']['total'] = $stats[0][4];
-            }
-
-            #### SERVICES
-
-            reset($custom_filters);
-            while ( list(, $filter) = each($custom_filters) ) {
-
-$query = <<<"EOQ"
-GET services
-Filter: $filter
-OutputFormat: json
-ResponseHeader: fixed16
-EOQ;
-
-               $json=queryLivestatus($query);
-               $stats = json_decode($json, true);
-
-               $nems->stats['services']['ok'] = $stats[0][0];
-               $nems->stats['services']['warning'] = $stats[0][1];
-               $nems->stats['services']['critical'] = $stats[0][2];
-               $nems->stats['services']['unknown'] = $stats[0][3];
-               $nems->stats['services']['not_ok'] = $stats[0][4];
-               $nems->stats['services']['total'] = $stats[0][5];
-            }
-
-
-# Unhandled details
-
-            reset($custom_filters);
-            $services = array();
-            while ( list(, $filter) = each($custom_filters) ) {
-
-$query = <<<"EOQ"
-GET services
-Columns: host_name description state plugin_output last_hard_state_change last_check
-Filter: $filter
-OutputFormat: json
-ResponseHeader: fixed16
-EOQ;
-
-               $json=queryLivestatus($query);
-               $tmp = json_decode($json, true);
-               if ( count($tmp) ) {
-                  $services = array_merge($services, $tmp);
-               }
-            }
-            usort($services, "sort_by_state");
-
-            while ( list(, $row) = each($services) ) {
-                if ($row[2] == 2) {
-                    $class = "critical";
-                } elseif ($row[2] == 1) {
-                    $class = "warning";
-                } elseif ($row[2] == 3) {
-                    $class = "unknown";
-                }
-
-		$duration = _print_duration($row[4], time());
-		$date = date("Y-m-d H:i:s", $row[5]);
-		$nems->unhandled[] = array('host'=>$row[0],'service'=>$row[1],'output'=>$row[3],'duration'=>$duration,'date'=>$date);
-	    };
-
-            if (!isset($nems->unhandled)) {
-		$nems->unhandled = array();
-            }
-} // detect socket exists
+}
   echo json_encode($nems);
 ?>
