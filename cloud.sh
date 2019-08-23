@@ -74,7 +74,7 @@
 
   echo 'Loading NEMS state information... ';
   $nems->state = new stdClass();
-  $nems->state->raw = trim(shell_exec('/usr/local/bin/nems-info state'));
+  $nems->state->raw = trim(shell_exec('/usr/local/bin/nems-info state all'));
   $nems->hwid = trim(shell_exec('/usr/local/bin/nems-info hwid'));
   $tmp = file('/usr/local/share/nems/nems.conf');
 
