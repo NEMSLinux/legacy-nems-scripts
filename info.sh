@@ -135,6 +135,9 @@ elif [[ $COMMAND == "hwid" ]]; then
   # ODROID XU3/XU4
   elif (( $platform == 11 )); then 
     /sbin/ifconfig eth0 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
+  # Amazon Web Services (Use Elastic Network Interfaces to prevent HWID changing upon stop/start of EC2 Instance!)
+  elif (( $platform == 22 )); then 
+    /sbin/ifconfig eth0 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
   # Virtual Appliance
   elif (( $platform == 20 )); then 
     /sbin/ifconfig $(/usr/local/bin/nems-info nic) | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
