@@ -142,34 +142,39 @@ EOQ;
 
             while ( list(, $row) = each($hosts) ) {
                 // services with info
+                $services = array();
                 if (is_array($row[9])) foreach ($row[9] as $service) {
                   $services[] = array(
                     'service'=>$service[0],
                     'state'=>$service[1],
                     'output'=>$service[3]
                   );
-           }
+                } else {
+                  $services[] = array(); // for hosts that don't have any service checks
+                }
 		$nems->hosts[] = array(
-'host_name'=>$row[0],
-'alias'=>$row[1],
-'address'=>$row[2],
-'check_command'=>$row[3],
-'display_name'=>$row[4],
-'hard_state'=>$row[5],
-'is_flapping'=>$row[6],
-'last_check'=>$row[7],
-'state'=>$row[8],
-'services'=>$services,
-
-);
+                  'host_name'=>$row[0],
+                  'alias'=>$row[1],
+                  'address'=>$row[2],
+                  'check_command'=>$row[3],
+                  'display_name'=>$row[4],
+                  'hard_state'=>$row[5],
+                  'is_flapping'=>$row[6],
+                  'last_check'=>$row[7],
+                  'state'=>$row[8],
+                  'services'=>$services,
+                );
             }
 
-            if (!isset($nems->hosts)) {
-		$nems->hosts = array();
-            }
 }
-  // quickstate is used by NCS Dashboard to display a very fast overview of how many hosts/services are in each state
-  $nems->quickstate = json_decode(trim(shell_exec('/usr/local/bin/nems-info state')));
 
-  echo json_encode($nems);
+if (!isset($nems->hosts)) {
+  $nems->hosts = array();
+}
+
+// quickstate is used by NCS Dashboard to display a very fast overview of how many hosts/services are in each state
+$nems->quickstate = json_decode(trim(shell_exec('/usr/local/bin/nems-info state')));
+
+echo json_encode($nems);
+
 ?>
