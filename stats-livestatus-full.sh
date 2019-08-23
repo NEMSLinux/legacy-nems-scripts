@@ -288,5 +288,6 @@ EOQ;
 		$nems->unhandled = array();
             }
 } // detect socket exists
+
   echo json_encode($nems);
 ?>

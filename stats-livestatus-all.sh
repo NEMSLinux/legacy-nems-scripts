@@ -168,5 +168,8 @@ EOQ;
 		$nems->hosts = array();
             }
 }
+  // quickstate is used by NCS Dashboard to display a very fast overview of how many hosts/services are in each state
+  $nems->quickstate = json_decode(trim(shell_exec('/usr/local/bin/nems-info state')));
+
   echo json_encode($nems);
 ?>
