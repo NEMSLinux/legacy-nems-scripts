@@ -214,20 +214,6 @@ else
     /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/samba/smb.conf
     systemctl restart smbd
 
-  if [[ $platform == 22 ]]; then
-    echo Configuring Amazon Web Services default user
-      /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/cloud/cloud.cfg
-      # Amazon Web Services uses a key pair instead of password
-      if [[ -e /home/nemsadmin/.ssh/authorized_keys ]]; then
-        if [[ ! -e /home/$username/.ssh ]]; then
-          mkdir /home/$username/.ssh
-        fi
-        mv /home/nemsadmin/.ssh/authorized_keys /home/$username/.ssh/
-        chown $username:$username /home/$username/.ssh/authorized_keys
-      fi
-    echo Done.
-  fi
-
 echo Initializing new Nagios user
 systemctl stop $nagios
 
@@ -367,6 +353,20 @@ service.rpi-monitor=0
       reboot=1
     fi
   echo "Done."
+  fi
+
+  if [[ $platform == 22 ]]; then
+    echo Configuring Amazon Web Services default user
+      /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/cloud/cloud.cfg
+      # Amazon Web Services uses a key pair instead of password
+      if [[ -e /home/nemsadmin/.ssh/authorized_keys ]]; then
+        if [[ ! -e /home/$username/.ssh ]]; then
+          mkdir -p /home/$username/.ssh
+        fi
+        mv /home/nemsadmin/.ssh/authorized_keys /home/$username/.ssh/
+        chown $username:$username /home/$username/.ssh/authorized_keys
+      fi
+    echo Done.
   fi
 
   # Disable the initial admin account

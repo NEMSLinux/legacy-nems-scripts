@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 if [ -d /home/nemsadmin ]; then # the nemsadmin user folder exists
   usercount=$(find /home/* -maxdepth 0 -type d | wc -l)
 
