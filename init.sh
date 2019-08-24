@@ -222,7 +222,7 @@ else
         if [[ ! -e /home/$username/.ssh ]]; then
           mkdir /home/$username/.ssh
         fi
-        cp /home/nemsadmin/.ssh/authorized_keys /home/$username/.ssh/
+        mv /home/nemsadmin/.ssh/authorized_keys /home/$username/.ssh/
         chown $username:$username /home/$username/.ssh/authorized_keys
       fi
     echo Done.
