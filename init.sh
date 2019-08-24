@@ -217,6 +217,14 @@ else
   if [[ $platform == 22 ]]; then
     echo Configuring Amazon Web Services default user
       /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/cloud/cloud.cfg
+      # Amazon Web Services uses a key pair instead of password
+      if [[ -e /home/nemsadmin/.ssh/authorized_keys ]]; then
+        if [[ ! -e /home/$username/.ssh ]]; then
+          mkdir /home/$username/.ssh
+        fi
+        cp /home/nemsadmin/.ssh/authorized_keys /home/$username/.ssh/
+        chown $username:$username /home/$username/.ssh/authorized_keys
+      fi
     echo Done.
   fi
 
