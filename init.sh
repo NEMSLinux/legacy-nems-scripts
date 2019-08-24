@@ -214,6 +214,12 @@ else
     /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/samba/smb.conf
     systemctl restart smbd
 
+  if [[ $platform == 22 ]]; then
+    echo Configuring Amazon Web Services default user
+      /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/cloud/cloud.cfg
+    echo Done.
+  fi
+
 echo Initializing new Nagios user
 systemctl stop $nagios
 
