@@ -778,6 +778,11 @@
 				HW_MODEL_DESCRIPTION='ODROID XU3/XU4/HC1/HC2'
 				IMAGE_ADDITIONAL_CREDITS='Meveric'
 
+                        # ODROID-C0/C1/C1+
+			elif (( $HW_MODEL == 10 )); then
+
+				HW_MODEL_DESCRIPTION='ODROID C0/C1/C1+'
+
 			#ODROID-N2
 			elif (( $HW_MODEL == 15 )); then
 
