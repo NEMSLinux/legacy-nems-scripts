@@ -71,7 +71,7 @@
 	# HW_MODEL 13 oDroid U3
 	# HW_MODEL 12 oDroid C2
 	# HW_MODEL 11 oDroid XU3/XU4/HC1/HC2
-	# HW_MODEL 10 oDroid C1
+	# HW_MODEL 10 oDroid C0/C1/C1+
 	# HW_MODEL 8 Raspberry Pi 4 (4GB)
 	# HW_MODEL 7 Raspberry Pi 4 (2GB)
 	# HW_MODEL 6 Raspberry Pi 4 (1GB)
@@ -841,9 +841,8 @@
 		#oDroid C1
 		elif (( $(cat /proc/cpuinfo | grep -ci -m1 'ODROIDC') )); then
 
-			HW_MODEL_DESCRIPTION='ODROID C1'
+			HW_MODEL_DESCRIPTION='ODROID C0 / C1 / C1+'
 			HW_MODEL=10
-			IMAGE_ADDITIONAL_CREDITS='Meveric'
 
 		fi
 
