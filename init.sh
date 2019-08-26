@@ -254,7 +254,9 @@ fi
 " > $confbase/global/contacts.cfg
 
 # Replace the database with Sample database
-service mysql stop
+systemctl stop mysql
+# Force kill MySQL (in case safe mode prevents shutdown, as is the case on Docker)
+  sleep 3 && kill -9 $(pidof mysqld)
 rm -rf /var/lib/mysql/
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
   cp -R /root/nems/nems-migrator/data/1.5/mysql/NEMS-Sample /var/lib
@@ -265,7 +267,9 @@ else
 fi
 mv /var/lib/NEMS-Sample /var/lib/mysql
 chown -R mysql:mysql /var/lib/mysql
-service mysql start
+# Force kill MySQL (in case safe mode prevents shutdown, as is the case on Docker)
+  sleep 3 && kill -9 $(pidof mysqld) && sleep 1
+systemctl start mysql
 
 # Replace the Nagios cgi.cfg file with the sample and add username
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
