@@ -154,6 +154,9 @@ elif [[ $COMMAND == "hwid" ]]; then
   # Virtual Appliance
   elif (( $platform == 20 )); then 
     /sbin/ifconfig $(/usr/local/bin/nems-info nic) | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
+  # Docker
+  elif (( $platform == 21 )); then 
+    head -1 /proc/self/cgroup|cut -d/ -f3 | md5sum | cut -d"-" -f1 -
   # ODROID-N2
   elif (( $platform >= 15 )) && (( $platform <= 16 )); then
     cat /proc/cpuinfo | grep Serial |  printf '%s' $(cut -n -d ' ' -f 2) | md5sum | cut -d"-" -f1 -
