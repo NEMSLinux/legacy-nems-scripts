@@ -142,6 +142,9 @@ elif [[ $COMMAND == "hwid" ]]; then
   # Pine64 Devices
   elif (( $platform >= 40 )) && (( $platform <= 49 )); then 
     /sbin/ifconfig eth0 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
+  # ODROID C0/C1/C1+
+  elif (( $platform == 10 )); then 
+    /sbin/ifconfig eth0 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
   # ODROID XU3/XU4
   elif (( $platform == 11 )); then 
     /sbin/ifconfig eth0 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | md5sum | cut -d"-" -f1 -
