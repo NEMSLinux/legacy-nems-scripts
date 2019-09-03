@@ -320,6 +320,13 @@ grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage}'
 elif [[ $COMMAND == "temperature" ]]; then
   /usr/local/share/nems/nems-scripts/info2.sh 1
 
+elif [[ $COMMAND == "frequency" ]]; then
+  if [[ -e /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq ]]; then
+    cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
+  else
+    echo 0
+  fi
+
 elif [[ $COMMAND == "nemsbranch" ]]; then
   /usr/local/share/nems/nems-scripts/info2.sh 2
 
