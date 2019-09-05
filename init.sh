@@ -258,7 +258,7 @@ systemctl stop mysql
 # Force kill MySQL (in case safe mode prevents shutdown, as is the case on Docker)
   sleep 3
   mysqldpid=$(pidof mysqld)
-  if [[ $mysldpid != "" ]]; then
+  if [[ $mysqldpid != "" ]]; then
     kill -9 $mysqldpid
     sleep 1
   fi
@@ -275,7 +275,7 @@ chown -R mysql:mysql /var/lib/mysql
 # Force kill MySQL (in case safe mode prevents shutdown, as is the case on Docker)
   sleep 3
   mysqldpid=$(pidof mysqld)
-  if [[ $mysldpid != "" ]]; then
+  if [[ $mysqldpid != "" ]]; then
     kill -9 $mysqldpid
     sleep 1
   fi
