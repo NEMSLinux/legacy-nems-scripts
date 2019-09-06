@@ -310,6 +310,11 @@ fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
 
+ # Setup Vendor capabilities
+ if [[ ! -e /boot/vendor ]]; then
+   mkdir /boot/vendor
+ fi
+
  # Add custom_check_mem
  if [[ ! -e /usr/lib/nagios/plugins/custom_check_mem ]]; then
    cp /root/nems/nems-migrator/data/1.5/nagios/plugins/custom_check_mem /usr/lib/nagios/plugins
