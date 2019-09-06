@@ -335,7 +335,7 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
  fi
 
  # Upgrade Telegram
- telegramver=1.5.4 # Current version of Telegram script
+ telegramver=1.5.6 # Current version of Telegram script
  if ! grep -q "VERSION $telegramver" /usr/lib/nagios/plugins/notify-by-telegram.lua; then
    cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/notify-by-telegram.lua /usr/lib/nagios/plugins/notify-by-telegram.lua
  fi
