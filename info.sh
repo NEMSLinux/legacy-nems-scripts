@@ -196,11 +196,11 @@ elif [[ $COMMAND == "rootfulldev" ]]; then
   /bin/mount | /bin/sed -n 's|^/dev/\(.*\) on / .*|\1|p'
 
 elif [[ $COMMAND == "rootdev" ]]; then
-# output json response of detected wifi networks
+# Root device name of the / filesystem (eg., sda or mmcblk0)
   /usr/local/share/nems/nems-scripts/info2.sh 8
 
 elif [[ $COMMAND == "rootpart" ]]; then
-# output json response of detected wifi networks
+# Root partition number of the / filesystem (eg., 1)
   /usr/local/share/nems/nems-scripts/info2.sh 9
 
 elif [[ $COMMAND == "wifi" ]]; then
