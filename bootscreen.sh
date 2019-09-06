@@ -4,6 +4,8 @@
 ver=$(/usr/local/bin/nems-info nemsver)
 host=$(/bin/hostname)
 
+# Should set screen resolution on each board
+# See: https://linuxhint.com/set_screen_resolution_linux_kernel_boot/
 
 # Don't allow TTY to go blank
 /usr/bin/setterm -blank 0
