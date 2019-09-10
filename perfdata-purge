@@ -20,6 +20,9 @@
           $output .= $line;
         }
         file_put_contents($file,$output);
+        echo 'Purged all perfdata that is older than ' . $cutoff . ' days.';
+      } else {
+        echo 'There was no perfdata older than ' . $cutoff . ' days. Nothing purged.';
       }
     }
   } else {
