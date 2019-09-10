@@ -14,7 +14,7 @@
         if (strlen($timestamp) > 0 && $timestamp > 0) {
           // Found some timestamps that are older than $cutoff.
           // Delete those lines from $file using sed.
-          file_put_contents($file.'~~', $line);
+          file_put_contents($file.'~~', $line, FILE_APPEND);
           $counter++;
           echo '.';
         }
