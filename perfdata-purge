@@ -10,11 +10,11 @@
     foreach ($perfdata as $line) {
       $tmp = explode('||',$line);
       $timestamp = intval($tmp[0]);
-      if ($timestamp < strtotime($cutoff . ' days ago')) {
+      if ($timestamp > strtotime($cutoff . ' days ago')) {
         if (strlen($timestamp) > 0 && $timestamp > 0) {
           // Found some timestamps that are older than $cutoff.
           // Delete those lines from $file using sed.
-          $result = shell_exec("/bin/sed -i '/^$timestamp||/d' $file");
+          file_put_contents($file.'~~', $line);
           $counter++;
           echo '.';
         }
@@ -25,6 +25,7 @@
     $perfdata = null;
 
     if ($counter > 0) {
+      rename($file.'~~',$file);
       echo 'Purged all perfdata that is older than ' . $cutoff . ' days.';
     } else {
       echo 'There was no perfdata older than ' . $cutoff . ' days. Nothing purged.';

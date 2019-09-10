@@ -46,6 +46,10 @@
    fi
  fi
 
+ # Clear old perfdata from the log (user-enabled in NEMS SST)
+ /usr/local/share/nems/nems-scripts/perfdata-purge
+
+
  # Update apt here so we don't have to do it below
  apt clean
  apt update --allow-releaseinfo-change
