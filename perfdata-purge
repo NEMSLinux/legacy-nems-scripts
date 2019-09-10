@@ -3,28 +3,32 @@
   $cutoff = intval(shell_exec('/usr/local/bin/nems-info perfdata_cutoff'));
   if ($cutoff > 0) {
     $file = '/usr/local/nagios/var/perfdata.log';
-    $perfdata = file($file);
     $datachanged = 0;
-    if (is_array($perfdata)) {
-      foreach ($perfdata as $key => $line) {
-        $tmp = explode('||',$line);
-        $timestamp = $tmp[0];
-        if ($timestamp < strtotime($cutoff . ' days ago')) {
-          unset($perfdata[$key]);
-          $datachanged = 1;
-        }
+
+    $perfdata = new SplFileObject($file);
+    $removelines = array();
+    while (!$perfdata->eof()) {
+      $line = $perfdata->fgets();
+      $tmp = explode('||',$line);
+      $timestamp = $tmp[0];
+      if ($timestamp < strtotime($cutoff . ' days ago')) {
+        if (strlen($timestamp) > 0 && $timestamp > 0) $removelines[] = $timestamp;
       }
-      if ($datachanged == 1) {
-        $output = '';
-        foreach ($perfdata as $line) {
-          $output .= $line;
-        }
-        file_put_contents($file,$output);
-        echo 'Purged all perfdata that is older than ' . $cutoff . ' days.';
-      } else {
-        echo 'There was no perfdata older than ' . $cutoff . ' days. Nothing purged.';
-      }
+
     }
+    $perfdata = null;
+
+    if (count($removelines) > 0) {
+      foreach ($removelines as $timestamp) {
+        // Found some timestamps that are older than $cutoff.
+        // Delete those lines from $file using sed.
+        $result = shell_exec("sed -i '/^$timestamp||/d' $file");
+      }
+      echo 'Purged all perfdata that is older than ' . $cutoff . ' days.';
+    } else {
+      echo 'There was no perfdata older than ' . $cutoff . ' days. Nothing purged.';
+    }
+
   } else {
     echo 'perfdata will not be purged since no cutoff is specified in NEMS SST.';
   }
