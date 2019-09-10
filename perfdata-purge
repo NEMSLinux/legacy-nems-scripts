@@ -1,0 +1,29 @@
+#!/usr/bin/env php
+<?php
+  $cutoff = intval(shell_exec('/usr/local/bin/nems-info perfdata_cutoff'));
+  if ($cutoff > 0) {
+    $file = '/usr/local/nagios/var/perfdata.log';
+    $perfdata = file($file);
+    $datachanged = 0;
+    if (is_array($perfdata)) {
+      foreach ($perfdata as $key => $line) {
+        $tmp = explode('||',$line);
+        $timestamp = $tmp[0];
+        if ($timestamp < strtotime($cutoff . ' days ago')) {
+          unset($perfdata[$key]);
+          $datachanged = 1;
+        }
+      }
+      if ($datachanged == 1) {
+        $output = '';
+        foreach ($perfdata as $line) {
+          $output .= $line;
+        }
+        file_put_contents($file,$output);
+      }
+    }
+  } else {
+    echo 'perfdata will not be purged since no cutoff is specified in NEMS SST.';
+  }
+  echo PHP_EOL;
+?>

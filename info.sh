@@ -80,6 +80,19 @@ elif [[ $COMMAND == "checkport" ]]; then
 elif [[ $COMMAND == "nemsver" ]]; then
   cat /usr/local/share/nems/nems.conf | grep version |  printf '%s' $(cut -n -d '=' -f 2)
 
+# perfdata cutoff time (in days)
+elif [[ $COMMAND == "perfdata_cutoff" ]]; then
+  perfdata_cutoff=`cat /usr/local/share/nems/nems.conf | grep perfdata_cutoff |  printf '%s' $(cut -n -d '=' -f 2)`
+  if [[ $perfdata_cutoff != "" ]]; then
+    if (( $perfdata_cutoff >= 0 )); then
+      echo $perfdata_cutoff
+    else
+      echo 0
+    fi
+  else
+    echo 0
+  fi
+
 elif [[ $COMMAND == "tv_require_notify" ]]; then
   tv_require_notify=`cat /usr/local/share/nems/nems.conf | grep tv_require_notify |  printf '%s' $(cut -n -d '=' -f 2)`
   if [[ $tv_require_notify == 2 ]]; then

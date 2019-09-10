@@ -46,6 +46,12 @@
    fi
  fi
 
+ # Clear old perfdata from the log
+ purgeDate=$(date -d '90 days ago' +%s)
+ if [[ $purgeDate > 0 ]]; then
+   awk -v m=$purgeDate '{k=$1 OFS $2} $2<=m {next} {print}' /usr/local/nagios/var/perfdata.log > /tmp/test.log
+ fi
+
  # Update apt here so we don't have to do it below
  apt clean
  apt update --allow-releaseinfo-change
