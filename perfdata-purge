@@ -6,24 +6,24 @@
     $datachanged = 0;
 
     $perfdata = new SplFileObject($file);
-    $removelines = array();
+    $counter = 0;
     while (!$perfdata->eof()) {
       $line = $perfdata->fgets();
       $tmp = explode('||',$line);
       $timestamp = $tmp[0];
       if ($timestamp < strtotime($cutoff . ' days ago')) {
-        if (strlen($timestamp) > 0 && $timestamp > 0) $removelines[] = $timestamp;
+        if (strlen($timestamp) > 0 && $timestamp > 0) {
+          // Found some timestamps that are older than $cutoff.
+          // Delete those lines from $file using sed.
+          $result = shell_exec("sed -i '/^$timestamp||/d' $file");
+          $counter++;
+        }
       }
 
     }
     $perfdata = null;
 
-    if (count($removelines) > 0) {
-      foreach ($removelines as $timestamp) {
-        // Found some timestamps that are older than $cutoff.
-        // Delete those lines from $file using sed.
-        $result = shell_exec("sed -i '/^$timestamp||/d' $file");
-      }
+    if ($counter > 0) {
       echo 'Purged all perfdata that is older than ' . $cutoff . ' days.';
     } else {
       echo 'There was no perfdata older than ' . $cutoff . ' days. Nothing purged.';
