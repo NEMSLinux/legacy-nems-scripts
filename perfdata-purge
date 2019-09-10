@@ -10,12 +10,14 @@
     while (!$perfdata->eof()) {
       $line = $perfdata->fgets();
       $tmp = explode('||',$line);
-      $timestamp = $tmp[0];
+      $timestamp = intval($tmp[0]);
       if ($timestamp < strtotime($cutoff . ' days ago')) {
         if (strlen($timestamp) > 0 && $timestamp > 0) {
           // Found some timestamps that are older than $cutoff.
           // Delete those lines from $file using sed.
-          $result = shell_exec("sed -i '/^$timestamp||/d' $file");
+          $result = shell_exec("/bin/sed -i '/^$timestamp||/d' $file");
+          // We changed the file, rewind!
+          $perfdata->rewind();
           $counter++;
         }
       }
