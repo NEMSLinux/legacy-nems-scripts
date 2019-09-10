@@ -30,8 +30,9 @@ else
   nagios=nagios3
 fi
 echo ""
-echo Welcome to NEMS initialization script.
+echo -e "\e[1mWelcome to the NEMS Linux initialization script.\e[0m"
 echo ""
+echo This quick questionaire will setup your account.
 if [[ $EUID -ne 0 ]]; then
   echo "ERROR: This script must be run as root" 2>&1
   exit 1
@@ -120,6 +121,7 @@ else
   fi
 
 # Localization
+  echo -e "\e[2m"
 
   # Configure timezone
   dpkg-reconfigure tzdata
@@ -132,7 +134,7 @@ else
 
 # /Localization
 
-
+  echo -e "\e[0m"
   isValidUsername() {
     local re='^[[:lower:]_][[:lower:][:digit:]_-]{2,15}$'
     (( ${#1} > 16 )) && return 1
@@ -154,6 +156,7 @@ else
           username=""
         else
           echo Username accepted.
+          echo ""
           break
         fi
       else
@@ -176,7 +179,10 @@ else
     echo "Please try again"
   done
 
+  echo ""
   read -p "What email address should I send notifications to? " email
+
+  echo ""
 
   # In case this is a re-initialization, clear the init file (remove old login), then add this user
   echo "">/var/www/htpasswd && echo $password | /usr/bin/htpasswd -B -c -i /var/www/htpasswd $username
