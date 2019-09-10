@@ -331,7 +331,6 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
  if [[ ! -e /usr/lib/nagios/plugins/check_temper ]]; then
    cp /root/nems/nems-migrator/data/1.5/nagios/plugins/check_temper /usr/lib/nagios/plugins/check_temper
    printf -- "\e[37mImporting:\e[97m check_temper to NEMS NConf\033[0m\n" && /var/www/nconf/bin/add_items_from_nagios.pl -c checkcommand -f /root/nems/nems-migrator/data/1.5/nagios/nconf_patches/check_temper.cfg 2>&1 | grep -E "ERROR"
-   echo 'KERNEL=="hidraw1", MODE="0666"' > /etc/udev/rules.d/temper.rules
  fi
  # Upgrade chech_temper from to current version
  temperver=1.3 # Current version of Temper script
