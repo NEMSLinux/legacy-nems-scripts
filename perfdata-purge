@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+exit('disabled');
   $cutoff = intval(shell_exec('/usr/local/bin/nems-info perfdata_cutoff'));
   if ($cutoff > 0) {
     $file = '/usr/local/nagios/var/perfdata.log';
