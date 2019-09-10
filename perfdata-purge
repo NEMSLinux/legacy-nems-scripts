@@ -15,13 +15,13 @@
           // Found some timestamps that are older than $cutoff.
           // Delete those lines from $file using sed.
           $result = shell_exec("/bin/sed -i '/^$timestamp||/d' $file");
-          // We changed the file, rewind!
-          $perfdata->rewind();
           $counter++;
+          echo '.';
         }
       }
 
     }
+    echo PHP_EOL;
     $perfdata = null;
 
     if ($counter > 0) {
@@ -33,5 +33,5 @@
   } else {
     echo 'perfdata will not be purged since no cutoff is specified in NEMS SST.';
   }
-  echo PHP_EOL;
+  echo PHP_EOL . PHP_EOL;
 ?>
