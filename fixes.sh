@@ -193,8 +193,10 @@ check process 9590 with pidfile /run/9590.pid
   fi
 
   # Stop TTY1 from blanking since keyboard is likely not connected
-  if ! grep -q "NEMS00000" /etc/rc.local; then
-    /root/nems/nems-admin/build/011-tty
+  if [[ -e /etc/rc.local ]]; then
+    if ! grep -q "NEMS00000" /etc/rc.local; then
+      /root/nems/nems-admin/build/011-tty
+    fi
   fi
 
   # Remove Izzy's repository (at least temporarily).
@@ -308,6 +310,11 @@ fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
 
+ # Setup Vendor capabilities
+ if [[ ! -e /boot/vendor ]]; then
+   mkdir /boot/vendor
+ fi
+
  # Add custom_check_mem
  if [[ ! -e /usr/lib/nagios/plugins/custom_check_mem ]]; then
    cp /root/nems/nems-migrator/data/1.5/nagios/plugins/custom_check_mem /usr/lib/nagios/plugins
@@ -333,7 +340,7 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
  fi
 
  # Upgrade Telegram
- telegramver=1.5.1 # Current version of Temper script
+ telegramver=1.5.6 # Current version of Telegram script
  if ! grep -q "VERSION $telegramver" /usr/lib/nagios/plugins/notify-by-telegram.lua; then
    cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/notify-by-telegram.lua /usr/lib/nagios/plugins/notify-by-telegram.lua
  fi
@@ -453,14 +460,18 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
    fi
 
   # Move bootscreen to TTY7 and disable TTY1
+  if [[ -e /etc/rc.local ]]; then
     if ! grep -q "NEMS00001" /etc/rc.local; then
       /root/nems/nems-admin/build/010-tty
     fi
+  fi
 
   # Don't output kernel messages -- such as firewall blocks -- to TTY
+  if [[ -e /etc/rc.local ]]; then
     if ! grep -q "NEMS00002" /etc/rc.local; then
       /root/nems/nems-admin/build/012-tty
     fi
+  fi
 
   # Allow unauthenticated SMTP
     if ! grep -q "NEMS00002" /usr/local/nagios/libexec/nems_sendmail_host; then
@@ -487,10 +498,12 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
     fi
 
   # enable rc.local service if not enabled (ie., Rock64)
+  if [[ -e /etc/rc.local ]]; then
     if [[ ! -e /etc/systemd/system/rc-local.service ]]; then
       /root/nems/nems-admin/build/009-rc_local
       /root/nems/nems-admin/build/999-cleanup
     fi
+  fi
 
   # Patch check_rpi_temperature to include error handling for when the thermal sensor doesn't exist (ie., VM)
     if ! grep -q "PATCH-000006" /var/log/nems/patches.log; then
@@ -746,15 +759,16 @@ fi
   fi
 
 # Load ZRAM Swap at boot
-  if ! grep -q "NEMS0000" /etc/rc.local; then
-    # fix comment so it doesn't get replaced
-    /bin/sed -i -- 's,"exit 0",exit with errorcode 0,g' /etc/rc.local
-    # add to boot process
-    /bin/sed -i -- 's,exit 0,# Load Swap into ZRAM NEMS0000\n/usr/local/share/nems/nems-scripts/zram.sh > /dev/null 2>\&1\n\nexit 0,g' /etc/rc.local
-    # run it now
-    /usr/local/share/nems/nems-scripts/zram.sh # Do it now
+  if [[ -e /etc/rc.local ]]; then
+    if ! grep -q "NEMS0000" /etc/rc.local; then
+      # fix comment so it doesn't get replaced
+      /bin/sed -i -- 's,"exit 0",exit with errorcode 0,g' /etc/rc.local
+      # add to boot process
+      /bin/sed -i -- 's,exit 0,# Load Swap into ZRAM NEMS0000\n/usr/local/share/nems/nems-scripts/zram.sh > /dev/null 2>\&1\n\nexit 0,g' /etc/rc.local
+      # run it now
+      /usr/local/share/nems/nems-scripts/zram.sh # Do it now
+    fi
   fi
-
 if [ $(dpkg-query -W -f='${Status}' memtester 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
   apt-get -y install memtester
 fi

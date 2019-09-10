@@ -196,11 +196,11 @@ elif [[ $COMMAND == "rootfulldev" ]]; then
   /bin/mount | /bin/sed -n 's|^/dev/\(.*\) on / .*|\1|p'
 
 elif [[ $COMMAND == "rootdev" ]]; then
-# output json response of detected wifi networks
+# Root device name of the / filesystem (eg., sda or mmcblk0)
   /usr/local/share/nems/nems-scripts/info2.sh 8
 
 elif [[ $COMMAND == "rootpart" ]]; then
-# output json response of detected wifi networks
+# Root partition number of the / filesystem (eg., 1)
   /usr/local/share/nems/nems-scripts/info2.sh 9
 
 elif [[ $COMMAND == "wifi" ]]; then
@@ -319,6 +319,13 @@ grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage}'
 
 elif [[ $COMMAND == "temperature" ]]; then
   /usr/local/share/nems/nems-scripts/info2.sh 1
+
+elif [[ $COMMAND == "frequency" ]]; then
+  if [[ -e /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq ]]; then
+    cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
+  else
+    echo 0
+  fi
 
 elif [[ $COMMAND == "nemsbranch" ]]; then
   /usr/local/share/nems/nems-scripts/info2.sh 2

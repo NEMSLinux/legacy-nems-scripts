@@ -112,9 +112,17 @@ switch($argv[1]) {
   break;
 
   case 8: // root device
-//    $fulldev=shell_exec("df /root | awk '/^\/dev/ {print $1}'");
     $fulldev=trim(shell_exec("/usr/local/bin/nems-info rootfulldev"));
     $tmp = explode('p',$fulldev);
+    if (!is_array($tmp) || !isset($tmp[1])) {
+      // Check if is SCSI
+      preg_match_all('!\d+!', $fulldev, $numbers);
+      if (is_array($numbers) && isset($numbers[0][0])) {
+        $tmp = array();
+        $tmp[0] = preg_replace('/' . $numbers[0][0] . '$/', '', $fulldev);
+        $tmp[1] = $numbers[0][0];
+      }
+    }
     if (is_array($tmp)) {
       end($tmp);
       $lastkey = key($tmp);
@@ -130,9 +138,17 @@ switch($argv[1]) {
   break;
 
   case 9: // root partition on root device
-//    $fulldev=shell_exec("df /root | awk '/^\/dev/ {print $1}'");
     $fulldev=trim(shell_exec("/usr/local/bin/nems-info rootfulldev"));
     $tmp = explode('p',$fulldev);
+    if (!is_array($tmp) || !isset($tmp[1])) {
+      // Check if is SCSI
+      preg_match_all('!\d+!', $fulldev, $numbers);
+      if (is_array($numbers) && isset($numbers[0][0])) {
+        $tmp = array();
+        $tmp[0] = preg_replace('/' . $numbers[0][0] . '$/', '', $fulldev);
+        $tmp[1] = $numbers[0][0];
+      }
+    }
     if (is_array($tmp)) {
       end($tmp);
       $partkey = key($tmp);

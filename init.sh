@@ -262,7 +262,12 @@ fi
 # Replace the database with Sample database
 systemctl stop mysql
 # Force kill MySQL (in case safe mode prevents shutdown, as is the case on Docker)
-  sleep 3 && kill -9 $(pidof mysqld)
+  sleep 3
+  mysqldpid=$(pidof mysqld)
+  if [[ $mysqldpid != "" ]]; then
+    kill -9 $mysqldpid
+    sleep 1
+  fi
 rm -rf /var/lib/mysql/
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
   cp -R /root/nems/nems-migrator/data/1.5/mysql/NEMS-Sample /var/lib
@@ -274,7 +279,12 @@ fi
 mv /var/lib/NEMS-Sample /var/lib/mysql
 chown -R mysql:mysql /var/lib/mysql
 # Force kill MySQL (in case safe mode prevents shutdown, as is the case on Docker)
-  sleep 3 && kill -9 $(pidof mysqld) && sleep 1
+  sleep 3
+  mysqldpid=$(pidof mysqld)
+  if [[ $mysqldpid != "" ]]; then
+    kill -9 $mysqldpid
+    sleep 1
+  fi
 systemctl start mysql
 
 # Replace the Nagios cgi.cfg file with the sample and add username
