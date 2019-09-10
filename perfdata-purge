@@ -7,8 +7,7 @@
 
     $perfdata = new SplFileObject($file);
     $counter = 0;
-    while (!$perfdata->eof()) {
-      $line = $perfdata->fgets();
+    foreach ($perfdata as $line) {
       $tmp = explode('||',$line);
       $timestamp = intval($tmp[0]);
       if ($timestamp < strtotime($cutoff . ' days ago')) {
