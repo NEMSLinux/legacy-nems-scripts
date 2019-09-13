@@ -334,8 +334,17 @@ elif [[ $COMMAND == "temperature" ]]; then
   /usr/local/share/nems/nems-scripts/info2.sh 1
 
 elif [[ $COMMAND == "frequency" ]]; then
-  if [[ -e /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq ]]; then
-    cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
+  frequencies=0
+  cores=$(nproc --all)
+  for ((core=0;core<$cores;core++)); do
+    if [[ -e /sys/devices/system/cpu/cpu$core/cpufreq/scaling_cur_freq ]]; then
+      frequency=$(cat /sys/devices/system/cpu/cpu$core/cpufreq/scaling_cur_freq)
+      frequencies=$(( $frequency + $frequencies ))
+    fi
+  done
+  if (( "$frequencies" > "0" )); then
+    # Output the average frequency across all cores
+    echo $(( $frequencies / $cores ))
   else
     echo 0
   fi
