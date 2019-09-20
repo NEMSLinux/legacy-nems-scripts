@@ -69,7 +69,7 @@
 	# HW_MODEL 16 ODROID-N2 (4 GB)
 	# HW_MODEL 15 ODROID-N2 (2 GB)
 	# HW_MODEL 13 oDroid U3
-	# HW_MODEL 12 oDroid C2
+	# HW_MODEL 12 ODROID-C2
 	# HW_MODEL 11 oDroid XU3/XU4/HC1/HC2
 	# HW_MODEL 10 oDroid C0/C1/C1+
 	# HW_MODEL 8 Raspberry Pi 4 (4GB)
@@ -769,7 +769,7 @@
 
 			elif (( $HW_MODEL == 12 )); then
 
-				HW_MODEL_DESCRIPTION='ODROID C2'
+				HW_MODEL_DESCRIPTION='ODROID-C2'
 				IMAGE_ADDITIONAL_CREDITS='Meveric'
 
 				#oDroid XU3/4 via /etc/.dietpi_hw_model
@@ -829,10 +829,10 @@
 			#Grab hardware description from rpi_boardinfo
 			RPi_BoardInfo
 
-		#oDroid C2
+		#odroid-C2
 		elif (( $(cat /proc/cpuinfo | grep -ci -m1 'ODROID-C2') )); then
 
-			HW_MODEL_DESCRIPTION='ODROID C2'
+			HW_MODEL_DESCRIPTION='ODROID-C2'
 			HW_MODEL=12
 			IMAGE_ADDITIONAL_CREDITS='Meveric'
 
