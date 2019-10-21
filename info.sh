@@ -9,6 +9,16 @@ export VARIABLE=$2
 
 me=`basename "$0"`
 
+# Get the username even if sudo
+user=$(who | awk '{print $1}')
+
+cachedir=~/.nems_cache/
+if [[ ! -e $cachedir ]]; then
+  mkdir -p $cachedir
+  chmod 755 $cachedir
+  chown -R $user:$user $cachedir
+fi
+
 # Some functions
 
   function SecondsToDaysHoursMinutesSeconds() {
@@ -53,13 +63,24 @@ if [[ $COMMAND == "ip" ]]; then
   fi
 
 elif [[ $COMMAND == "nic" ]]; then
-  # Show the active NIC
-  # OLD way causes errors if connected to two interfaces (eg., eth0 and wlan0)
-#  interface=`/sbin/route | /bin/grep '^default' | /bin/grep -o '[^ ]*$'`
-  # NEW way (20181201) tests the route based on $host and treats that as the interface
-  host=google.com
-  host_ip=$(getent ahosts "$host" | awk '{print $1; exit}')
-  interface=`ip route get "$host_ip" | grep -Po '(?<=(dev )).*(?= src| proto)' | cut -f 1 -d " "`
+  # test the route based on $host and treat that as the interface
+  interface=""
+  cachefile=${cachedir}nic.cache
+  if [[ -f $cachefile ]]; then
+    if [[ $(find $cachefile -newermt '-1 minute') ]]; then
+      interface=$(cat $cachefile)
+    fi
+  else
+    touch $cachefile
+    chmod 644 $cachefile
+    chown $user:$user $cachefile
+  fi
+  if [[ $interface == "" ]]; then
+    host=nemslinux.com
+    host_ip=$(getent ahosts "$host" | awk '{print $1; exit}')
+    interface=`ip route get "$host_ip" | grep -Po '(?<=(dev )).*(?= src| proto)' | cut -f 1 -d " "`
+    echo $interface > $cachefile
+  fi
   echo $interface
 
 elif [[ $COMMAND == "fileage" ]]; then
@@ -368,20 +389,27 @@ elif [[ $COMMAND == "init" ]]; then
   fi
 
 elif [[ $COMMAND == "online" ]]; then
-  # Check if Github responds
-#  online=$(ping -q -w 1 -c 1 github.com > /dev/null 2>&1 && echo 1 || echo 0)
-#  if [[ $online == 1 ]]; then
-#    echo 1
-#  else
-    # Try a second time as failsafe
-#    ping -q -w 1 -c 1 github.com > /dev/null 2>&1 && echo 1 || echo 0
-#  fi
-  wget -q --spider http://google.com
-  if [ $? -eq 0 ]; then
-    echo 1
+  online=""
+  cachefile=${cachedir}online.cache
+  if [[ -f $cachefile ]]; then
+    if [[ $(find $cachefile -newermt '-1 minute') ]]; then
+      online=$(cat $cachefile)
+    fi
   else
-    echo 0
+    touch $cachefile
+    chmod 644 $cachefile
+    chown $user:$user $cachefile
   fi
+  if [[ $online == "" ]]; then
+    wget -q --spider https://nemslinux.com/
+    if [ $? -eq 0 ]; then
+      online=1
+    else
+      online=0
+    fi
+    echo $online > $cachefile
+  fi
+  echo $online
 
 elif [[ $COMMAND == "socket" ]]; then
   ver=$(/usr/local/bin/nems-info nemsver)
@@ -584,4 +612,3 @@ else
   echo "Usage: ./$me command"
   echo "For help, visit https://docs.nemslinux.com/commands/nems-info"
 fi
-
