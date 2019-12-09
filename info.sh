@@ -134,10 +134,13 @@ elif [[ $COMMAND == "tv_24h" ]]; then
 
 # Output the current available NEMS version (update.sh generates this every day at midnight and at reboot)
 elif [[ $COMMAND == "nemsveravail" ]]; then
-  if [[ -f /root/nems/nems-migrator/data/nems/ver-current.txt ]]; then
-    /bin/cat /root/nems/nems-migrator/data/nems/ver-current.txt
-  elif [[ -f /var/www/html/inc/ver-available.txt ]]; then
+  if [[ ! -f /var/www/html/inc/ver-available.txt ]]; then
+    /usr/local/share/nems/nems-scripts/tasks.sh update platform
+  fi
+  if [[ -f /var/www/html/inc/ver-available.txt ]]; then
     /bin/cat /var/www/html/inc/ver-available.txt
+  else
+    /bin/cat /root/nems/nems-migrator/data/nems/ver-current.txt
   fi
 
 # Output the number of users connected to server

@@ -65,8 +65,8 @@ else
   else
     echo "   New Commit: $commit"
   fi
-  # Get the latest version data from nems-migrator
-  cp -f /root/nems/nems-migrator/data/nems/ver-current.txt /var/www/html/inc/ver-available.txt
+  # Get the latest version data from the NEMS API
+  /usr/local/share/nems/nems-scripts/tasks.sh update platform
 
   # Update nems-www
   echo " - nems-www... "
