@@ -155,7 +155,14 @@ elif [[ $COMMAND == "users" ]]; then
 
 # Output disk usage in percent
 elif [[ $COMMAND == "diskusage" ]]; then
-  df -hl /home | awk '/^\/dev\// { sum+=$5 } END { print sum }'
+  getPlatform
+  # Docker
+  if (( $platform == 21 )); then 
+    df -hl /home | awk '/^\overlay/ { sum+=$5 } END { print sum }'
+  # Not Docker
+  else
+    df -hl /home | awk '/^\/dev\// { sum+=$5 } END { print sum }'
+  fi
 
 # Output memory usage breakdown
 elif [[ $COMMAND == "memusage" ]]; then
