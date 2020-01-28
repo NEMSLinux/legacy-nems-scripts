@@ -109,6 +109,7 @@ else
   fi
   
   if [[ $init = 1 ]]; then
+    echo ""
     echo -e "\e[1m*** WARNING ***\e[0m"
     echo "Your NEMS server is already initialized!"
     echo "If you proceed, all settings will be lost."
