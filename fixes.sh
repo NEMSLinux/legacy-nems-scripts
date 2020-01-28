@@ -165,40 +165,6 @@ if [[ "$ver" == "1.4.1" ]]; then
   # Fix ownership of new Adagios web folder (which is now a symlink)
   chown -R www-data:www-data /var/www/adagios/
 
-  if ! grep -q "NEMS00000" /etc/monit/conf.d/nems.conf; then
-    echo '# NEMS00000 Monitorix
-check process monitorix with pidfile /run/monitorix.pid
-    start program = "/etc/init.d/monitorix start"
-    stop program  = "/etc/init.d/monitorix stop"
-  ' >> /etc/monit/conf.d/nems.conf
-    /bin/systemctl restart monit
-  fi
-
-  # Install 9590
-  # A simple listener on Port 9590 for documentation examples
-  if [[ ! -f /etc/init.d/9590 ]]; then
-    cp /root/nems/nems-migrator/data/1.4/init.d/9590 /etc/init.d/
-    /usr/sbin/update-rc.d 9590 defaults
-    /usr/sbin/update-rc.d 9590 enable
-    /etc/init.d/9590 start
-  fi
-  # And add it to monit
-  if ! grep -q "NEMS00001" /etc/monit/conf.d/nems.conf; then
-    echo '# NEMS00001 9590
-check process 9590 with pidfile /run/9590.pid
-    start program = "/etc/init.d/9590 start"
-    stop program  = "/etc/init.d/9590 stop"
-  ' >> /etc/monit/conf.d/nems.conf
-    /bin/systemctl restart monit
-  fi
-
-  # Stop TTY1 from blanking since keyboard is likely not connected
-  if [[ -e /etc/rc.local ]]; then
-    if ! grep -q "NEMS00000" /etc/rc.local; then
-      /root/nems/nems-admin/build/011-tty
-    fi
-  fi
-
   # Remove Izzy's repository (at least temporarily).
   # cert is broken and it causes all kinds of grief.
   # Perhaps need to evaluate building monitorix ourselves.
@@ -304,6 +270,40 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4.1'")}') )); then
   # Benchmarks have not been run yet. Force the first-run (will also run every Sunday on Cron)
   if [[ ! -d /var/log/nems/benchmarks ]] || [[ ! -f /var/log/nems/benchmarks/7z-multithread ]]; then
     /usr/local/share/nems/nems-scripts/benchmark.sh
+  fi
+
+  if ! grep -q "NEMS00000" /etc/monit/conf.d/nems.conf; then
+    echo '# NEMS00000 Monitorix
+check process monitorix with pidfile /run/monitorix.pid
+    start program = "/etc/init.d/monitorix start"
+    stop program  = "/etc/init.d/monitorix stop"
+  ' >> /etc/monit/conf.d/nems.conf
+    /bin/systemctl restart monit
+  fi
+
+  # Install 9590
+  # A simple listener on Port 9590 for documentation examples
+  if [[ ! -f /etc/init.d/9590 ]]; then
+    cp /root/nems/nems-migrator/data/1.4/init.d/9590 /etc/init.d/
+    /usr/sbin/update-rc.d 9590 defaults
+    /usr/sbin/update-rc.d 9590 enable
+    /etc/init.d/9590 start
+  fi
+  # And add it to monit
+  if ! grep -q "NEMS00001" /etc/monit/conf.d/nems.conf; then
+    echo '# NEMS00001 9590
+check process 9590 with pidfile /run/9590.pid
+    start program = "/etc/init.d/9590 start"
+    stop program  = "/etc/init.d/9590 stop"
+  ' >> /etc/monit/conf.d/nems.conf
+    /bin/systemctl restart monit
+  fi
+
+  # Stop TTY1 from blanking since keyboard is likely not connected
+  if [[ -e /etc/rc.local ]]; then
+    if ! grep -q "NEMS00000" /etc/rc.local; then
+      /root/nems/nems-admin/build/011-tty
+    fi
   fi
 
 fi
