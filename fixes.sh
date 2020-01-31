@@ -322,7 +322,7 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
    printf -- "\e[37mImporting:\e[97m custom_check_mem advanced service to NEMS NConf\033[0m\n" && /var/www/nconf/bin/add_items_from_nagios.pl -c advanced-service -f /root/nems/nems-migrator/data/1.5/nagios/nconf_patches/custom_check_mem-advanced-service.cfg 2>&1 | grep -E "ERROR"
  fi
 
- # Install TEMPer Support
+ # Install TEMPer Hardware Support
  if [ $(dpkg-query -W -f='${Status}' python3-serial 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
    /root/nems/nems-admin/build/500-temper
  fi
@@ -332,7 +332,7 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
    cp /root/nems/nems-migrator/data/1.5/nagios/plugins/check_temper /usr/lib/nagios/plugins/check_temper
    printf -- "\e[37mImporting:\e[97m check_temper to NEMS NConf\033[0m\n" && /var/www/nconf/bin/add_items_from_nagios.pl -c checkcommand -f /root/nems/nems-migrator/data/1.5/nagios/nconf_patches/check_temper.cfg 2>&1 | grep -E "ERROR"
  fi
- # Upgrade chech_temper from to current version
+ # Upgrade check_temper from to current version
  temperver=1.3 # Current version of Temper script
  if ! grep -q "Version $temperver" /usr/local/nagios/libexec/check_temper; then
    cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/check_temper /usr/lib/nagios/plugins/check_temper
