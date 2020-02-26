@@ -335,7 +335,7 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
  # Upgrade check_temper from to current version
  temperver=1.4 # Current version of Temper script
  if ! grep -q "Version $temperver" /usr/local/nagios/libexec/check_temper; then
-   cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/check_temper /usr/lib/nagios/plugins/check_temper
+   cp -f /root/nems/nems-migrator/data/1.6/nagios/plugins/check_temper /usr/lib/nagios/plugins/check_temper
  fi
 
  # Upgrade Telegram
