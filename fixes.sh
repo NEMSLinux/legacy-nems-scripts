@@ -338,6 +338,21 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
    cp -f /root/nems/nems-migrator/data/1.6/nagios/plugins/check_temper /usr/lib/nagios/plugins/check_temper
  fi
 
+ # check_temper requires access to USB ports as non-root
+ # Allow this every time (note this runs at every reboot)
+  if [[ -e /dev/ttyUSB0 ]]; then
+    chmod a+rw /dev/ttyUSB0
+  fi
+  if [[ -e /dev/ttyUSB1 ]]; then
+    chmod a+rw /dev/ttyUSB1
+  fi
+  if [[ -e /dev/ttyUSB2 ]]; then
+    chmod a+rw /dev/ttyUSB2
+  fi
+  if [[ -e /dev/ttyUSB3 ]]; then
+    chmod a+rw /dev/ttyUSB3
+  fi
+
  # Upgrade Telegram
  telegramver=1.5.6 # Current version of Telegram script
  if ! grep -q "VERSION $telegramver" /usr/lib/nagios/plugins/notify-by-telegram.lua; then
