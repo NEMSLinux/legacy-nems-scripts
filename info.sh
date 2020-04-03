@@ -158,7 +158,7 @@ elif [[ $COMMAND == "diskusage" ]]; then
   getPlatform
   # Docker
   if (( $platform == 21 )); then 
-    df -hl /home | awk '/^\overlay/ { sum+=$5 } END { print sum }'
+    df -hl /home | awk '/^overlay/ { sum+=$5 } END { print sum }'
   # Not Docker
   else
     df -hl /home | awk '/^\/dev\// { sum+=$5 } END { print sum }'
