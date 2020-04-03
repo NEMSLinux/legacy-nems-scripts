@@ -13,7 +13,7 @@ me=`basename "$0"`
 user=$(who | awk '{print $1}')
 
 cachedir=~/.nems_cache/
-if [[ ! -e $cachedir ]]; then
+if [[ $user != 'www-data' ]] && [[ ! -e $cachedir ]]; then
   mkdir -p $cachedir
   chmod 755 $cachedir
   chown -R $user:$user $cachedir
