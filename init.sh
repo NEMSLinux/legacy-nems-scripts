@@ -116,9 +116,15 @@ else
     echo "If you wish to keep your settings, please"
     echo "make a copy of your backup.nems file first,"
     echo "initialize, and then run nems-restore."
-    echo "Press CTRL-C to abort."
     echo ""
-    sleep 5
+    read -r -p "Do you want to wipe your config and re-initialize? [y/N] " beta
+    echo ""
+    if [[ $beta =~ ^([yY][eE][sS]|[yY])$ ]]; then
+      echo "Proceeding..."
+    else
+      echo "Aborted."
+      exit 1
+    fi
   fi
 
 # Localization
@@ -191,9 +197,11 @@ else
   # Create the Linux user
   adduser --disabled-password --gecos "" $username
   # Giving you files
-  printf "Moving all files in /home/nemsadmin to /home/$username... "
-  cp /home/nemsadmin/* /home/$username/ > /dev/null 2>&1
-  echo Done.
+  if [[ -d /home/nemsadmin ]]; then
+    printf "Moving all files in /home/nemsadmin to /home/$username... "
+    cp -f /home/nemsadmin/* /home/$username/ > /dev/null 2>&1
+    echo Done.
+  fi
   # Allow user to become super-user
   usermod -aG sudo $username
   # Allow them to also administer nagios, access livestatus, etc.
