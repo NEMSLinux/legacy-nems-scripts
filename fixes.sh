@@ -48,8 +48,11 @@
 
  # Update apt here so we don't have to do it below
  apt clean
- apt update --allow-releaseinfo-change
-
+ if (( $platform >= 0 )) && (( $platform <= 9 )); then
+   apt update --allow-releaseinfo-change
+ else
+   apt update
+ fi
  # using hard file location rather than symlink as symlink may not exist yet on older versions
  platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
  ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver) 
