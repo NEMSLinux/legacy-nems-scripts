@@ -46,6 +46,13 @@
    fi
  fi
 
+ # using hard file location rather than symlink as symlink may not exist yet on older versions
+ platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+ ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver) 
+
+ # Ensure apt has the pubkeys needed
+ apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B188E2B695BD4743
+
  # Update apt here so we don't have to do it below
  apt clean
  if (( $platform >= 0 )) && (( $platform <= 9 )); then
@@ -53,9 +60,6 @@
  else
    apt update
  fi
- # using hard file location rather than symlink as symlink may not exist yet on older versions
- platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
- ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver) 
 
  # Fix Default Collector name if incorrect
  collector=$(/usr/bin/mysql -u nconf -h 127.0.0.1 -pnagiosadmin -D nconf -e "SELECT attr_value FROM ConfigValues WHERE fk_id_attr = 1;")
