@@ -334,6 +334,15 @@ vm.swappiness = 10
       echo ""
     fi
 
+    if ! grep -q "PATCH-000008" /var/log/nems/patches.log; then
+      echo "PATCH-000008 is available."
+      echo "This patch adds a sophisticated realtime TV dashboard called"
+      echo "NagiosTV to your NEMS Server. It was scheduled for NEMS Linux"
+      echo "1.6, but I decided to make it available to you as a patch."
+      read -r -p "Do you want to install this patch? [y/N] " PATCH000008
+      echo ""
+    fi
+
 
     # Run the selected patches
     if [[ $PATCH000001 =~ ^([yY][eE][sS]|[yY])$ ]]; then
@@ -350,6 +359,9 @@ vm.swappiness = 10
     fi
     if [[ $PATCH000007 =~ ^([yY][eE][sS]|[yY])$ ]]; then
       /root/nems/nems-admin/nems-upgrade/patches/000007 && upgraded=1
+    fi
+    if [[ $PATCH000008 =~ ^([yY][eE][sS]|[yY])$ ]]; then
+      /root/nems/nems-admin/nems-upgrade/patches/000008 && upgraded=1
     fi
 
   fi
