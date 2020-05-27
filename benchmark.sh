@@ -39,7 +39,7 @@ plannedend=$(($start + $thisruntime))
 
 echo "NEMS System Benchmark... Please Wait (may take a while)."
 
-tmpdir=`mktemp -d -p /tmp/`
+tmpdir=`mktemp -d -p /usr/local/share/`
 
 echo "NEMS System Benchmark" > $tmpdir/nems-benchmark.log
 date >> $tmpdir/nems-benchmark.log

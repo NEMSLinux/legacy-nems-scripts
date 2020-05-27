@@ -1,5 +1,6 @@
 #!/bin/bash
 allowupdate=`/usr/local/bin/nems-info allowupdate`
+tmpdir=`mktemp -d -p /usr/local/share/`
 
   # Just in case nems-quickfix is running
   quickfix=$(/usr/local/bin/nems-info quickfix)
@@ -68,13 +69,13 @@ if [[ $proceed == 1 ]]; then
     printf "."
 
     # Create a copy of the update script to run
-    cp /usr/local/share/nems/nems-scripts/update.sh /tmp/qf.sh
+    cp /usr/local/share/nems/nems-scripts/update.sh $tmpdir/qf.sh
 
     # Run the copy
-    /tmp/qf.sh > /dev/null 2>&1
+    $tmpdir/qf.sh > /dev/null 2>&1
 
   done
-  rm /tmp/qf.sh
+  rm $tmpdir/qf.sh
   echo " Done."
 else
   echo "Update Skipped based on settings in NEMS SST."
