@@ -333,6 +333,13 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
  # A little gift for my faithful users: Access to NagiosTV ahead of the 1.6 release!
  /root/nems/nems-admin/nems-upgrade/patches/000008
  /root/nems/nems-admin/nems-upgrade/patches/000009
+ if [[ ! -e /etc/apache2/conf-enabled/nagiostv.conf ]]; then
+  /root/nems/nems-admin/build/146-nagiostv
+  # Enable nagiostv
+  a2enconf nagiostv
+  # Reload apache2
+  systemctl reload apache2
+ fi
 
  # Install TEMPer Hardware Support
  if [ $(dpkg-query -W -f='${Status}' python3-serial 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
