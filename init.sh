@@ -5,22 +5,18 @@
 ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver)
 platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
 init=$(/usr/local/share/nems/nems-scripts/info.sh init)
+tmpdir=`mktemp -d -p /usr/local/share/`
 
-if [[ -f /tmp/qf.sh ]]; then
-  qfrunning=`ps aux | grep -i "myscript.sh" | grep -v "grep" | wc -l`
-  if [ $qfrunning -ge 1 ]
-   then
-    printf "Please wait... your NEMS server is being updated."
-    while [ -f /tmp/qf.sh ]
+  # Just in case nems-quickfix is running
+  quickfix=$(/usr/local/bin/nems-info quickfix)
+  if [[ $quickfix == 1 ]]; then
+    echo 'NEMS Linux is currently updating itself. Please wait...'
+    while [[ $quickfix == 1 ]]
     do
-      printf "."
-      sleep 2
+      sleep 1
+      quickfix=$(/usr/local/bin/nems-info quickfix)
     done
-    echo " Ready."
-   else
-    rm /tmp/qf.sh
-   fi
-fi
+  fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
   confbase=/etc/nems/conf/
@@ -29,6 +25,7 @@ else
   confbase=/etc/nagios3/
   nagios=nagios3
 fi
+
 echo ""
 echo -e "\e[1mWelcome to the NEMS Linux initialization script.\e[0m"
 echo ""
@@ -50,7 +47,6 @@ else
       echo "virtual Network Interface. Shut down your NEMS appliance"
       echo "and modify the Network Interface in your hypervisor."
       echo ""
-      tmpdir=`mktemp -d -p /usr/local/share/`
       wget -q -O $tmpdir/mac https://nemslinux.com/api/mac
       mac=`cat $tmpdir/mac`
       echo "Here is a MAC address you can use in your VM Config: $mac"
@@ -102,7 +98,7 @@ else
       [ "$pipassword" = "$pipassword2" ] && break
       echo "Please try again"
     done
-    echo -e "$pipassword\n$pipassword" | passwd pi >/tmp/init 2>&1
+    echo -e "$pipassword\n$pipassword" | passwd pi >$tmpdir/init 2>&1
 
     echo "Your new password has been set for the Linux pi user."
     echo "Use that password to access NEMS over SSH or when logging in to Webmin."
@@ -210,7 +206,7 @@ else
   [ $(getent group monit) ] || groupadd monit
   usermod -aG monit $username
   # Set the user password
-  echo -e "$password\n$password" | passwd $username >/tmp/init 2>&1
+  echo -e "$password\n$password" | passwd $username >$tmpdir/init 2>&1
 
   # Reset the RPi-Monitor user
   cp /root/nems/nems-migrator/data/rpimonitor/daemon.conf /etc/rpimonitor
@@ -411,7 +407,7 @@ service.rpi-monitor=0
     echo ""
     deluser nemsadmin sudo # Remove super user access from nemsadmin account
     rndpass=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-32} | head -n 1)
-    echo -e "$rndpass\n$rndpass" | passwd nemsadmin >/tmp/init 2>&1 # set a random password on the account so no longer can login
+    echo -e "$rndpass\n$rndpass" | passwd nemsadmin >$tmpdir/init 2>&1 # set a random password on the account so no longer can login
   fi
 
   echo ""
