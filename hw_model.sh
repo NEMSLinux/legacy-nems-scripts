@@ -437,6 +437,17 @@
 			HW_MODEL=7
 			HW_ONBOARD_WIFI=1
 
+		elif [[ "$HW_REVISION_CODE" == *"b03112" ]]; then
+		
+			# This is a Model B board
+			HW_RELEASE_DATE='Q1 2020'
+			HW_MODEL_DESCRIPTION+='4'
+			HW_PCB_REVISION_CODE='1.2'
+			HW_MEMORY_SIZE=2048
+			HW_MANUFACTURER_NAME='Sony UK'
+			HW_MODEL=7
+			HW_ONBOARD_WIFI=1
+
 		elif [[ "$HW_REVISION_CODE" == *"c03111" ]]; then
 
 			# This is a Model B board
@@ -446,6 +457,28 @@
 			HW_MEMORY_SIZE=4096
 			HW_MANUFACTURER_NAME='Sony UK'
 			HW_MODEL=8
+			HW_ONBOARD_WIFI=1
+
+		elif [[ "$HW_REVISION_CODE" == *"c03112" ]]; then
+
+			# This is a Model B board
+			HW_RELEASE_DATE='Q1 2020'
+			HW_MODEL_DESCRIPTION+='4'
+			HW_PCB_REVISION_CODE='1.2'
+			HW_MEMORY_SIZE=4096
+			HW_MANUFACTURER_NAME='Sony UK'
+			HW_MODEL=8
+			HW_ONBOARD_WIFI=1
+
+		elif [[ "$HW_REVISION_CODE" == *"d03114" ]]; then
+
+			# This is a Model B board
+			HW_RELEASE_DATE='Q2 2020'
+			HW_MODEL_DESCRIPTION+='4'
+			HW_PCB_REVISION_CODE='1.4'
+			HW_MEMORY_SIZE=8192
+			HW_MANUFACTURER_NAME='Sony UK'
+			HW_MODEL=9
 			HW_ONBOARD_WIFI=1
 
 		fi

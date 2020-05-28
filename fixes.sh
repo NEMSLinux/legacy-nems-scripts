@@ -74,6 +74,16 @@
   fi
  fi
 
+if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.6'")}') )); then
+
+  # Symlink python2 binary to python3 to prevent errors for scripts that call /usr/bin/python
+  # This method allows us to keep compatibility with old versions of NEMS Linux a little more easily
+  if [[ ! -e /usr/bin/python ]] && [[ -e /usr/bin/python3 ]]; then
+    ln -s /usr/bin/python3 /usr/bin/python
+  fi
+
+fi
+
 if [[ "$ver" == "1.4" ]]; then
 
   # Fix Nagios lockfile location (was causing systemd to be unable to restart Nagios)
@@ -592,8 +602,6 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
     fi
 
 fi
-
-
 
 
 if (( $(awk 'BEGIN {print ("'$ver'" <= "'1.3.1'")}') )); then
