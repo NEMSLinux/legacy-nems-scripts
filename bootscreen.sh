@@ -3,6 +3,8 @@
 # Global variables
 ver=$(/usr/local/bin/nems-info nemsver)
 host=$(/bin/hostname)
+# First load IP. May change, so is checked again during rotation.
+ip=$(/usr/local/bin/nems-info ip)
 
 # Should set screen resolution on each board
 # See: https://linuxhint.com/set_screen_resolution_linux_kernel_boot/
@@ -17,7 +19,7 @@ display_screen() {
   else
     conf=/usr/local/share/nems/nems-scripts/settings/dialog.normal
   fi
-  env DIALOGRC=$conf dialog --title "$1" \
+  env DIALOGRC=$conf dialog --title "$1 ($ip)" \
     --no-collapse \
     --infobox "$output" 20 72
 }
