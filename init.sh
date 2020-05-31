@@ -275,7 +275,7 @@ systemctl stop mysql
   fi
 rm -rf /var/lib/mysql/
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
-  cp -R /root/nems/nems-migrator/data/1.5/mysql/NEMS-Sample /var/lib
+  cp -R /root/nems/nems-migrator/data/1.6/mysql/NEMS-Sample /var/lib
 elif (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
   cp -R /root/nems/nems-migrator/data/1.4/mysql/NEMS-Sample /var/lib
 else
