@@ -233,7 +233,7 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
   rm -rf $confbase
   mkdir -p $confbase
   if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
-    cp -R /root/nems/nems-migrator/data/1.5/nagios/conf/* $confbase
+    cp -R /root/nems/nems-migrator/data/1.6/nagios/conf/* $confbase
   elif (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
     cp -R /root/nems/nems-migrator/data/1.4/nagios/conf/* $confbase
   fi
