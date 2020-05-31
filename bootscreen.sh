@@ -5,6 +5,7 @@ ver=$(/usr/local/bin/nems-info nemsver)
 host=$(/bin/hostname)
 # First load IP. May change, so is checked again during rotation.
 ip=$(/usr/local/bin/nems-info ip)
+alias=$(/usr/local/bin/nems-info alias)
 
 # Should set screen resolution on each board
 # See: https://linuxhint.com/set_screen_resolution_linux_kernel_boot/
@@ -19,7 +20,12 @@ display_screen() {
   else
     conf=/usr/local/share/nems/nems-scripts/settings/dialog.normal
   fi
-  env DIALOGRC=$conf dialog --title "$1 ($ip)" \
+  if [[ ! $alias == 'nems' ]]; then
+    aliastitle=" ($alias)";
+  else
+    aliastitle="";
+  fi
+  env DIALOGRC=$conf dialog --backtitle "This NEMS Server: ${ip}${aliastitle}" --title "$1" \
     --no-collapse \
     --infobox "$output" 20 72
 }
@@ -67,7 +73,6 @@ online=$(/usr/local/bin/nems-info online)
   fi
 
 ip=$(/usr/local/bin/nems-info ip)
-
 init=$(/usr/local/bin/nems-info init)
 
 platform_name=$(/usr/local/bin/nems-info platform-name)
