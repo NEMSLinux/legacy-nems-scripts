@@ -332,6 +332,12 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
    mkdir /boot/vendor
  fi
 
+ # Create missing usdisks directory as per Cockpit Issue # 12412
+ # https://github.com/cockpit-project/cockpit/issues/12412
+ if [[ ! -e /usr/lib/arm-linux-gnueabihf/udisks2/modules ]]; then
+   mkdir -p /usr/lib/arm-linux-gnueabihf/udisks2/modules
+ fi
+
  # Add custom_check_mem
  if [[ ! -e /usr/lib/nagios/plugins/custom_check_mem ]]; then
    apt-get install -y gawk
