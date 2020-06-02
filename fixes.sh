@@ -3,21 +3,6 @@
 # No need to run this directly.
 # Instead, run: sudo nems-update
 
-# Always ensure this device is allowed to access TEMPer without root user access (after a reboot especially)
-echo 'KERNEL=="hidraw1", MODE="0666"' > /etc/udev/rules.d/temper.rules
-if [[ -e /dev/ttyUSB0 ]]; then
-  chmod a+rw /dev/ttyUSB0
-fi
-if [[ -e /dev/ttyUSB1 ]]; then
-  chmod a+rw /dev/ttyUSB1
-fi
-if [[ -e /dev/ttyUSB2 ]]; then
-  chmod a+rw /dev/ttyUSB2
-fi
-if [[ -e /dev/ttyUSB3 ]]; then
-  chmod a+rw /dev/ttyUSB3
-fi
-
  online=$(/usr/local/share/nems/nems-scripts/info.sh online)
  if [[ $online == 0 ]]; then
    echo "Internet is offline. NEMS needs Internet connectivity."
@@ -774,6 +759,13 @@ fi
     # Run it
     restartwarninglight=1
     /root/nems/nems-tools/gpio-extender/gpioe-server > /dev/null 2>&1 &
+  fi
+
+  if ! grep -q "NEMS0017" /tmp/cron.tmp; then
+    printf "\n# Enable non-root access to TEMPer NEMS0017\n@reboot /usr/local/share/nems/nems-scripts/temperinit > /dev/null 2>&1\n" >> /tmp/cron.tmp
+    cronupdate=1
+    # Run it
+    /usr/local/share/nems/nems-scripts/temperinit
   fi
 
 
