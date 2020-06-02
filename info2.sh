@@ -468,8 +468,16 @@ EOQ;
     if (isset($temperARR[0]->{'internal humidity'})) $temperARR['sensors']['humidity'] = 1 ?: $temperARR['sensors']['humidity'] = 0;
     $temperTempOffset = floatval(trim(shell_exec("cat /usr/local/share/nems/nems.conf | grep temper.temp | printf '%s' $(cut -n -d '=' -f 2)")));
     $temperHumOffset = floatval(trim(shell_exec("cat /usr/local/share/nems/nems.conf | grep temper.hum | printf '%s' $(cut -n -d '=' -f 2)")));
-    $temperARR['output']['temperature'] = ($temperARR[0]->{'internal temperature'} + $temperTempOffset);
-    $temperARR['output']['humidity'] = ($temperARR[0]->{'internal humidity'} + $temperHumOffset);
+    if (isset($temperARR[0]->{'internal temperature'})) {
+      $temperARR['output']['temperature'] = ($temperARR[0]->{'internal temperature'} + $temperTempOffset);
+    } else {
+      $temperARR['output']['temperature'] = 0;
+    }
+    if (isset($temperARR[0]->{'internal humidity'})) {
+      $temperARR['output']['humidity'] = ($temperARR[0]->{'internal humidity'} + $temperHumOffset);
+    } else {
+      $temperARR['output']['humidity'] = 0;
+    }
     print_r(json_encode($temperARR));
 
   break;
