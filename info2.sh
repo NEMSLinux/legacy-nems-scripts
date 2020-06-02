@@ -464,19 +464,21 @@ EOQ;
     while (stristr($temper = shell_exec('/usr/local/share/nems/nems-scripts/temper.py --json'),'error')) {
     }
     $temperARR = json_decode(trim($temper));
-    if (isset($temperARR[0]->{'internal temperature'})) $temperARR['sensors']['thermal'] = 1 ?: $temperARR['sensors']['thermal'] = 0;
-    if (isset($temperARR[0]->{'internal humidity'})) $temperARR['sensors']['humidity'] = 1 ?: $temperARR['sensors']['humidity'] = 0;
     $temperTempOffset = floatval(trim(shell_exec("cat /usr/local/share/nems/nems.conf | grep temper.temp | printf '%s' $(cut -n -d '=' -f 2)")));
     $temperHumOffset = floatval(trim(shell_exec("cat /usr/local/share/nems/nems.conf | grep temper.hum | printf '%s' $(cut -n -d '=' -f 2)")));
     if (isset($temperARR[0]->{'internal temperature'})) {
       $temperARR['output']['temperature'] = ($temperARR[0]->{'internal temperature'} + $temperTempOffset);
+      $temperARR['sensors']['thermal'] = 1;
     } else {
       $temperARR['output']['temperature'] = 0;
+      $temperARR['sensors']['thermal'] = 0;
     }
     if (isset($temperARR[0]->{'internal humidity'})) {
       $temperARR['output']['humidity'] = ($temperARR[0]->{'internal humidity'} + $temperHumOffset);
+      $temperARR['sensors']['humidity'] = 1;
     } else {
       $temperARR['output']['humidity'] = 0;
+      $temperARR['sensors']['humidity'] = 0;
     }
     print_r(json_encode($temperARR));
 
