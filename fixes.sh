@@ -347,14 +347,23 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
  fi
 
  # A little gift for my faithful users: Access to NagiosTV ahead of the 1.6 release!
- /root/nems/nems-admin/nems-upgrade/patches/000008
- /root/nems/nems-admin/nems-upgrade/patches/000009
+ if ! grep -q "PATCH-000008" /var/log/nems/patches.log; then
+   /root/nems/nems-admin/nems-upgrade/patches/000008
+ fi
+ if ! grep -q "PATCH-000009" /var/log/nems/patches.log; then
+   /root/nems/nems-admin/nems-upgrade/patches/000009
+ fi
  if [[ ! -e /etc/apache2/conf-enabled/nagiostv.conf ]]; then
   /root/nems/nems-admin/build/146-nagiostv
   # Enable nagiostv
   a2enconf nagiostv
   # Reload apache2
   systemctl reload apache2
+ fi
+
+ # Upgrade NagVis (fixes user creation)
+ if ! grep -q "PATCH-000010" /var/log/nems/patches.log; then
+   /root/nems/nems-admin/nems-upgrade/patches/000010
  fi
 
  # Install TEMPer Hardware Support
