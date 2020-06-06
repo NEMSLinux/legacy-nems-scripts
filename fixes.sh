@@ -366,6 +366,11 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
    /root/nems/nems-admin/nems-upgrade/patches/000010
  fi
 
+ # Install WMIC and the insert script for NagiosGraph (Were missing in 1.5.2)
+ if ! grep -q "PATCH-000011" /var/log/nems/patches.log; then
+   /root/nems/nems-admin/nems-upgrade/patches/000011
+ fi
+
  # Install TEMPer Hardware Support
  if [ $(dpkg-query -W -f='${Status}' python3-serial 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
    /root/nems/nems-admin/build/500-temper
