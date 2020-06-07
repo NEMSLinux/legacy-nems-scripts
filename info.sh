@@ -616,6 +616,18 @@ elif [[ $COMMAND == "piwatcher" ]]; then
     echo 0
   fi
 
+elif [[ $COMMAND == "pivoyager" ]]; then
+  if [[ -e /var/log/nems/pivoyager ]]; then
+    pivoyager=$(cat /var/log/nems/pivoyager)
+    if [[ $pivoyager == "1" ]]; then
+      echo 1
+    else
+      echo 0
+    fi
+  else
+    echo 0
+  fi
+
 
 # Output usage info as no valid command line argument was provided
 else

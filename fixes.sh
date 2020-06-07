@@ -758,7 +758,7 @@ fi
     cronupdate=1
   fi
 
-  # Install piWatcher daemon, will run every 10 seconds if hat present. Otherwise, will do nothing.
+  # Install piWatcher daemon, will load on boot if hat present. Otherwise, will do nothing.
   if ! grep -q "NEMS0015" /tmp/cron.tmp; then
     if [[ $platform < 10 ]]; then
       printf "\n# piWatcher NEMS0015\n@reboot /root/nems/nems-tools/piwatcher > /dev/null 2>&1\n" >> /tmp/cron.tmp
@@ -780,6 +780,14 @@ fi
     cronupdate=1
     # Run it
     /usr/local/share/nems/nems-scripts/temperinit
+  fi
+
+  # Install PiVoyager daemon, will load on boot if hat present. Otherwise, will do nothing.
+  if ! grep -q "NEMS0018" /tmp/cron.tmp; then
+    if [[ $platform < 10 ]]; then
+      printf "\n# PiVoyager NEMS0018\n@reboot /root/nems/nems-tools/pivoyager > /dev/null 2>&1\n" >> /tmp/cron.tmp
+      cronupdate=1
+    fi
   fi
 
 
