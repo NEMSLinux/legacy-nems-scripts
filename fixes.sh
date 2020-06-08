@@ -371,6 +371,11 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
    /root/nems/nems-admin/nems-upgrade/patches/000011
  fi
 
+ # Setup logrotate
+ if ! grep -q "PATCH-000013" /var/log/nems/patches.log; then
+   /root/nems/nems-admin/nems-upgrade/patches/000013
+ fi
+
  # Install TEMPer Hardware Support
  if [ $(dpkg-query -W -f='${Status}' python3-serial 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
    /root/nems/nems-admin/build/500-temper
