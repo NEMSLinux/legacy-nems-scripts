@@ -48,17 +48,17 @@
 
  # using hard file location rather than symlink as symlink may not exist yet on older versions
  platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
- ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver) 
+ ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver)
 
  # Ensure apt has the pubkeys needed
  apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B188E2B695BD4743
 
  # Update apt here so we don't have to do it below
- apt clean
+ apt-get clean
  if (( $platform >= 0 )) && (( $platform <= 9 )); then
-   apt update --allow-releaseinfo-change
+   apt-get update --allow-releaseinfo-change
  else
-   apt update
+   apt-get update
  fi
 
  # Fix Default Collector name if incorrect
@@ -147,7 +147,7 @@ if [[ "$ver" == "1.4" ]]; then
   # Fix RPi-Monitor CPU Frequency Reporting
   if (( $platform >= 0 )) && (( $platform <= 9 )); then
     if [[ ! -e /usr/bin/vcgencmd ]]; then
-      apt -y install libraspberrypi-bin
+      apt-get -y install libraspberrypi-bin
       /bin/systemctl restart rpimonitor
     fi
   fi
@@ -202,7 +202,7 @@ if [[ "$ver" == "1.4.1" ]]; then
 
   # Install less command
     if [[ ! -e /usr/bin/less ]]; then
-      apt -y install less
+      apt-get -y install less
     fi
 
   # Install nems-tools
@@ -238,7 +238,7 @@ if [[ "$ver" == "1.4.1" ]]; then
 
   # Install glances command
   if [[ ! -e /usr/bin/glances ]]; then
-    apt -y install glances
+    apt-get -y install glances
   fi
 
   # Check if nagios-plugins was compiled with openssl. If not, recompile.
@@ -260,14 +260,14 @@ if [[ "$ver" == "1.4.1" ]]; then
     if [[ $online == 1 ]]; then
       # Pi Specific
       if (( $platform >= 0 )) && (( $platform <= 9 )); then
-        apt -y install raspberrypi-net-mods
+        apt-get -y install raspberrypi-net-mods
       fi
       # This is the firmware for RPi WiFi but include for other boards in case needed
       # May not be available and may say not found, but this only runs once, so no worries
-      apt -y install firmware-brcm80211
-      apt -y install dhcpcd5
-      apt -y install wireless-tools
-      apt -y install wpasupplicant
+      apt-get -y install firmware-brcm80211
+      apt-get -y install dhcpcd5
+      apt-get -y install wireless-tools
+      apt-get -y install wpasupplicant
       # Simple prevention of doing this every time fixes.sh runs
       installcheck=`/usr/bin/apt --installed -qq list dhcpcd5`
       if [[ $installcheck != '' ]]; then
@@ -547,7 +547,7 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
 
   # Install glances command
   if [[ ! -e /usr/bin/glances ]]; then
-    apt -y install glances
+    apt-get -y install glances
   fi
 
   # Mark filesystem as resized if greater than 9 GB, just in case the patch didn't get logged or is virtual appliance (etc)
@@ -611,7 +611,7 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
       rm -rf /usr/lib/armbian
       rm -rf /usr/share/armbian
       rm -f /boot/armbian_first_run*
-      apt -y remove --purge armbian-config
+      apt-get -y remove --purge armbian-config
 
       # Change name of armbianEnv file to bootEnv
       mv /boot/armbianEnv.txt /boot/bootEnv.txt
@@ -810,10 +810,8 @@ fi
 
 # /Add new cron entries
 
-
 # Update apt Lists
-apt update
-
+apt-get update
 
 # Remove apikey if it is not set (eg., did not get a response from the server)
 apikey=$(cat /usr/local/share/nems/nems.conf | grep apikey | printf '%s' $(cut -n -d '=' -f 2))
