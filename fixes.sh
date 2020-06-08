@@ -790,6 +790,15 @@ fi
   #  fi
   #fi
 
+  if ! grep -q "NEMS0019" /tmp/cron.tmp; then
+    # Install it via patch
+    if ! grep -q "PATCH-000012" /var/log/nems/patches.log; then
+      /root/nems/nems-admin/nems-upgrade/patches/000012
+    fi
+    printf "\n# Run MRTG Every 5 Minutes NEMS0019\n@*/5 * * * * env LANG=C /usr/local/mrtg2/bin/mrtg /etc/mrtg/mrtg.cfg > /dev/null 2>&1\n" >> /tmp/cron.tmp
+    cronupdate=1
+  fi
+
   # Import revised crontab
   if [[ "$cronupdate" == "1" ]]
   then
