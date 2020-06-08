@@ -51,7 +51,9 @@
  ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver)
 
  # Ensure apt has the pubkeys needed
- apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B188E2B695BD4743
+ if [[ $(apt-key list 2> /dev/null | grep DEB.SURY.ORG) == "" ]]; then
+   apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B188E2B695BD4743
+ fi
 
  # Update apt here so we don't have to do it below
  apt-get clean
