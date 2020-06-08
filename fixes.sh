@@ -783,12 +783,12 @@ fi
   fi
 
   # Install PiVoyager daemon, will load on boot if hat present. Otherwise, will do nothing.
-  if ! grep -q "NEMS0018" /tmp/cron.tmp; then
-    if (( $platform < 10 )); then
-      printf "\n# PiVoyager NEMS0018\n@reboot /root/nems/nems-tools/pivoyager > /dev/null 2>&1\n" >> /tmp/cron.tmp
-      cronupdate=1
-    fi
-  fi
+  #if ! grep -q "NEMS0018" /tmp/cron.tmp; then
+  #  if (( $platform < 10 )); then
+      #printf "\n# PiVoyager NEMS0018\n@reboot /root/nems/nems-tools/pivoyager > /dev/null 2>&1\n" >> /tmp/cron.tmp
+      #cronupdate=1
+  #  fi
+  #fi
 
   # Import revised crontab
   if [[ "$cronupdate" == "1" ]]
