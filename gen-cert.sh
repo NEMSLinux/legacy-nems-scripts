@@ -26,8 +26,10 @@
 
   echo "Generating unique SSH Certificates..."
   /bin/rm /etc/ssh/ssh_host_*
-  dpkg-reconfigure openssh-server
-  systemctl restart ssh
+  if (( ! $platform == 21 )); then
+    dpkg-reconfigure openssh-server
+    systemctl restart ssh
+  fi
 
   echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @    WARNING: NEMS SERVER IDENTIFICATION HAS CHANGED!     @

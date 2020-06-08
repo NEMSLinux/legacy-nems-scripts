@@ -103,7 +103,7 @@ else
     echo "Your new password has been set for the Linux pi user."
     echo "Use that password to access NEMS over SSH or when logging in to Webmin."
   fi
-  
+
   if [[ $init = 1 ]]; then
     echo ""
     echo -e "\e[1m*** WARNING ***\e[0m"
@@ -273,7 +273,11 @@ systemctl stop mysql
     kill -9 $mysqldpid
     sleep 1
   fi
-rm -rf /var/lib/mysql/
+  systemctl stop mysql
+
+mv /var/lib/mysql /var/lib/mysql~
+rm -rf /var/lib/mysql~
+
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
   cp -R /root/nems/nems-migrator/data/1.6/mysql/NEMS-Sample /var/lib
 elif (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
@@ -290,6 +294,8 @@ chown -R mysql:mysql /var/lib/mysql
     kill -9 $mysqldpid
     sleep 1
   fi
+  systemctl stop mysql
+
 systemctl start mysql
 
 # Replace the Nagios cgi.cfg file with the sample and add username
