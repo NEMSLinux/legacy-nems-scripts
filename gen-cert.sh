@@ -26,7 +26,7 @@
 
   echo "Generating unique SSH Certificates..."
   /bin/rm /etc/ssh/ssh_host_*
-  if (( ! $platform == 21 )); then
+  if [[ ! $platform == "21" ]]; then
     dpkg-reconfigure openssh-server
     systemctl restart ssh
   fi
