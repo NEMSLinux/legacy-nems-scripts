@@ -17,6 +17,15 @@ fi
     exit 1
   fi
 
+# Do not run if watchdog is connected
+# High load from benchmark could cause watchdog to believe the board is hung, and reboot itself
+  piwatcher=`/usr/local/bin/nems-info piwatcher`
+  pivoyager=`/usr/local/bin/nems-info pivoyager`
+  if [[ $piwatcher == 1 ]] || [[ $pivoyager == 1 ]]; then
+    echo "Watchdog is connected. Benchmark will not run."
+    exit 1
+  fi
+
 # Good to proceed, begin benchmark
 
 # Set a runtime
