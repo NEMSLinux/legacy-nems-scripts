@@ -30,6 +30,12 @@ env LANG=C /usr/local/mrtg2/bin/mrtg /etc/mrtg/mrtg.cfg
 echo ""
 count=$(ls -1 /var/www/mrtg/*.html 2>/dev/null | wc -l)
 if [ $count != 0 ]; then
+  if [[ ! -L /etc/apache2/conf-enabled/mrtg.conf ]]; then
+    echo "Enabling MRTG..."
+    a2enconf mrtg > /dev/null 2>&1
+    systemctl reload apache2
+    echo
+  fi
   echo "Here are the generated links, which will automatically be updated every 5 minutes:"
   find /var/www/mrtg/*.html  -printf " - https://nems.local/mrtg/%f\n"
 else
