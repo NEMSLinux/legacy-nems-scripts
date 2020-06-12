@@ -236,6 +236,10 @@ elif [[ $COMMAND == "temper" ]]; then
 # output JSON output of TEMPer devices
   /usr/local/share/nems/nems-scripts/info2.sh 12
 
+elif [[ $COMMAND == "repos" ]]; then
+# output JSON output of repo state. 0 means repo is broken due to local changes. 1 means it is okay.
+  /usr/local/share/nems/nems-scripts/info2.sh 13
+
 elif [[ $COMMAND == "rootfulldev" ]]; then
   /bin/mount | /bin/sed -n 's|^/dev/\(.*\) on / .*|\1|p'
 

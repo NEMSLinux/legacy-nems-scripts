@@ -484,6 +484,35 @@ EOQ;
 
   break;
 
+  case 13: // Returns JSON list of repos. 0 means the repo is broken due to local changes. 1 means it is a-okay!
+
+    $repos['nems-admin'] = '/root/nems/nems-admin';
+    $repos['nems-tools'] = '/root/nems/nems-tools';
+    $repos['nems-migrator'] = '/root/nems/nems-migrator';
+    $repos['nems-scripts'] = '/usr/local/share/nems/nems-scripts';
+    $repos['nems-www'] = '/var/www/html';
+    $repos['nems-nconf'] = '/var/www/nconf';
+    $repos['nems-tv'] = '/var/www/nems-tv';
+
+    foreach ($repos as $repo => $folder) {
+      if (file_exists($folder)) {
+        $git = shell_exec("cd $folder && git diff-index -p HEAD --");
+        if (trim($git) == '') {
+          $repos['result'][$repo] = 1;
+        } else {
+          $repos['result'][$repo] = 0;
+          $repos['changes'][$repo] = $git;
+        }
+      } else {
+        $repos['errors'][$repo] = $folder . ' not found.';
+      }
+    }
+
+    print_r(json_encode($repos['result']));
+
+  break;
+
+
 }
 
 
