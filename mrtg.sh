@@ -25,10 +25,26 @@ if [[ $routerip == "" ]]; then
   echo
   exit 1
 fi
-if [[ ! -d /var/www/mrtg ]]; then
-  mkdir -p /var/www/mrtg
+
+echo
+read -p "What community? (Enter for public) " community
+if [[ $community == "" ]]; then
+  community="public"
 fi
-/usr/local/mrtg2/bin/cfgmaker --global 'WorkDir: /var/www/mrtg' --global 'Options[_]: bits,growright' --output /etc/mrtg/mrtg.cfg public@${routerip}
+
+if [[ -d /var/www/mrtg ]]; then
+  if [[ -e /var/www/mrtg/*.html ]]; then
+    rm -f /var/www/mrtg/*.html
+  fi
+  if [[ -e /var/www/mrtg/index.php ]]; then
+    echo "" > /var/www/mrtg/index.php
+  fi
+else
+  mkdir -p /var/www/mrtg
+  chown -R www-data:www-data /var/www/mrtg
+fi
+
+/usr/local/mrtg2/bin/cfgmaker --global 'WorkDir: /var/www/mrtg' --global 'Options[_]: bits,growright' --output /etc/mrtg/mrtg.cfg ${community}@${routerip}
 /usr/local/share/nems/nems-scripts/mrtg-gen.sh
 env LANG=C /usr/local/mrtg2/bin/mrtg /etc/mrtg/mrtg.cfg
 echo ""
@@ -40,13 +56,18 @@ if [ $count != 0 ]; then
     systemctl reload apache2
     echo
   fi
-  echo "Here are the generated links, which will automatically be updated every 5 minutes:"
+  echo "You can access the index at https://nems.local/mrtg/"
+  echo
+  echo "Here are the generated pages:"
   find /var/www/mrtg/*.html  -printf " - https://nems.local/mrtg/%f\n"
+  echo
+  echo "You may now configure check_mrtstraf_nems in NEMS NConf for ${routerip}"
 else
   echo "*******************************************************************"
   echo -e "\e[1mNo data found.\e[0m"
   echo "Are you certain your router supports SNMP and you enabled it first?"
   echo "Are you sure you entered the correct IP address for the router?"
+  echo "Are you sure ${community} is the correct trap community name?"
   echo "Nothing to detect."
   echo "*******************************************************************"
 fi
