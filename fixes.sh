@@ -420,6 +420,11 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
    ln -s /usr/local/share/nems/nems-scripts/webhooktest.sh /usr/local/bin/nems-webhooktest
  fi
 
+ # Install mrtgsetup command if not already
+ if [ ! -f /usr/local/bin/mrtgsetup ]; then
+   ln -s /usr/local/share/nems/nems-scripts/mrtg.sh /usr/local/bin/mrtgsetup
+ fi
+
  # Move NEMS TV Dashboard out of nems-www
  if [[ ! -d /var/www/nems-tv ]]; then
    cd /var/www
@@ -802,7 +807,7 @@ fi
     if ! grep -q "PATCH-000012" /var/log/nems/patches.log; then
       /root/nems/nems-admin/nems-upgrade/patches/000012
     fi
-    printf "\n# Run MRTG Every 5 Minutes NEMS0019\n*/5 * * * * env LANG=C /usr/local/mrtg2/bin/mrtg /etc/mrtg/mrtg.cfg > /dev/null 2>&1\n" >> /tmp/cron.tmp
+    printf "\n# Run MRTG Every 5 Minutes NEMS0019\n*/5 * * * * /usr/local/share/nems/nems-scripts/mrtg-gen.sh > /dev/null 2>&1\n" >> /tmp/cron.tmp
     cronupdate=1
   fi
 

@@ -25,7 +25,11 @@ if [[ $routerip == "" ]]; then
   echo
   exit 1
 fi
+if [[ ! -d /var/www/mrtg ]]; then
+  mkdir -p /var/www/mrtg
+fi
 /usr/local/mrtg2/bin/cfgmaker --global 'WorkDir: /var/www/mrtg' --global 'Options[_]: bits,growright' --output /etc/mrtg/mrtg.cfg public@${routerip}
+/usr/local/share/nems/nems-scripts/mrtg-gen.sh
 env LANG=C /usr/local/mrtg2/bin/mrtg /etc/mrtg/mrtg.cfg
 echo ""
 count=$(ls -1 /var/www/mrtg/*.html 2>/dev/null | wc -l)
