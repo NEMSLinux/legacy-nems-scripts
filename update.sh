@@ -36,11 +36,14 @@ else
     done
   fi
 
+  git config --global --unset http.postBuffer
+
   echo "Updating NEMS Core Components"
 
   # Update nems-migrator
   echo " - nems-migrator"
   cd /root/nems/nems-migrator
+  git config --unset http.postBuffer
   commit=`git rev-parse HEAD`
   echo "   Commit: $commit"
   printf "   "
@@ -71,6 +74,7 @@ else
   # Update nems-www
   echo " - nems-www... "
   cd /var/www/html
+  git config --unset http.postBuffer
   commit=`git rev-parse HEAD`
   echo "   Commit: $commit"
   printf "   "
@@ -101,6 +105,7 @@ else
   # Update nems-tv
   echo " - nems-tv... "
   cd /var/www/nems-tv
+  git config --unset http.postBuffer
   commit=`git rev-parse HEAD`
   echo "   Commit: $commit"
   printf "   "
@@ -130,6 +135,7 @@ else
   # Update nems-admin
   echo " - nems-admin... "
   cd /root/nems/nems-admin
+  git config --unset http.postBuffer
   commit=`git rev-parse HEAD`
   echo "   Commit: $commit"
   printf "   "
@@ -158,6 +164,7 @@ else
   # Update nems-nconf
   echo " - nconf... "
   cd /var/www/nconf
+  git config --unset http.postBuffer
   commit=`git rev-parse HEAD`
   echo "   Commit: $commit"
   printf "   "
@@ -187,6 +194,7 @@ else
   echo " - nems-tools... "
   if [[ -d /root/nems/nems-tools ]]; then
     cd /root/nems/nems-tools
+    git config --unset http.postBuffer
     commit=`git rev-parse HEAD`
     echo "   Commit: $commit"
     printf "   "
@@ -222,6 +230,7 @@ else
   echo " - nems-scripts... "
   if [ -d /usr/local/share/nems/nems-scripts ]; then
     cd /usr/local/share/nems/nems-scripts
+    git config --unset http.postBuffer
     commit=`git rev-parse HEAD`
     echo "   Commit: $commit"
     printf "   "
