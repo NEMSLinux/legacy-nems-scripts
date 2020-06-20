@@ -327,6 +327,12 @@ check process 9590 with pidfile /run/9590.pid
 
 fi
 
+if (( $(awk 'BEGIN {print ("'$ver'" == "'1.5.2'")}') )); then
+  if ! grep -q "PATCH-000014" /var/log/nems/patches.log; then
+    /root/nems/nems-admin/nems-upgrade/patches/000014
+  fi
+fi
+
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
 
  # Setup Vendor capabilities
