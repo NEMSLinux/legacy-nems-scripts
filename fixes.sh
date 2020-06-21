@@ -817,6 +817,11 @@ fi
     cronupdate=1
   fi
 
+  if ! grep -q "NEMS0020" /tmp/cron.tmp; then
+    printf "\n# Set permissions for USB access (TEMPer) NEMS0020\n*/5 * * * * /root/nems/nems-admin/build/500-temper > /dev/null 2>&1\n" >> /tmp/cron.tmp
+    cronupdate=1
+  fi
+
   # Import revised crontab
   if [[ "$cronupdate" == "1" ]]
   then
