@@ -426,6 +426,11 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
    ln -s /usr/local/share/nems/nems-scripts/webhooktest.sh /usr/local/bin/nems-webhooktest
  fi
 
+ # Install nems-passwd command if not already
+ if [ ! -f /usr/local/bin/nems-passwd ]; then
+   ln -s /usr/local/share/nems/nems-scripts/nems-passwd.sh /usr/local/bin/nems-passwd
+ fi
+
  # Install mrtgsetup command if not already
  if [ ! -f /usr/local/bin/mrtgsetup ]; then
    ln -s /usr/local/share/nems/nems-scripts/mrtg.sh /usr/local/bin/mrtgsetup
