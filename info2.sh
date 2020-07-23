@@ -462,6 +462,11 @@ EOQ;
 
   case 12:
     while (stristr($temper = shell_exec('/usr/local/share/nems/nems-scripts/temper.py --json 2>&1'),'error')) {
+      // If the virtual machine is not connecting the USB stick correctly, it can be detected but still not have a dev assignment, so abort
+      if (stristr($temper,'No such file or directory')) {
+        $temper = json_encode(array());
+        break;
+      }
     }
     $temperARR = json_decode(trim($temper));
     $temperTempOffset = floatval(trim(shell_exec("cat /usr/local/share/nems/nems.conf | grep temper.temp | printf '%s' $(cut -n -d '=' -f 2)")));
