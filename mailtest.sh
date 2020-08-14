@@ -46,8 +46,8 @@
 
 */
 
-$user=trim(shell_exec('whoami'));
-if ($user != 'root') die('You cannot run this program as ' . $user . '. Please use sudo.' . PHP_EOL);
+//$user=trim(shell_exec('whoami'));
+//if ($user != 'root') die('You cannot run this program as ' . $user . '. Please use sudo.' . PHP_EOL);
 
 $CONTACTEMAIL=@trim(@$argv[1]);
 if (!filter_var($CONTACTEMAIL, FILTER_VALIDATE_EMAIL)) {
@@ -57,8 +57,12 @@ if (!filter_var($CONTACTEMAIL, FILTER_VALIDATE_EMAIL)) {
 echo 'Please wait...' . PHP_EOL;
 $ver = shell_exec('/usr/local/bin/nems-info nemsver');
 if ($ver >= 1.5) {
-  $username = shell_exec('/usr/local/bin/nems-info username');
-  echo shell_exec('/usr/local/nagios/libexec/nems_sendmail_service "TEST NOTIFICATION" "NEMS" "Nagios Enterprise Monitoring Server" "UP" "127.0.0.1" "The test email was sent successfully." "' . date('Y-m-d H:i:s') . '" "nems-mailtest" "SUCCESS" "' . $CONTACTEMAIL . '" "361" "0.061" "1" "0" "0" "' . strtotime('now') . '" "' . strtotime('now') . '" "0" "" "' . $username . '" "nems-mailtest successfully sent this message." "" "0" "1" "1" "' . $username . '"');
+  $username = trim(shell_exec('/usr/local/bin/nems-info username'));
+  if (isset($argv[2]) && $argv[2] == 1) { // NEMS SST run
+    echo shell_exec('/usr/local/nagios/libexec/nems_sendmail_service "TEST NOTIFICATION" "NEMS" "Nagios Enterprise Monitoring Server" "UP" "127.0.0.1" "The test email was sent successfully." "' . date('Y-m-d H:i:s') . '" "nems-mailtest" "SUCCESS" "' . $CONTACTEMAIL . '" "361" "0.061" "1" "0" "0" "' . strtotime('now') . '" "' . strtotime('now') . '" "0" "" "' . $username . '" "nems-mailtest successfully sent this message." "" "0" "1" "1" "' . $username . '" "JSON"');
+  } else { // Traditional CLI run
+    echo shell_exec('/usr/local/nagios/libexec/nems_sendmail_service "TEST NOTIFICATION" "NEMS" "Nagios Enterprise Monitoring Server" "UP" "127.0.0.1" "The test email was sent successfully." "' . date('Y-m-d H:i:s') . '" "nems-mailtest" "SUCCESS" "' . $CONTACTEMAIL . '" "361" "0.061" "1" "0" "0" "' . strtotime('now') . '" "' . strtotime('now') . '" "0" "" "' . $username . '" "nems-mailtest successfully sent this message." "" "0" "1" "1" "' . $username . '"');
+  }
   exit();
 } elseif ($ver >= 1.4) {
   $resource = file('/usr/local/nagios/etc/resource.cfg');
