@@ -54,7 +54,6 @@ if (!filter_var($CONTACTEMAIL, FILTER_VALIDATE_EMAIL)) {
   echo 'Usage: ./mailtest.sh youremail@yourdomain.com' . PHP_EOL;
   exit();
 }
-echo 'Please wait...' . PHP_EOL;
 $ver = shell_exec('/usr/local/bin/nems-info nemsver');
 if ($ver >= 1.5) {
   $username = trim(shell_exec('/usr/local/bin/nems-info username'));
