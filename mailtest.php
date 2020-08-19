@@ -45,35 +45,55 @@
 
 */
 
-//$user=trim(shell_exec('whoami'));
-//if ($user != 'root') die('You cannot run this program as ' . $user . '. Please use sudo.' . PHP_EOL);
 $CONTACTEMAIL=@trim(@$argv[1]);
-if ((!filter_var($CONTACTEMAIL, FILTER_VALIDATE_EMAIL)) && (!isset($_POST['SST']))) {
-  echo 'Usage: ./mailtest.sh youremail@yourdomain.com' . PHP_EOL;
+
+// This is being tested via the NEMS SST GUI.
+if (isset($_POST['SST'])) {
+
+  // Find the contact email address in the currently-generated config
+  $contacts_cfg = file('/etc/nems/conf/global/contacts.cfg');
+  if (is_array($contacts_cfg)) foreach ($contacts_cfg as $linenum=>$line) {
+    $tmp = explode(' ', $line);
+    if (is_array($tmp)) foreach ($tmp as $linesegment) {
+      if (trim($linesegment) == 'email') {
+        $contact = $tmp;
+        break;
+      }
+    }
+  }
+  if (isset($contact)) {
+    foreach ($contact as $linesegment) {
+      if (strstr($linesegment,'@')) $CONTACTEMAIL=trim($linesegment);
+    }
+  }
+  echo 'Sending to: ' . $CONTACTEMAIL . '<br /><br />';
+
+}
+
+if ( !filter_var($CONTACTEMAIL, FILTER_VALIDATE_EMAIL) || $CONTACTEMAIL == 'nagios@localhost' ) {
+  if (isset($_POST['SST'])) {
+    echo 'Strange: Could not determine your admin contact email address.' . PHP_EOL;
+  } else {
+    echo 'Usage: ./mailtest.sh youremail@yourdomain.com' . PHP_EOL;
+  }
   exit();
 }
+
 $ver = shell_exec('/usr/local/bin/nems-info nemsver');
 if ($ver >= 1.5) {
   $username = trim(shell_exec('/usr/local/bin/nems-info username'));
   if (isset($_POST['SST'])) {
-    $contacts_cfg = file('/etc/nems/conf/global/contacts.cfg');
-    if (is_array($contacts_cfg)) foreach ($contacts_cfg as $linenum=>$line) {
-      $tmp = explode(' ', $line);
-      if (is_array($tmp)) foreach ($tmp as $linesegment) {
-        if (trim($linesegment) == 'email') {
-          $contact = $tmp;
-          break;
-        }
-      }
+   // We'll pull this data from the NEMS SST form, not the config. That way the user can test before saving.
+    function argumentify($s) {
+      return addslashes(filter_var($s, FILTER_SANITIZE_STRING));
     }
-    if (isset($contact)) {
-      foreach ($contact as $linesegment) {
-        if (strstr($linesegment,'@')) $CONTACTEMAIL=trim($linesegment);
-      }
-    }
-    if (!isset($CONTACTEMAIL) || $CONTACTEMAIL == 'nagios@localhost') exit("Error: Couldn't determine your contact email address.");
-    echo 'Sending to: ' . $CONTACTEMAIL . '<br /><br />';
-    echo shell_exec('/usr/local/nagios/libexec/nems_sendmail_service "TEST NOTIFICATION" "NEMS" "Nagios Enterprise Monitoring Server" "UP" "127.0.0.1" "The test email was sent successfully." "' . date('Y-m-d H:i:s') . '" "nems-mailtest" "SUCCESS" "' . $CONTACTEMAIL . '" "361" "0.061" "1" "0" "0" "' . strtotime('now') . '" "' . strtotime('now') . '" "0" "" "' . $username . '" "nems-mailtest successfully sent this message." "" "0" "1" "1" "' . $username . '" "SST"');
+    $smtp = argumentify($_POST['smtp']);
+    $port = argumentify($_POST['port']);
+    $smtp_tls = argumentify($_POST['smtp_tls']);
+    $email = argumentify($_POST['email']);
+    $smtpuser = argumentify($_POST['smtpuser']);
+    $smtppassword = argumentify($_POST['smtppassword']);
+    echo shell_exec("/usr/local/nagios/libexec/nems_sendmail_service 'TEST NOTIFICATION' 'NEMS' 'Nagios Enterprise Monitoring Server' 'UP' '127.0.0.1' 'The test email was sent successfully.' '" . date('Y-m-d H:i:s') . "' 'nems-mailtest' 'SUCCESS' '" . $CONTACTEMAIL . "' '361' '0.061' '1' '0' '0' '" . strtotime('now') . "' '" . strtotime('now') . "' '0' '' '" . $username . "' 'nems-mailtest successfully sent this message.' '' '0' '1' '1' '" . $username . "' 'SST' '" . $smtp . "' '" . $port . "' '" . $smtp_tls . "' '" . $email . "' '" . $smtpuser . "' '" . $smtppassword . "'" );
   } elseif (isset($argv[2]) && $argv[2] == 1) { // JSON requested on CLI
     echo shell_exec('/usr/local/nagios/libexec/nems_sendmail_service "TEST NOTIFICATION" "NEMS" "Nagios Enterprise Monitoring Server" "UP" "127.0.0.1" "The test email was sent successfully." "' . date('Y-m-d H:i:s') . '" "nems-mailtest" "SUCCESS" "' . $CONTACTEMAIL . '" "361" "0.061" "1" "0" "0" "' . strtotime('now') . '" "' . strtotime('now') . '" "0" "" "' . $username . '" "nems-mailtest successfully sent this message." "" "0" "1" "1" "' . $username . '" "JSON"');
   } else { // Traditional CLI run
