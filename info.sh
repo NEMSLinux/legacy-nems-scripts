@@ -632,6 +632,13 @@ elif [[ $COMMAND == "pivoyager" ]]; then
     echo 0
   fi
 
+elif [[ $COMMAND == "dht11" ]]; then
+  /usr/local/share/nems/nems-scripts/dhtxx 11
+
+elif [[ $COMMAND == "dht22" ]]; then
+  /usr/local/share/nems/nems-scripts/dhtxx 22
+
+
 
 # Output usage info as no valid command line argument was provided
 else
