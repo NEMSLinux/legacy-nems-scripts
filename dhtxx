@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+
+import sys
+import time
+import board
+import adafruit_dht
+import json
+
+if len(sys.argv) > 1:
+	# Initial the dht device, with data pin connected to:
+	if (sys.argv[1]) == '11':
+		dhtDevice = adafruit_dht.DHT11(board.D4)
+	elif (sys.argv[1]) == '22':
+		dhtDevice = adafruit_dht.DHT22(board.D4)
+
+	temperature_c = dhtDevice.temperature
+	temperature_f = temperature_c * (9 / 5) + 32
+	humidity = dhtDevice.humidity
+
+	print(json.dumps({"dht": (sys.argv[1]), "c": temperature_c, "f": temperature_f, "h": humidity}))
+else:
+	print("Usage: " + (sys.argv[0]) + " [11|22]")
