@@ -232,8 +232,10 @@ systemctl stop $nagios
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
   rm -rf $confbase
   mkdir -p $confbase
-  if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
+  if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.6'")}') )); then
     cp -R /root/nems/nems-migrator/data/1.6/nagios/conf/* $confbase
+  elif (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
+    cp -R /root/nems/nems-migrator/data/1.5/nagios/conf/* $confbase
   elif (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
     cp -R /root/nems/nems-migrator/data/1.4/nagios/conf/* $confbase
   fi
@@ -278,8 +280,10 @@ systemctl stop mysql
 mv /var/lib/mysql /var/lib/mysql~
 rm -rf /var/lib/mysql~
 
-if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
+if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.6'")}') )); then
   cp -R /root/nems/nems-migrator/data/1.6/mysql/NEMS-Sample /var/lib
+elif (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
+  cp -R /root/nems/nems-migrator/data/1.5/mysql/NEMS-Sample /var/lib
 elif (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
   cp -R /root/nems/nems-migrator/data/1.4/mysql/NEMS-Sample /var/lib
 else
