@@ -633,12 +633,20 @@ elif [[ $COMMAND == "pivoyager" ]]; then
   fi
 
 elif [[ $COMMAND == "dht11" ]]; then
-  /usr/local/share/nems/nems-scripts/dhtxx 11
+  dht=$(/usr/local/share/nems/nems-scripts/dhtxx 11 2> /dev/null)
+  if [[ $dht != '' ]]; then
+    echo $dht
+  else
+    echo '{"dht":"0","c":"0","f":"0","h":"0"}'
+  fi
 
 elif [[ $COMMAND == "dht22" ]]; then
-  /usr/local/share/nems/nems-scripts/dhtxx 22
-
-
+  dht=$(/usr/local/share/nems/nems-scripts/dhtxx 22 2> /dev/null)
+  if [[ $dht != '' ]]; then
+    echo $dht
+  else
+    echo '{"dht":"0","c":"0","f":"0","h":"0"}'
+  fi
 
 # Output usage info as no valid command line argument was provided
 else
