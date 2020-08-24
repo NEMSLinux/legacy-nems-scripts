@@ -198,10 +198,16 @@ else
     cp -f /home/nemsadmin/* /home/$username/ > /dev/null 2>&1
     echo Done.
   fi
-  # Allow user to become super-user
-  usermod -aG sudo $username
-  # Allow them to also administer nagios, access livestatus, etc.
-  usermod -a -G www-data,nagios $username
+
+  # User groups #
+    # Allow user to become super-user
+    usermod -aG sudo $username
+    # Allow them to also administer nagios, access livestatus, etc.
+    usermod -a -G www-data,nagios $username
+    # Allow user to access GPIO without root access (where applicable)
+    usermod -aG gpio $username
+  ###############
+
   # Allow user to login to monit web interface
   [ $(getent group monit) ] || groupadd monit
   usermod -aG monit $username
