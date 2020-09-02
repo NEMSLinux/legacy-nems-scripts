@@ -6,6 +6,7 @@ ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver)
 platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
 init=$(/usr/local/share/nems/nems-scripts/info.sh init)
 tmpdir=`mktemp -d -p /usr/local/share/`
+olduser=$(/usr/local/bin/nems-info username)
 
   # Just in case nems-quickfix is running
   quickfix=$(/usr/local/bin/nems-info quickfix)
@@ -199,7 +200,6 @@ else
     echo Done.
   fi
   # Also do this for user files, especially since AWS SSH keys would break if we didn't do this and someone re-initialized a NEMS Server
-  olduser=$(/usr/local/bin/nems-info username)
   printf "Moving all files in /home/${olduser} to /home/$username... "
   rsync -rtv /home/${olduser}/ /home/${username}/ > /dev/null 2>&1
   echo Done.
