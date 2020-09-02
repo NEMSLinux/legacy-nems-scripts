@@ -150,7 +150,7 @@ else
     for e; do [[ "$e" == "$match" ]] && return 0; done
     return 1
   }
-  badnames=("nemsadmin" "nagios" "nems" "root" "user" "config" "pi" "admin" "robbie" "nagiosadmin" "www-data")
+  badnames=("nemsadmin" "nagios" "nems" "root" "user" "config" "pi" "admin" "robbie" "nagiosadmin" "www-data" "${olduser}")
   while true; do
   read -p "What would you like your NEMS Username to be? " username
     if [[ ${username,,} == $username ]]; then
@@ -413,10 +413,10 @@ service.rpi-monitor=0
     echo Done.
   fi
 
-  # Disable the initial admin account
-  if [[ -d /home/$username ]] && [[ -d /home/nemsadmin ]]; then
-    # nemsadmin user will be deleted automatically via cron now that you're initialized, but this stuff is just to protect users in case for some reason the nemsuser user remains.
-    echo "Disabling nemsadmin access. Remember you must now login as $username"
+  # Disable old admin account
+  if [[ -d /home/$username ]] && [[ -d /home/${olduser} ]]; then
+    # old user will be deleted automatically via cron now that you're initialized, but this stuff is just to protect users in case for some reason the nemsuser user remains.
+    echo "Disabling ${olduser} access. Remember you must now login as ${username}"
     # Cockpit will die here. So warn users they need to reboot
     echo "You may lose connection now."
     printf "Please reconnect as $username"
@@ -424,9 +424,10 @@ service.rpi-monitor=0
       echo " and reboot your NEMS server."
     fi
     echo ""
-    deluser nemsadmin sudo # Remove super user access from nemsadmin account
+    deluser ${olduser} sudo # Remove super user access from nemsadmin account
     rndpass=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-32} | head -n 1)
-    echo -e "$rndpass\n$rndpass" | passwd nemsadmin >$tmpdir/init 2>&1 # set a random password on the account so no longer can login
+    echo -e "$rndpass\n$rndpass" | passwd ${olduser} >$tmpdir/init 2>&1 # set a random password on the account so no longer can login
+    userdel -r ${olduser}
   fi
 
   echo ""
