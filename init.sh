@@ -195,9 +195,16 @@ else
   # Giving you files
   if [[ -d /home/nemsadmin ]]; then
     printf "Moving all files in /home/nemsadmin to /home/$username... "
-    cp -f /home/nemsadmin/* /home/$username/ > /dev/null 2>&1
+    rsync -rtv /home/nemsadmin/ /home/${username}/ > /dev/null 2>&1
     echo Done.
   fi
+  # Also do this for user files, especially since AWS SSH keys would break if we didn't do this and someone re-initialized a NEMS Server
+  olduser=$(/usr/local/bin/nems-info username)
+  printf "Moving all files in /home/${olduser} to /home/$username... "
+  rsync -rtv /home/${olduser}/ /home/${username}/ > /dev/null 2>&1
+  echo Done.
+
+
 
   # User groups #
     # Allow user to become super-user
