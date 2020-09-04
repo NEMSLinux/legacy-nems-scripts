@@ -427,7 +427,6 @@ service.rpi-monitor=0
     deluser ${olduser} sudo # Remove super user access from nemsadmin account
     rndpass=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-32} | head -n 1)
     echo -e "$rndpass\n$rndpass" | passwd ${olduser} >$tmpdir/init 2>&1 # set a random password on the account so no longer can login
-    userdel -r ${olduser}
   fi
 
   echo ""
