@@ -466,8 +466,8 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
  fi
 
  # Upgrade check_speedtest
- if ! grep -q "NEMS00001" /usr/local/nagios/libexec/check_speedtest-cli.sh; then
-   cp /root/nems/nems-migrator/data/1.5/nagios/plugins/check_speedtest-cli.sh /usr/local/nagios/libexec/
+ if ! grep -q "NEMS00003" /usr/local/nagios/libexec/check_speedtest-cli.sh; then
+   cp /root/nems/nems-migrator/data/1.6/nagios/plugins/check_speedtest-cli.sh /usr/local/nagios/libexec/
  fi
 
  # Add nems-install command
