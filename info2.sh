@@ -471,19 +471,35 @@ EOQ;
     $temperARR = json_decode(trim($temper));
     $temperTempOffset = floatval(trim(shell_exec("cat /usr/local/share/nems/nems.conf | grep temper.temp | printf '%s' $(cut -n -d '=' -f 2)")));
     $temperHumOffset = floatval(trim(shell_exec("cat /usr/local/share/nems/nems.conf | grep temper.hum | printf '%s' $(cut -n -d '=' -f 2)")));
-    if (isset($temperARR[0]->{'internal temperature'})) {
+
+    $temperARR['sensors']['thermal'] = 0;
+    if (isset($temperARR[0]->{'external temperature'})) {
+      $temperARR['output']['temperature'] = ($temperARR[0]->{'external temperature'} + $temperTempOffset);
+      $temperARR['sensors']['thermal'] = 1;
+      $temperARR['sensors']['temp_location'] = 'external';
+    } else if (isset($temperARR[0]->{'internal temperature'})) {
       $temperARR['output']['temperature'] = ($temperARR[0]->{'internal temperature'} + $temperTempOffset);
       $temperARR['sensors']['thermal'] = 1;
-    } else {
-      $temperARR['output']['temperature'] = 0;
-      $temperARR['sensors']['thermal'] = 0;
+      $temperARR['sensors']['temp_location'] = 'internal';
     }
-    if (isset($temperARR[0]->{'internal humidity'})) {
+    if ($temperARR['sensors']['thermal'] == 0) {
+      $temperARR['output']['temperature'] = 0;
+      $temperARR['sensors']['temp_location'] = 'not_present';
+    }
+
+    $temperARR['sensors']['humidity'] = 0;
+    if (isset($temperARR[0]->{'external humidity'})) {
+      $temperARR['output']['humidity'] = ($temperARR[0]->{'external humidity'} + $temperHumOffset);
+      $temperARR['sensors']['humidity'] = 1;
+      $temperARR['sensors']['hum_location'] = 'external';
+    } else if (isset($temperARR[0]->{'internal humidity'})) {
       $temperARR['output']['humidity'] = ($temperARR[0]->{'internal humidity'} + $temperHumOffset);
       $temperARR['sensors']['humidity'] = 1;
-    } else {
+      $temperARR['sensors']['hum_location'] = 'internal';
+    }
+    if ($temperARR['sensors']['humidity'] == 0) {
       $temperARR['output']['humidity'] = 0;
-      $temperARR['sensors']['humidity'] = 0;
+      $temperARR['sensors']['hum_location'] = 'not_present';
     }
     print_r(json_encode($temperARR));
 
