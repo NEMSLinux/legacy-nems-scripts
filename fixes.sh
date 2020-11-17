@@ -827,6 +827,11 @@ fi
     cronupdate=1
   fi
 
+  if ! grep -q "NEMS0021" /tmp/cron.tmp; then
+    printf "\n# Detect NEMS Server local IP on same Subnet and set NEMS Tools config to point to it NEMS0021\n@reboot /root/nems/nems-tools/detect > /dev/null 2>&1\n" >> /tmp/cron.tmp
+    cronupdate=1
+  fi
+
   # Import revised crontab
   if [[ "$cronupdate" == "1" ]]
   then
