@@ -156,7 +156,11 @@ else
     if [[ ${username,,} == $username ]]; then
       if isValidUsername "$username"; then
         if containsElement "$username" "${badnames[@]}"; then
-          echo Username is not allowed. Please try again.
+          if [[ $username == ${olduser} ]]; then
+            echo Username is not allowed: already exists. Please try again.
+          else
+            echo Username is not allowed. Please try again.
+          fi
           username=""
         else
           echo Username accepted.
