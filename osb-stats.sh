@@ -23,6 +23,10 @@ fi
 if [[ -f /tmp/osb.backup.nems ]]; then
   rm /tmp/osb.backup.nems
 fi
+
+# Sleep for a random time up to 2 hours to stagger user backups to relieve stress on the API server
+sleep $[ ( $RANDOM % 7200 ) ]s
+
 # Load Account Data (output options are json, serial or blank = :: separated, one item per line
   data=$(curl -s -F "hwid=$hwid" -F "osbkey=$osbkey" -F "output=json" https://nemslinux.com/api-backend/offsite-backup-checkin.php)
 
