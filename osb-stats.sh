@@ -27,7 +27,11 @@ fi
   data=$(curl -s -F "hwid=$hwid" -F "osbkey=$osbkey" -F "output=json" https://nemslinux.com/api-backend/offsite-backup-checkin.php)
 
   if jq -e . >/dev/null 2>&1 <<<"$data"; then # Parse reply to make sure it is JSON before clobbering
-    echo "$data" > /var/log/nems/nems-osb.json
+    if [[ $data == '' ]]; then
+      echo "[]" > /var/log/nems/nems-osb.json
+    else
+      echo "$data" > /var/log/nems/nems-osb.json
+    fi
   else
     echo $data
   fi
