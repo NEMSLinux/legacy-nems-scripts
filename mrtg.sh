@@ -2,7 +2,7 @@
 echo ""
 echo "This script will set your router's IP for Multi Router Traffic Grapher (MRTG)."
 echo "Doing this will reset all past data, so be sure you want to do this."
-echo "See https://docs.nemslinux.com/usage/mrtg"
+echo "See https://docs.nemslinux.com/en/latest/advanced/mrtg.html"
 echo ""
 echo "MAKE SURE SNMP IS ALREADY ENABLED ON YOUR ROUTER"
 echo ""
