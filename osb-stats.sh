@@ -24,6 +24,7 @@ if [[ -f /tmp/osb.backup.nems ]]; then
   rm /tmp/osb.backup.nems
 fi
 
+# Cron triggers this at 4:30am
 # Sleep for a random time up to 2 hours to stagger user backups to relieve stress on the API server
   if [[ $1 != 'now' ]]; then
     delay=$[ ( $RANDOM % 7200 ) ]
