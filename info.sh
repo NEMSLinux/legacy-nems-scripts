@@ -10,13 +10,15 @@ export VARIABLE=$2
 me=`basename "$0"`
 
 # Get the username even if sudo
-user=$(who | awk '{print $1}')
+user=$(whoami | awk '{print $1}')
 
 cachedir=~/.nems_cache/
 if [[ $user != 'www-data' ]] && [[ ! -e $cachedir ]]; then
   mkdir -p $cachedir
   chmod 755 $cachedir
   chown -R $user:$user $cachedir
+else
+  cachedir=/tmp/
 fi
 
 # Some functions
