@@ -405,6 +405,7 @@ elif [[ $COMMAND == "init" ]]; then
   fi
 
 elif [[ $COMMAND == "online" ]]; then
+  # Note: try nm-online for boards that support it (probably all but docker)
   online=""
   cachefile=${cachedir}online.cache
   if [[ -f $cachefile ]]; then
