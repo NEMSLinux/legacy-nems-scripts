@@ -81,7 +81,7 @@ elif [[ $COMMAND == "nic" ]]; then
     host=nemslinux.com
     host_ip=$(getent ahosts "$host" | awk '{print $1; exit}')
     interface=`ip route get "$host_ip" | grep -Po '(?<=(dev )).*(?= src| proto)' | cut -f 1 -d " "`
-    echo $interface > $cachefile 2> /dev/null
+    echo $interface | tee $cachefile > /dev/null 2>&1
   fi
   echo $interface
 
