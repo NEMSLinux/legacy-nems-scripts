@@ -12,7 +12,7 @@ if [ `npm list -g | grep -c fast` -eq 0 ]; then
   echo "NOT INSTALLED"
   exit
 fi
-/usr/local/bin/fast -u > /var/log/nems/speedtest-fast.log
+PUPPETEER_PRODUCT=chrome PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser /usr/local/bin/fast -u --single-process > /var/log/nems/speedtest-fast.log
 speedresult=$(cat /var/log/nems/speedtest-fast.log)
 pingresult=$(ping -qc1 fast.com 2>&1 | awk -F'/' 'END{ print (/^rtt/? "OK "$5" ms":"FAIL") }')
 
