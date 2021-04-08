@@ -2,6 +2,22 @@
 allowupdate=`/usr/local/bin/nems-info allowupdate`
 tmpdir=`mktemp -d -p /usr/local/share/`
 
+PATCH=''
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    -r|--reset)
+    PATCH="$2"
+    shift # past argument
+    shift # past value
+    ;;
+esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
+
   # Just in case nems-quickfix is running
   quickfix=$(/usr/local/bin/nems-info quickfix)
   if [[ $quickfix == 1 ]]; then
@@ -59,6 +75,17 @@ fi
 if [[ $proceed == 1 ]]; then
   echo $thisdate > /var/log/nems/nems-update.last
   echo "Performing NEMS QuickFix..."
+  if [[ ! $PATCH == "" ]]; then
+    cp /var/log/nems/patches.log $tmpdir/
+    /bin/sed -i "/${PATCH}/d" /var/log/nems/patches.log
+    printf "Attempting to reset patch ${PATCH}... "
+    if ! cmp /var/log/nems/patches.log $tmpdir/patches.log > /dev/null 2>&1
+    then
+      echo "Success."
+    else
+      echo "Failed."
+    fi
+  fi
   echo "It's really just a fancy name: this may take a while."
   echo "Do not stop this script once it is running."
   printf "Please wait patiently."
