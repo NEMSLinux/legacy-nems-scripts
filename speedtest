@@ -8,7 +8,7 @@ if [ $(dpkg-query -W -f='${Status}' npm 2>/dev/null | grep -c "ok installed") -e
   echo "NOT INSTALLED"
   exit
 fi
-if [ `npm list -g | grep -c fast` -eq 0 ]; then
+if [ `npm list -g | grep -c nems-speedtest` -eq 0 ]; then
   echo "NOT INSTALLED"
   exit
 fi
