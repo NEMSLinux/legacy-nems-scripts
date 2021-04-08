@@ -162,50 +162,8 @@ switch($argv[1]) {
   break;
 
   case 10: // output the recommended speedtest server number
-    if ($VARIABLE == 'best') {
-      exec('/usr/local/share/nems/nems-scripts/speedtest --list',$servernum_tmp);
-      if (is_array($servernum_tmp)) {
-        foreach ($servernum_tmp as $line) {
-          $tmp = explode(')',$line);
-          if (intval($tmp[0]) > 0) {
-            $speedtestservers[] = array(
-              'num'=>intval($tmp[0]),
-            );
-            break; // we only need one
-          }
-        }
-      }
-      echo $speedtestservers[0]['num'];
-    } elseif ($VARIABLE == 'which') {
-      $speedtestwhich = intval(trim(shell_exec("cat /usr/local/share/nems/nems.conf | grep speedtestwhich |  printf '%s' $(cut -n -d '=' -f 2)")));
-      // best = most local server as detected by NEMS
-      // switch = the passed server number on the check_command's arg
-      if ($speedtestwhich == 0) { echo 'best'; } else { echo 'switch'; }
-    } elseif ($VARIABLE == 'location') {
-      $server = shell_exec('/usr/local/bin/nems-info speedtest');
-      exec('/usr/local/share/nems/nems-scripts/speedtest --list',$servernum_tmp);
-      if (is_array($servernum_tmp)) {
-        foreach ($servernum_tmp as $line) {
-          $tmp = explode(')',$line);
-          if (intval($tmp[0]) == $server) {
-            $speedtestservers[] = array(
-              'location'=>trim($tmp[1]) . ')',
-            );
-            break; // we only need one
-          }
-        }
-      }
-      echo $speedtestservers[0]['location'];
-    } else {
-      $speedtestserver = intval(trim(shell_exec("cat /usr/local/share/nems/nems.conf | grep speedtestserver |  printf '%s' $(cut -n -d '=' -f 2)")));
-      if ($speedtestserver > 0) {
-        echo $speedtestserver;
-      } else {
-        $speedtestserver = intval(trim(shell_exec("/usr/local/bin/nems-info speedtest best")));
-        file_put_contents('/usr/local/share/nems/nems.conf','speedtestserver=' . $speedtestserver . PHP_EOL, FILE_APPEND);
-        echo $speedtestserver;
-      }
-    }
+    // this is deprecated since we no longer use Ookla speedtest
+    echo 0;
   break;
 
   case 11: // output JSON livestatus

@@ -333,6 +333,11 @@ if (( $(awk 'BEGIN {print ("'$ver'" == "'1.5.2'")}') )); then
   fi
 fi
 
+if ! grep -q "PATCH-000015" /var/log/nems/patches.log; then
+  /root/nems/nems-admin/nems-upgrade/patches/000015
+fi
+
+
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
 
  # Setup Vendor capabilities
