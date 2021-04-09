@@ -15,7 +15,9 @@ fi
 
 for pid in $(pidof -x speedtest); do
   if [ $pid != $$ ]; then
+    >&2 echo "Already running."
     if [[ -e /tmp/speedtest-fast.log ]]; then
+      >&2 echo "Loading cache."
       speedresult=$(cat /tmp/speedtest-fast.log)
       pingresult=$(ping -qc1 fast.com 2>&1 | awk -F'/' 'END{ print (/^rtt/? "OK "$5" ms":"FAIL") }')
 
@@ -31,6 +33,7 @@ for pid in $(pidof -x speedtest); do
     else
      # If seeing this, it should mean you have multiple copies of speedtest running, but no cache file yet
       echo "NOT RESPONDING"
+      >&2 echo "Cache not found."
       exit 1
     fi
   fi
