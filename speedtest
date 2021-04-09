@@ -13,7 +13,25 @@ if [ `npm list -g | grep -c nems-speedtest` -eq 0 ]; then
   exit
 fi
 
+for pid in $(pidof -x speedtest); do
+  if [ $pid != $$ ]; then
+    speedresult=$(cat /var/log/nems/speedtest-fast.log)
+    pingresult=$(ping -qc1 fast.com 2>&1 | awk -F'/' 'END{ print (/^rtt/? "OK "$5" ms":"FAIL") }')
+
+    array=($speedresult $pingresult)
+
+    echo ${array[5]} # ping
+    echo ${array[6]} # pingUOM
+    echo ${array[0]} # download
+    echo ${array[1]} # downloadUOM
+    echo ${array[2]} # upload
+    echo ${array[3]} # uploadUOM
+    exit 1
+  fi
+done
+
 /usr/local/bin/fast -u > /var/log/nems/speedtest-fast.log
+
 speedresult=$(cat /var/log/nems/speedtest-fast.log)
 pingresult=$(ping -qc1 fast.com 2>&1 | awk -F'/' 'END{ print (/^rtt/? "OK "$5" ms":"FAIL") }')
 
