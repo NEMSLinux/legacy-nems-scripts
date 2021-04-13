@@ -90,6 +90,9 @@ if [[ $proceed == 1 ]]; then
   echo "Do not stop this script once it is running."
   printf "Please wait patiently."
 
+  # Make sure any lingering package installations get completed before continuing
+  dpkg --configure -a > /dev/null 2>&1
+
   # Reset the log each time quickfix is run
   touch /var/log/nems/nems-quickfix.log
 
