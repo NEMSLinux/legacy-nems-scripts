@@ -12,6 +12,10 @@ if [ `npm list -g | grep -c nems-speedtest` -eq 0 ]; then
   echo "NOT INSTALLED"
   exit
 fi
+if [[ ! -e /usr/local/bin/fast ]]; then
+  echo "NOT INSTALLED"
+  exit
+fi
 
 for pid in $(pidof -x speedtest); do
   if [ $pid != $$ ]; then
