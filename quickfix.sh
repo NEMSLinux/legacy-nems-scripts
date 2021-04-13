@@ -94,7 +94,7 @@ if [[ $proceed == 1 ]]; then
   dpkg --configure -a > /dev/null 2>&1
 
   # Reset the log each time quickfix is run
-  touch /var/log/nems/nems-quickfix.log
+  date > /var/log/nems/nems-quickfix.log
 
   for run in {1..2}
   do
