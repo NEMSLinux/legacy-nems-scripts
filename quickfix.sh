@@ -90,6 +90,9 @@ if [[ $proceed == 1 ]]; then
   echo "Do not stop this script once it is running."
   printf "Please wait patiently."
 
+  # Reset the log each time quickfix is run
+  touch /var/log/nems/nems-quickfix.log
+
   for run in {1..2}
   do
 
@@ -99,7 +102,7 @@ if [[ $proceed == 1 ]]; then
     cp /usr/local/share/nems/nems-scripts/update.sh $tmpdir/qf.sh
 
     # Run the copy
-    $tmpdir/qf.sh > /var/log/nems/nems-quickfix.log 2>&1
+    $tmpdir/qf.sh >> /var/log/nems/nems-quickfix.log 2>&1
 
   done
   rm $tmpdir/qf.sh
