@@ -2,6 +2,8 @@
 # Just a dummy port listener by Robbie Ferguson
 # See https://docs.nemslinux.com/en/latest/basic/9590.html
 
+# This script can be removed from 1.6 (now installed via repository)
+
 set -e
 
 pid=""
