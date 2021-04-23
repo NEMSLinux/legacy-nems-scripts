@@ -271,7 +271,7 @@ vm.swappiness = 10
    fi
   fi
 
-  if [[ $ver = "1.5" ]]; then
+  if [[ $ver = "1.5" ]] || [[ $ver = "1.5.1" ]] || [[ $ver = "1.5.2" ]]; then
     echo ""
 
     if ! grep -q "PATCH-000001" /var/log/nems/patches.log; then
@@ -344,6 +344,17 @@ vm.swappiness = 10
       echo ""
     fi
 
+    if ! grep -q "PATCH-000016" /var/log/nems/patches.log; then
+      echo "PATCH-000016 is available."
+      echo "This patch replaces the old wmic command with the new version"
+      echo "from NEMS Linux 1.6 (compatible with 1.5). It fixes the issue"
+      echo "where, since a Windows update, Windows 10 and Server OS hosts"
+      echo "are no longer able to authenticate. If you use wmic, this is"
+      echo "a very important patch."
+      read -r -p "Do you want to install this patch? [y/N] " PATCH000016
+      echo ""
+    fi
+
 
     # Run the selected patches
     if [[ $PATCH000001 =~ ^([yY][eE][sS]|[yY])$ ]]; then
@@ -363,6 +374,9 @@ vm.swappiness = 10
     fi
     if [[ $PATCH000008 =~ ^([yY][eE][sS]|[yY])$ ]]; then
       /root/nems/nems-admin/nems-upgrade/patches/000008 && upgraded=1
+    fi
+    if [[ $PATCH000016 =~ ^([yY][eE][sS]|[yY])$ ]]; then
+      /root/nems/nems-admin/nems-upgrade/patches/000016 && upgraded=1
     fi
 
   fi

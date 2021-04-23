@@ -71,37 +71,6 @@ else
   # Get the latest version data from the NEMS API
   /usr/local/share/nems/nems-scripts/tasks.sh update platform
 
-  # Update nems-www
-  echo " - nems-www... "
-  cd /var/www/html
-  git config --unset http.postBuffer
-  commit=`git rev-parse HEAD`
-  echo "   Commit: $commit"
-  printf "   "
-  result=`git pull`
-  echo $result
-  if [[ $result =~ 'error:' ]]; then
-    echo 'Error detected. Reinstalling...';
-    mv /var/www/html /var/www/nems-www~
-    cd /var/www
-    git clone https://github.com/Cat5TV/nems-www
-    if [[ -d /var/www/nems-www ]]; then
-      mv nems-www html
-      chown -R www-data:www-data html
-      echo 'Successfully reinstalled.'
-      rm -rf /var/www/nems-www~
-    else
-      echo 'Reinstall failed. Please copy your backup.nems file and re-image your device.'
-      mv /var/www/nems-www~ /var/www/html
-    fi
-  fi
-  commitnew=`git rev-parse HEAD`
-  if [[ $commit == $commitnew ]]; then
-    echo "   No changes."
-  else
-    echo "   New Commit: $commit"
-  fi
-
   # Update nems-tv
   echo " - nems-tv... "
   cd /var/www/nems-tv
