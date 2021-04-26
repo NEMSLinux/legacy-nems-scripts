@@ -53,6 +53,7 @@ cp /var/log/nems/speedtest-fast.log /tmp/speedtest-fast.log
 sleep 100
 killall -9 fast > /dev/null 2>&1
 killall -9 chromium-browser > /dev/null 2>&1
+killall -9 chromium > /dev/null 2>&1
 if grep -q Mbps "/var/log/nems/speedtest-fast.log"; then
   speedresult=$(cat /var/log/nems/speedtest-fast.log)
 else
