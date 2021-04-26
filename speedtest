@@ -46,9 +46,20 @@ done
 # Create a backup of the current log before starting to output. Will be used as cache for subsequent runs.
 cp /var/log/nems/speedtest-fast.log /tmp/speedtest-fast.log
 
-/usr/local/bin/fast -u > /var/log/nems/speedtest-fast.log
+/usr/local/bin/fast -u > /var/log/nems/speedtest-fast.log &
 
-speedresult=$(cat /var/log/nems/speedtest-fast.log)
+# Wait for 100 seconds before forcibly proceeding
+# Nagios timeout for service should be 120 or more.
+sleep 100
+killall -9 fast > /dev/null 2>&1
+killall -9 chromium-browser > /dev/null 2>&1
+if grep -q Mbps "/var/log/nems/speedtest-fast.log"; then
+  speedresult=$(cat /var/log/nems/speedtest-fast.log)
+else
+  speedresult="0 Error
+0 Error"
+fi
+
 pingresult=$(ping -qc1 fast.com 2>&1 | awk -F'/' 'END{ print (/^rtt/? "OK "$5" ms":"FAIL") }')
 
 array=($speedresult $pingresult)
