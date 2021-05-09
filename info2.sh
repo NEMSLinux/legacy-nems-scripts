@@ -36,7 +36,14 @@ switch($argv[1]) {
   break;
 
   case 3: // Find the board platform ID number
-    if (!file_exists('/var/log/nems/hw_model')) shell_exec('/usr/local/share/nems/nems-scripts/hw_model.sh'); // try to detect
+    $ver = floatval(shell_exec('/usr/local/bin/nems-info nemsver'));
+    if (!file_exists('/var/log/nems/hw_model')) {
+      if ($ver >= 1.6) {
+        shell_exec('/usr/local/bin/hw-detect'); // try to detect in 1.6+
+      } else {
+        shell_exec('/usr/local/share/nems/nems-scripts/hw_model.sh'); // try to detect in 1.5.x and under
+      }
+    }
     if (file_exists('/var/log/nems/hw_model')) { // was reporting 0 (pi 1) when file didn't exist
       $tmp = file('/var/log/nems/hw_model');
       if ( $tmp[0] == 0 && strtolower(substr($tmp[1],0,14)) == strtolower('Unknown Device') ) $tmp[0] = 98000; // Unknown
