@@ -210,14 +210,16 @@ else
     # Allow user to become super-user
     usermod -aG sudo $username
     # Allow them to also administer nagios, access livestatus, etc.
-    usermod -a -G www-data,nagios $username
+    usermod -aG www-data,nagios $username
     # Allow user to access GPIO without root access (where applicable)
     usermod -aG gpio $username
+    # Allow user to control network connections
+    usermod -aG netdev $username
+    # Allow user to login to monit web interface
+    [ $(getent group monit) ] || groupadd monit
+    usermod -aG monit $username
   ###############
 
-  # Allow user to login to monit web interface
-  [ $(getent group monit) ] || groupadd monit
-  usermod -aG monit $username
   # Set the user password
   echo -e "$password\n$password" | passwd $username >$tmpdir/init 2>&1
 
@@ -429,6 +431,7 @@ service.rpi-monitor=0
     fi
     echo ""
     deluser ${olduser} sudo # Remove super user access from nemsadmin account
+    deluser ${olduser} netdev # Remove network device access from nemsadmin account
     rndpass=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-32} | head -n 1)
     echo -e "$rndpass\n$rndpass" | passwd ${olduser} >$tmpdir/init 2>&1 # set a random password on the account so no longer can login
   fi
