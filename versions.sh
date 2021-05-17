@@ -7,12 +7,13 @@ echo 'Running ' . exec('uname -a') . PHP_EOL;
 exec('apt-show-versions',$packages);
 
 $queries = array(
+  'nems-www',
+  'nems-migrator',
+  '9590',
   'nagios',
   'php',
   'apache',
-  'webmin',
   'raspi-config',
-  
 );
 
 if (is_array($packages)) {
