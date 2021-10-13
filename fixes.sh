@@ -57,11 +57,8 @@
 
  # Update apt here so we don't have to do it below
  apt-get clean
- if (( $platform >= 0 )) && (( $platform <= 9 )); then
-   apt-get update --allow-releaseinfo-change
- else
-   apt-get update
- fi
+ apt-get update --allow-releaseinfo-change
+ apt-get update
 
  # Fix Default Collector name if incorrect
  collector=$(/usr/bin/mysql -u nconf -h 127.0.0.1 -pnagiosadmin -D nconf -e "SELECT attr_value FROM ConfigValues WHERE fk_id_attr = 1;")
@@ -655,6 +652,7 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
         rm /usr/lib/nagios/plugins/check_speedtest-cli.sh
       fi
       wget -O /usr/lib/nagios/plugins/check_speedtest-cli.sh https://raw.githubusercontent.com/NEMSLinux/debpack/main/all/nems-plugins/usr/lib/nagios/plugins/check_speedtest-cli.sh
+      chmod +x /usr/lib/nagios/plugins/check_speedtest-cli.sh
       if [ $(dpkg-query -W -f='${Status}' python3-serial 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
         apt-get install -y npm
       fi
