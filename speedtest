@@ -4,70 +4,57 @@
 #              I wrote this script to replace it. This outputs the same data, parsed from fast.com
 #                                                                    - Robbie // The Bald Nerd
 
-if [ $(dpkg-query -W -f='${Status}' npm 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-  echo "NOT INSTALLED"
-  exit
-fi
-if [ `npm list -g | grep -c nems-speedtest` -eq 0 ]; then
-  echo "NOT INSTALLED"
-  exit
-fi
-if [[ ! -e /usr/local/bin/fast ]]; then
-  echo "NOT INSTALLED"
-  exit
+if [[ ! -e /usr/local/bin/speed-cloudflare-cli ]]; then
+  echo "speed-cloudflare-cli not installed."
+  exit 1
 fi
 
+log="/var/log/nems/speedtest-cf.log"
+log2="/var/log/nems/speedtest-ping.log"
+
+if [[ ! -e /var/log/nems/speedtest.log ]]; then
+  touch -t $(date -d "30 mins ago" +%Y%m%d%H%M.%S) /var/log/nems/speedtest.log
+  chown nagios:nagios /var/log/nems/speedtest.log
+fi
+if [[ ! -e $log ]]; then
+  touch -t $(date -d "30 mins ago" +%Y%m%d%H%M.%S) $log
+  chown nagios:nagios $log
+fi
+if [[ ! -e $log2 ]]; then
+  touch -t $(date -d "30 mins ago" +%Y%m%d%H%M.%S) $log2
+  chown nagios:nagios $log2
+fi
+
+# While unlikely a user would have TWO speedtests scheduled at the same time, forcibly protect against it
+running=0
 for pid in $(pidof -x speedtest); do
   if [ $pid != $$ ]; then
-    >&2 echo "Already running."
-    if [[ -e /tmp/speedtest-fast.log ]]; then
-      >&2 echo "Loading cache."
-      speedresult=$(cat /tmp/speedtest-fast.log)
-      pingresult=$(ping -qc1 fast.com 2>&1 | awk -F'/' 'END{ print (/^rtt/? "OK "$5" ms":"FAIL") }')
-
-      array=($speedresult $pingresult)
-
-      echo ${array[5]} # ping
-      echo ${array[6]} # pingUOM
-      echo ${array[0]} # download
-      echo ${array[1]} # downloadUOM
-      echo ${array[2]} # upload
-      echo ${array[3]} # uploadUOM
-      exit 0
-    else
-     # If seeing this, it should mean you have multiple copies of speedtest running, but no cache file yet
-      echo "NOT RESPONDING"
-      >&2 echo "Cache not found."
-      exit 1
-    fi
+    running=1
   fi
 done
 
-# Create a backup of the current log before starting to output. Will be used as cache for subsequent runs.
-cp /var/log/nems/speedtest-fast.log /tmp/speedtest-fast.log
-
-/usr/local/bin/fast -u > /var/log/nems/speedtest-fast.log &
-
-# Wait for 100 seconds before forcibly proceeding
-# Nagios timeout for service should be 120 or more.
-sleep 100
-killall -9 fast > /dev/null 2>&1
-killall -9 chromium-browser > /dev/null 2>&1
-killall -9 chromium > /dev/null 2>&1
-if grep -q Mbps "/var/log/nems/speedtest-fast.log"; then
-  speedresult=$(cat /var/log/nems/speedtest-fast.log)
-else
-  speedresult="0 Error
-0 Error"
+if [ $running == 0 ]; then
+  # I'm not going to speedtest more than every 2 minutes
+  if [[ $(find ${log} -mmin +2) ]]; then
+    yes | /usr/local/bin/speed-cloudflare-cli | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' > ${log}
+    ping -qc1 cloudflare.com 2>&1 | awk -F'/' 'END{ print (/^rtt/? "OK "$5" ms":"FAIL") }' >> ${log2}
+  fi
 fi
 
-pingresult=$(ping -qc1 fast.com 2>&1 | awk -F'/' 'END{ print (/^rtt/? "OK "$5" ms":"FAIL") }')
-
+speedresult=$(cat ${log} | grep -i -E '(download speed|upload speed)')
+pingresult=$(cat ${log2})
 array=($speedresult $pingresult)
+ping=${array[9]}
+pingUOM=${array[10]}
+download=${array[2]}
+downloadUOM=${array[3]}
+upload=${array[6]}
+uploadUOM=${array[7]}
+result="$ping
+$pingUOM
+$download
+$downloadUOM
+$upload
+$uploadUOM"
 
-echo ${array[5]} # ping
-echo ${array[6]} # pingUOM
-echo ${array[0]} # download
-echo ${array[1]} # downloadUOM
-echo ${array[2]} # upload
-echo ${array[3]} # uploadUOM
+echo "${result}"
