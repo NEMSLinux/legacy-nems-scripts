@@ -36,13 +36,15 @@ done
 if [ $running == 0 ]; then
   # I'm not going to speedtest more than every 2 minutes
   if [[ $(find ${log} -mmin +2) ]]; then
-    yes | /usr/local/bin/speed-cloudflare-cli | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' > ${log}
-    ping -qc1 cloudflare.com 2>&1 | awk -F'/' 'END{ print (/^rtt/? "OK "$5" ms":"FAIL") }' >> ${log2}
+    result1=$(yes | /usr/local/bin/speed-cloudflare-cli | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g')
+    result2=$(ping -qc1 cloudflare.com 2>&1 | awk -F'/' 'END{ print (/^rtt/? "OK "$5" ms":"FAIL") }')
+    echo $result1 | dd of=${log1} > /dev/null 2&>1
+    echo $result2 | dd of=${log2} > /dev/null 2&>1
   fi
 fi
 
-speedresult=$(cat ${log} | grep -i -E '(download speed|upload speed)')
-pingresult=$(cat ${log2})
+speedresult=$(echo $result1 | grep -i -E '(download speed|upload speed)')
+pingresult=$(echo $result2)
 array=($speedresult $pingresult)
 ping=${array[9]}
 pingUOM=${array[10]}
