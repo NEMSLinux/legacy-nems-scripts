@@ -45,13 +45,18 @@ fi
 
 speedresult=$(echo $result1 | grep -i -E '(download speed|upload speed)')
 pingresult=$(echo $result2)
-array=($speedresult $pingresult)
-ping=${array[9]}
-pingUOM=${array[10]}
-download=${array[2]}
-downloadUOM=${array[3]}
-upload=${array[6]}
-uploadUOM=${array[7]}
+
+resultarray=($speedresult)
+pingarray=($pingresult)
+
+ping=${pingarray[1]}
+pingUOM=${pingarray[2]}
+
+download=${resultarray[40]}
+downloadUOM=${resultarray[41]}
+upload=${resultarray[36]}
+uploadUOM=${resultarray[37]}
+
 result="$ping
 $pingUOM
 $download
