@@ -212,6 +212,13 @@ class USBRead(object):
       self._parse_bytes('external temperature', 10, 100.0, bytes, info)
       self._parse_bytes('external humidity', 12, 100.0, bytes, info)
       return info
+    
+    if info['firmware'] in ['TEMPerHUM_V3.8']:
+      self._parse_bytes('internal temperature', 2, 100.0, bytes, info)
+      self._parse_bytes('internal humidity', 4, 100.0, bytes, info)
+      self._parse_bytes('external temperature', 10, 100.0, bytes, info)
+      self._parse_bytes('external humidity', 12, 100.0, bytes, info)
+      return info
 
     info['error'] = 'Unknown firmware %s: %s' % (info['firmware'],
                                                  binascii.hexlify(bytes))
