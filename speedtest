@@ -1,7 +1,7 @@
-#!/bin/bash
+!/bin/bash
 
 # 2021-04-08 - After Ookla changed their license to move toward a pay-for-use speedtest service,
-#              I wrote this script to replace it. This outputs the same data, parsed from fast.com
+#              I wrote this script to replace it. This outputs the same data, parsed from CloudFlare
 #                                                                    - Robbie // The Bald Nerd
 
 if [[ ! -e /usr/local/bin/speed-cloudflare-cli ]]; then
@@ -30,8 +30,14 @@ running=0
 for pid in $(pidof -x speedtest); do
   if [ $pid != $$ ]; then
     running=1
+    # If the task got locked up for some reason, it may linger, so kill it if older than 10 minutes
+    kill $(ps -eo pid,etimes,args | awk '/speedtest/ { if ($2 > 3600) print $1 }')
   fi
 done
+
+# Load from logs first, and then override if applicable
+result1=$(cat ${log})
+result2=$(cat ${log2})
 
 if [ $running == 0 ]; then
   # I'm not going to speedtest more than every 2 minutes
@@ -40,9 +46,6 @@ if [ $running == 0 ]; then
     result2=$(ping -qc1 cloudflare.com 2>&1 | awk -F'/' 'END{ print (/^rtt/? "OK "$5" ms":"FAIL") }')
     echo $result1 | dd of=${log} > /dev/null 2> /dev/null
     echo $result2 | dd of=${log2} > /dev/null 2> /dev/null
-  else
-    result1=$(cat ${log})
-    result2=$(cat ${log2})
   fi
 fi
 
