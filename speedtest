@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 # 2021-04-08 - After Ookla changed their license to move toward a pay-for-use speedtest service,
 #              I wrote this script to replace it. This outputs the same data, parsed from CloudFlare
