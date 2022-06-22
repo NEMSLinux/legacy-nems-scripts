@@ -1,9 +1,9 @@
 #!/bin/bash
-ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver)
-platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
-init=$(/usr/local/share/nems/nems-scripts/info.sh init)
+ver=$(/usr/local/bin/nems-info nemsver)
+platform=$(/usr/local/bin/nems-info platform)
+init=$(/usr/local/bin/nems-info init)
 tmpdir=`mktemp -d -p /usr/local/share/`
-username=$(/usr/local/share/nems/nems-scripts/info.sh username)
+username=$(/usr/local/bin/nems-info username)
 
 echo ""
 echo -e "\e[1mNEMS Linux Change Password\e[0m"

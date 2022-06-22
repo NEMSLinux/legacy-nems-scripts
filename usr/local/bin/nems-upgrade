@@ -6,10 +6,10 @@ else
   export COMMAND=$1
 
   upgraded=0
-  ver=$(/usr/local/bin/nems-info nemsver) 
+  ver=$(/usr/local/bin/nems-info nemsver)
   echo "Running NEMS $ver"
 
-  platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+  platform=$(/usr/local/bin/nems-info platform)
 
   # Setup a patches.log file if one doesn't exist
   # This ensures once a patch is run, it doesn't run again

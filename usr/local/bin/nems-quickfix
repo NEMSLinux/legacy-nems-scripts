@@ -102,7 +102,7 @@ if [[ $proceed == 1 ]]; then
     printf "."
 
     # Create a copy of the update script to run
-    cp /usr/local/share/nems/nems-scripts/update.sh $tmpdir/qf.sh
+    cp /usr/local/bin/nems-update $tmpdir/qf.sh
 
     # Run the copy
     $tmpdir/qf.sh >> /var/log/nems/nems-quickfix.log 2>&1

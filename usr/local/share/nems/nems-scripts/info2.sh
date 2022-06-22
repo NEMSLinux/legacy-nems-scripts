@@ -54,7 +54,7 @@ switch($argv[1]) {
   break;
 
   case 4: // Load the platform data from the API
-    $platform['id'] = shell_exec('/usr/local/share/nems/nems-scripts/info.sh platform');
+    $platform['id'] = shell_exec('/usr/local/bin/nems-info platform');
     if (!file_exists('/tmp/platform_data')) {
       if (file_exists('/var/log/nems/hw_model')) { // try to get it from the hw_model file
         $tmp = file('/var/log/nems/hw_model');

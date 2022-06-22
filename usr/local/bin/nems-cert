@@ -3,7 +3,7 @@
 # By Robbie Ferguson
 # nemslinux.com | baldnerd.com | category5.tv
 
-  platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+  platform=$(/usr/local/bin/nems-info platform)
 
   echo ""
   echo "Generating unique SSL Certificates..."

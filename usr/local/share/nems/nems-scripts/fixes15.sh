@@ -57,8 +57,11 @@
 
  # Update apt here so we don't have to do it below
  apt-get clean
- apt-get update --allow-releaseinfo-change
- apt-get update
+ if (( $platform >= 0 )) && (( $platform <= 9 )); then
+   apt-get update --allow-releaseinfo-change
+ else
+   apt-get update
+ fi
 
  # Fix Default Collector name if incorrect
  collector=$(/usr/bin/mysql -u nconf -h 127.0.0.1 -pnagiosadmin -D nconf -e "SELECT attr_value FROM ConfigValues WHERE fk_id_attr = 1;")
@@ -644,22 +647,6 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
 
       reboot=1
 
-    fi
-
-  # Backport speedtest from 1.6 to 1.4.1+ (essentially, for 1.5).
-    if ! grep -q "PATCH-000017" /var/log/nems/patches.log; then
-      if [[ -e /usr/lib/nagios/plugins/check_speedtest-cli.sh ]]; then
-        rm /usr/lib/nagios/plugins/check_speedtest-cli.sh
-      fi
-      wget -O /usr/lib/nagios/plugins/check_speedtest-cli.sh https://raw.githubusercontent.com/NEMSLinux/debpack/main/all/nems-plugins/usr/lib/nagios/plugins/check_speedtest-cli.sh
-      chmod +x /usr/lib/nagios/plugins/check_speedtest-cli.sh
-      if [ $(dpkg-query -W -f='${Status}' npm 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-        apt-get install -y npm
-      fi
-      if [[ ! -e /usr/local/bin/speed-cloudflare-cli ]]; then
-        npm install -g speed-cloudflare-cli
-      fi
-      echo "PATCH-000017" >> /var/log/nems/patches.log
     fi
 
 fi

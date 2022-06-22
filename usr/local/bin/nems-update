@@ -2,6 +2,7 @@
 
 echo ""
 echo "NEMS Update"
+echo "By Robbie Ferguson"
 echo ""
 
 if [[ $EUID -ne 0 ]]; then
@@ -36,40 +37,48 @@ else
     done
   fi
 
+  apt-get update
+
   git config --global --unset http.postBuffer
 
   echo "Updating NEMS Core Components"
+  echo
 
-  # Update nems-migrator
-  echo " - nems-migrator"
-  cd /root/nems/nems-migrator
-  git config --unset http.postBuffer
-  commit=`git rev-parse HEAD`
-  echo "   Commit: $commit"
-  printf "   "
-  result=`git pull`
-  echo $result
-  if [[ $result =~ 'error:' ]]; then
-    echo 'Error detected. Reinstalling...';
-    mv /root/nems/nems-migrator /root/nems/nems-migrator~
-    cd /root/nems
-    git clone https://github.com/Cat5TV/nems-migrator
-    if [[ -d /root/nems/nems-migrator ]]; then
-      echo 'Successfully reinstalled.'
-      rm -rf /root/nems/nems-migrator~
-    else
-      echo 'Reinstall failed. Please copy your backup.nems file and re-image your device.'
-      mv /root/nems/nems-migrator~ /root/nems/nems-migrator
-    fi
-  fi
-  commitnew=`git rev-parse HEAD`
-  if [[ $commit == $commitnew ]]; then
-    echo "   No changes."
-  else
-    echo "   New Commit: $commit"
-  fi
+  echo "nems-migrator ..."
+  apt-get install -y nems-migrator
   # Get the latest version data from the NEMS API
   /usr/local/share/nems/nems-scripts/tasks.sh update platform
+  echo
+
+  echo "nems-scripts ... "
+  apt-get install -y nems-scripts
+  echo
+
+  echo "nems-plugins ... "
+  apt-get install -y nems-plugins
+  echo
+
+  echo "9590 ... "
+  apt-get install -y 9590
+  echo
+
+  echo "hw-detect ... "
+  apt-get install -y hw-detect
+  echo
+
+  echo "nems-www ... "
+  apt-get install -y nems-www
+  echo
+
+# Don't do this yet; not ready
+#  echo "speedtest ... "
+#  apt-get install -y speedtest
+#  echo
+
+  echo "wmic ... "
+  apt-get install -y wmic
+  echo
+
 
   # Update nems-tv
   echo " - nems-tv... "
@@ -195,52 +204,10 @@ else
     echo "   New Commit: $commit"
   fi
 
-  # Update self
-  echo " - nems-scripts... "
-  if [ -d /usr/local/share/nems/nems-scripts ]; then
-    cd /usr/local/share/nems/nems-scripts
-    git config --unset http.postBuffer
-    commit=`git rev-parse HEAD`
-    echo "   Commit: $commit"
-    printf "   "
-    result=`git pull`
-    echo $result
-    if [[ $result =~ 'error:' ]]; then
-      echo 'Error detected. Reinstalling...';
-      mv /usr/local/share/nems/nems-scripts /usr/local/share/nems/nems-scripts~
-      cd /usr/local/share/nems
-      git clone https://github.com/Cat5TV/nems-scripts
-      if [[ -d /usr/local/share/nems ]]; then
-        echo 'Successfully reinstalled.'
-        rm -rf /usr/local/share/nems/nems-scripts~
-      else
-        echo 'Reinstall failed. Please copy your backup.nems file and re-image your device.'
-        mv /usr/local/share/nems/nems-scripts~ /usr/local/share/nems/nems-scripts
-      fi
-    fi
-  fi
-  commitnew=`git rev-parse HEAD`
-  if [[ $commit == $commitnew ]]; then
-    echo "   No changes."
-  else
-    echo "   New Commit: $commit"
-  fi
-
-  # Check if we are still on legacy 1.1 or 1.2.x and update that way, otherwise fixes will not run to patch it
-  if [ -d /home/pi/nems-scripts ]; then
-    echo "*** You need to upgrade your NEMS server to a current version! ***"
-    cd /home/pi/nems-scripts && git pull
-  fi
-  echo ""
-
   # Perform any fixes that have been released since NEMS was built
   printf "Running updates and fixes... "
   if [ -d /usr/local/share/nems/nems-scripts ]; then
     /usr/local/share/nems/nems-scripts/fixes.sh
-  fi
-  # Legacy support
-  if [ -d /home/pi/nems-scripts ]; then
-    /home/pi/nems-scripts/fixes.sh
   fi
   echo ""
 

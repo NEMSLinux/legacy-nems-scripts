@@ -3,9 +3,11 @@
 
 conf='/usr/local/share/nems/nems.conf'
 
-platform=$(/usr/local/bin/nems-info platform) 
+platform=$(/usr/local/bin/nems-info platform)
 ver=$(/usr/local/bin/nems-info nemsver)
 
+# We're going to initialize all these after a short pause to allow the boot to complete
+sleep 20
 
  # Set defaults if nothing is set
 
@@ -32,10 +34,7 @@ ver=$(/usr/local/bin/nems-info nemsver)
    socket=$(/usr/local/bin/nems-info socket)
 
    # nagios-api
-   if grep -q "service.nagios-api=0" "$conf"; then
-     sleep 1
-   else
-     sleep 15 # Need to wait a bit so Nagios has time to load first
+   if ! grep -q "service.nagios-api=0" "$conf"; then
      if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.4'")}') )); then
        /root/nems/nagios-api/nagios-api -p 8090 -c $socket -s /var/cache/nagios/status.dat -l /var/log/nagios/nagios.log >> /var/log/nagios-api.log 2>&1 &
      else
@@ -52,13 +51,17 @@ ver=$(/usr/local/bin/nems-info nemsver)
      /bin/systemctl start monitorix
    fi
 
+   # IBM i Service
+   if grep -q "service.ibmi=1" "$conf"; then
+     /usr/lib/nagios/plugins/ibmi/server_start.sh
+   fi
+
 
  # Raspberry Pi Only
  if (( $platform < '10' )); then
 
    # RPi-Monitor
    if grep -q "service.rpi-monitor=0" "$conf"; then
-     sleep 30
      /etc/init.d/rpimonitor stop
      /bin/systemctl stop rpimonitor
    else
