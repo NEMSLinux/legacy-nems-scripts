@@ -86,7 +86,7 @@ if (file_exists($socket)) {
   }
 
   # Connect and checkin
-  $ch = curl_init('https://nemslinux.com/api/checkin/');
+  $ch = curl_init('https://cloud.nemslinux.com/api/checkin.php');
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
   $retry = 0;
