@@ -47,6 +47,8 @@ else
   commit=`git rev-parse HEAD`
   echo "   Commit: $commit"
   printf "   "
+  git add * 
+  git stash
   result=`git pull`
   echo $result
   if [[ $result =~ 'error:' ]]; then
