@@ -129,7 +129,7 @@
       'hwid'=>$nems->hwid,
       'osbkey'=>$nems->osbkey // notice, I am NOT sending the osbpass - that is for you only
     );
-    $ch = curl_init('https://nemslinux.com/api/cloud/');
+    $ch = curl_init('https://cloud.nemslinux.com/api/sync.php');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLINFO_HEADER_OUT, true);
     curl_setopt($ch, CURLOPT_POST, true);
