@@ -554,7 +554,7 @@ elif [[ $COMMAND == "cloudauth" ]]; then
     echo 0
     exit
   fi;
-  data=$(curl -s -F "hwid=$hwid" -F "osbkey=$osbkey" -F "query=status" https://nemslinux.com/api-backend/offsite-backup-checkin.php)
+  data=$(curl -s -F "hwid=$hwid" -F "osbkey=$osbkey" -F "query=status" https://cloud.nemslinux.com/api/offsite-backup-checkin.php)
   if [[ $data == '1' ]]; then # this account passes authentication
     echo 1
   else
