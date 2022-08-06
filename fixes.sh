@@ -49,6 +49,7 @@
  # using hard file location rather than symlink as symlink may not exist yet on older versions
  platform=$(/usr/local/bin/nems-info platform)
  ver=$(/usr/local/bin/nems-info nemsver)
+ branch=$(/usr/local/bin/nems-info nemsbranch)
 
  # Update apt here so we don't have to do it below
  apt-get clean
@@ -101,6 +102,10 @@ check process 9590 with pidfile /run/9590.pid
     /bin/systemctl restart monit
   fi
 
+fi
+
+if (( $(awk 'BEGIN {print ("'$branch'" == "'1.5'")}') )); then
+  /usr/local/share/nems/nems-scripts/fixes15.sh
 fi
 
 if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
