@@ -649,6 +649,23 @@ if (( $(awk 'BEGIN {print ("'$ver'" >= "'1.5'")}') )); then
 
     fi
 
+
+  # Backport speedtest from 1.6 to 1.4.1+ (essentially, for 1.5).
+    if ! grep -q "PATCH-000017" /var/log/nems/patches.log; then
+      if [[ -e /usr/lib/nagios/plugins/check_speedtest-cli.sh ]]; then
+        rm /usr/lib/nagios/plugins/check_speedtest-cli.sh
+      fi
+      wget -O /usr/lib/nagios/plugins/check_speedtest-cli.sh https://raw.githubusercontent.com/NEMSLinux/nems-plugins/main/debpack/usr/lib/nagios/plugins/check_speedtest-cli.sh
+      chmod +x /usr/lib/nagios/plugins/check_speedtest-cli.sh
+      if [ $(dpkg-query -W -f='${Status}' npm 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+        apt-get install -y npm
+      fi
+      if [[ ! -e /usr/local/bin/speed-cloudflare-cli ]]; then
+        npm install -g speed-cloudflare-cli
+      fi
+      echo "PATCH-000017" >> /var/log/nems/patches.log
+    fi
+
 fi
 
 
